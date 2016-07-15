@@ -1,0 +1,16 @@
+MaterialDef Stereoscopy {
+
+	MaterialParameters {
+		Texture2D Texture1
+		Texture2D Texture2
+	}
+
+	Technique {
+		VertexShader GLSL100: Common/MatDefs/Post/Post.vert
+		FragmentShader GLSL100: Shaders/Anaglyph/Anaglyph.frag
+	
+		WorldParameters {
+			WorldViewProjectionMatrix
+		}
+	}
+}

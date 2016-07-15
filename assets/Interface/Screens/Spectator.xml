@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty>
+  <useStyles filename="nifty-default-styles.xml" />
+  <useStyles filename="Interface/Styles/textfield.xml" />
+  <useStyles filename="Interface/Styles/radiobutton.xml" />
+  <useStyles filename="Interface/Styles/slider.xml" />
+  <useStyles filename="Interface/Styles/fonts.xml" />
+  <useControls filename="nifty-default-controls.xml" />
+  <screen id="Spectator" controller="dronewars.input.SpectatorController"></screen>
+</nifty>

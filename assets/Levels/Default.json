@@ -1,0 +1,26 @@
+{
+    map: "Hills",
+    sky: "Sunny05",
+    size: 1024,
+    seaLevel: 2,
+    models: [
+        {
+            path: "Tree/Tree.mesh.j3o",
+            count: 500,
+            minSize: 1,
+            maxSize: 1.5,
+            minAlt: 2,
+            maxAlt: 50,
+            aligned: false
+        },
+        {
+            path: "MQ-27/MQ-27.j3o",
+            count: 10,
+            minSize: 1,
+            maxSize: 1,
+            minAlt: 50,
+            maxAlt: 100,
+            aligned: true
+        }
+    ]
+}
