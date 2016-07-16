@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class Drone {
     
-    private String name = "Quadcopter";
+    private String name = "Reaper";
     
     private ColorRGBA laserColor = new ColorRGBA(0.8f, 1, 0, 1);
     private ColorRGBA primaryColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1);
@@ -196,7 +196,7 @@ public class Drone {
             rotor.rotate(0, 0, speed);
         }
         for (Spatial rotor : zRotors) {
-            rotor.rotate(0, speed, 0);
+            rotor.rotate(0, 0, speed);
         }
     }
     
