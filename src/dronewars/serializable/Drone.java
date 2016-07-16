@@ -17,7 +17,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.texture.Texture;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  *
@@ -25,27 +26,31 @@ import com.jme3.texture.Texture;
  */
 public class Drone {
     
-    private float mass = 1;
-    
-    private float scale = 0.2f;
-    private String model = "Drones/Default/Drone.blend";
+    private String name = "Quadcopter";
     
     private ColorRGBA laserColor = new ColorRGBA(0.8f, 1, 0, 1);
-    private ColorRGBA rotorColor = new ColorRGBA(0.8f, 1, 0, 1);
-    private ColorRGBA shellColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1);
-    
+    private ColorRGBA primaryColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1);
+    private ColorRGBA secondaryColor = new ColorRGBA(0.8f, 1, 0, 1);
+        
     private transient AssetManager assetManager;
     private transient BulletAppState bullet;
     private transient RigidBodyControl control;
     private transient Node parent;
     private transient Geometry laser;
     private transient Spatial spatial;
-    private transient Spatial rotorFR, rotorFL, rotorBR, rotorBL;
+    
+    private transient HashSet<Spatial> xRotors;
+    private transient HashSet<Spatial> yRotors;
+    private transient HashSet<Spatial> zRotors;
     
     private transient float throttle;
     private transient float pitch;
     private transient float roll;
     private transient float yaw;
+    
+    private transient float agility = 1;
+    private transient float speed = 0;
+    private transient float yawSpeed = 0;
     
     public Drone() {}
         
@@ -54,14 +59,18 @@ public class Drone {
         this.bullet = bullet;
         this.assetManager = assetManager;
         
-        spatial = assetManager.loadModel(model);
-        spatial.scale(scale);
-        spatial.setShadowMode(RenderQueue.ShadowMode.Cast);
+        xRotors = new HashSet();
+        yRotors = new HashSet();
+        zRotors = new HashSet();
+        
+        spatial = assetManager.loadModel("Aircraft/" + name + "/model.blend");
+        spatial.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        
+        agility = spatial.getWorldBound().getVolume() / 20;
         
         CollisionShape hitbox = CollisionShapeFactory.createDynamicMeshShape(spatial);
         control = new RigidBodyControl(hitbox);
         spatial.addControl(control);
-        control.setMass(mass);
         
         if (bullet != null)
             bullet.getPhysicsSpace().add(spatial);
@@ -70,10 +79,8 @@ public class Drone {
         
         Box box = new Box(0.004f, 0.004f, 100);
         laser = new Geometry("Laser", box);
-        
-        Vector3f upward = spatial.getLocalRotation().getRotationColumn(1);
         Vector3f forward = spatial.getLocalRotation().getRotationColumn(2);
-        laser.move(forward.mult(-100.1f));
+        laser.move(forward.mult(-100));
         parent.attachChild(laser);
         
         initMaterials();
@@ -90,38 +97,33 @@ public class Drone {
     }
     
     private void initMaterials() {
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", laserColor);
-        mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
-        mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Additive);
-        laser.setMaterial(mat);
-        
-        Node drone = (Node) spatial;
-        
-        Spatial laserMesh = drone.getChild("Laser");
         Material laserMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         laserMat.setColor("Color", laserColor);
-        laserMesh.setMaterial(laserMat);
-                
-        Spatial shellMesh = drone.getChild("Shell");
-        Material shellMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        shellMat.setColor("Diffuse", shellColor);
-        shellMat.setBoolean("UseMaterialColors", true);
-        shellMesh.setMaterial(shellMat);
+        laserMat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+        laserMat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Additive);
+        laser.setMaterial(laserMat);
         
-        Material rotorMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        rotorMat.setColor("Diffuse", rotorColor);
-        rotorMat.setBoolean("UseMaterialColors", true);
+        Node node = (Node) spatial;
+        List<Spatial> children = node.getChildren();
         
-        rotorFR = drone.getChild("RotorFR");
-        rotorFL = drone.getChild("RotorFL");
-        rotorBR = drone.getChild("RotorBR");
-        rotorBL = drone.getChild("RotorBL");
+        for (Spatial child : children) {
+            String name = child.getName().toLowerCase();
+            if (name.contains("xrotor")) {
+                xRotors.add(child);
+            } else if (name.contains("yrotor")) {
+                yRotors.add(child);
+            } else if (name.contains("zrotor")) {
+                zRotors.add(child);
+            }
+            if (name.contains("primary")) {
+                Geometry geom = (Geometry) ((Node) child).getChild(0);
+                geom.getMaterial().setColor("Diffuse", primaryColor);
+            } else if (name.contains("secondary")) {
+                Geometry geom = (Geometry) ((Node) child).getChild(0);
+                geom.getMaterial().setColor("Diffuse", secondaryColor);
+            }
+        }
         
-        rotorFR.setMaterial(rotorMat);
-        rotorFL.setMaterial(rotorMat);
-        rotorBR.setMaterial(rotorMat);
-        rotorBL.setMaterial(rotorMat);
     }
     
     public void setTextureScale(Spatial spatial, float scale) {
@@ -150,10 +152,10 @@ public class Drone {
         Vector3f rx = rot.mult(Vector3f.UNIT_X).normalize();
         Vector3f ry = rot.mult(Vector3f.UNIT_Y).normalize();
         Vector3f rz = rot.mult(Vector3f.UNIT_Z).normalize();
-
-        Vector3f pitchForce = ry.mult(pitch / 4);
-        Vector3f rollForce = ry.mult(roll / 4);
-        Vector3f yawForce = rz.mult(yaw / 8);
+        
+        Vector3f pitchForce = ry.mult(pitch * agility);
+        Vector3f rollForce = ry.mult(roll * agility);
+        Vector3f yawForce = rz.mult(yaw * agility / 2);
         
         final float MAX_SPIN = 1;
         Vector3f spin = control.getAngularVelocity().negate();
@@ -180,12 +182,22 @@ public class Drone {
         control.applyForce(pitchForce, rz);
         control.applyForce(rollForce, rx);
         control.applyForce(yawForce, rx);
+        spinRotors(tpf);
+    }
+    
+    private void spinRotors(float tpf) {
+        speed += (Math.abs(throttle) - speed) * tpf;
+        yawSpeed += (Math.abs(yaw) - yawSpeed) * tpf;
         
-        // should be dependent on input
-        rotorFR.rotate(0,0,1);
-        rotorFL.rotate(0,0,1);
-        rotorBR.rotate(0,0,1);
-        rotorBL.rotate(0,0,1);
+        for (Spatial rotor : xRotors) {
+            rotor.rotate(yawSpeed, 0, 0);
+        }
+        for (Spatial rotor : yRotors) {
+            rotor.rotate(0, 0, speed);
+        }
+        for (Spatial rotor : zRotors) {
+            rotor.rotate(0, speed, 0);
+        }
     }
     
     public void setThrottle(float throttle) {
@@ -203,41 +215,17 @@ public class Drone {
     public void setYaw(float yaw) {
         this.yaw = yaw;
     }
-    
-    public void setMass(float mass) {
-        this.mass = mass;
-    }
         
     public Spatial getSpatial() {
         return spatial;
     }
-
-    /**
-     * @return the path
-     */
-    public String getPath() {
-        return model;
+    
+    public void setName(String name) {
+        this.name = name;
     }
-
-    /**
-     * @param path the path to set
-     */
-    public void setPath(String path) {
-        this.model = path;
-    }
-
-    /**
-     * @return the scale
-     */
-    public float getScale() {
-        return scale;
-    }
-
-    /**
-     * @param scale the scale to set
-     */
-    public void setScale(float scale) {
-        this.scale = scale;
+    
+    public String getName() {
+        return name;
     }
 
     /**
@@ -257,43 +245,29 @@ public class Drone {
     /**
      * @return the shellColor
      */
-    public ColorRGBA getShellColor() {
-        return shellColor;
+    public ColorRGBA getPrimaryColor() {
+        return primaryColor;
     }
 
     /**
      * @param shellColor the shellColor to set
      */
-    public void setShellColor(ColorRGBA shellColor) {
-        this.shellColor = shellColor;
+    public void setPrimaryColor(ColorRGBA shellColor) {
+        this.primaryColor = shellColor;
     }
 
     /**
      * @return the rotorColor
      */
-    public ColorRGBA getRotorColor() {
-        return rotorColor;
+    public ColorRGBA getSecondaryColor() {
+        return secondaryColor;
     }
 
     /**
      * @param rotorColor the rotorColor to set
      */
-    public void setRotorColor(ColorRGBA rotorColor) {
-        this.rotorColor = rotorColor;
-    }
-
-    /**
-     * @return the laser
-     */
-    public Geometry getLaser() {
-        return laser;
-    }
-
-    /**
-     * @param laser the laser to set
-     */
-    public void setLaser(Geometry laser) {
-        this.laser = laser;
+    public void setSecondaryColor(ColorRGBA rotorColor) {
+        this.secondaryColor = rotorColor;
     }
 
     /**
@@ -301,20 +275,6 @@ public class Drone {
      */
     public RigidBodyControl getControl() {
         return control;
-    }
-
-    /**
-     * @param control the control to set
-     */
-    public void setControl(RigidBodyControl control) {
-        this.control = control;
-    }
-
-    /**
-     * @param spatial the spatial to set
-     */
-    public void setSpatial(Spatial spatial) {
-        this.spatial = spatial;
     }
 
     public void fire() {

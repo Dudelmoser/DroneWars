@@ -90,22 +90,22 @@ public class DroneController extends DefaultController {
                 drone.getLaserColor().b = event.getValue() / 255;
                 break;
             case "rotorR":
-                drone.getRotorColor().r = event.getValue() / 255;
+                drone.getSecondaryColor().r = event.getValue() / 255;
                 break;
             case "rotorG":
-                drone.getRotorColor().g = event.getValue() / 255;
+                drone.getSecondaryColor().g = event.getValue() / 255;
                 break;
             case "rotorB":
-                drone.getRotorColor().b = event.getValue() / 255;
+                drone.getSecondaryColor().b = event.getValue() / 255;
                 break;
             case "shellR":
-                drone.getShellColor().r = event.getValue() / 255;
+                drone.getPrimaryColor().r = event.getValue() / 255;
                 break;
             case "shellG":
-                drone.getShellColor().g = event.getValue() / 255;
+                drone.getPrimaryColor().g = event.getValue() / 255;
                 break;
             case "shellB":
-                drone.getShellColor().b = event.getValue() / 255;
+                drone.getPrimaryColor().b = event.getValue() / 255;
                 break;
         }
     }
@@ -113,8 +113,8 @@ public class DroneController extends DefaultController {
     private void initSliders() {
         HashMap<String, ColorRGBA> parts = new HashMap();
         parts.put("laser", drone.getLaserColor());
-        parts.put("shell", drone.getShellColor());
-        parts.put("rotor", drone.getRotorColor());
+        parts.put("shell", drone.getPrimaryColor());
+        parts.put("rotor", drone.getSecondaryColor());
         
         for (Entry<String, ColorRGBA> part : parts.entrySet()) {
             setRgbSlider(part.getKey(), part.getValue());

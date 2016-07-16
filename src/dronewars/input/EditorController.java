@@ -78,9 +78,8 @@ public class EditorController extends DefaultController {
             state = stateManager.getState(EditorState.class);
         state.setEnabled(true);
         
-        inputManager.addListener(actionListener, "BACK", "shift", "waterColor", "skyBox",
-                "freeCam", "trailCam", "hover", "agentOrange");
-        inputManager.addListener(analogListener, "terrainHeight", "waveHeight");
+        inputManager.addListener(actionListener, "BACK");
+        inputManager.addListener(analogListener, "OPTION_1");
     }
     
     @Override

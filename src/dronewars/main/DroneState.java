@@ -11,7 +11,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.FXAAFilter;
+import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.scene.Node;
 import dronewars.serializable.Drone;
 
@@ -67,7 +69,7 @@ public class DroneState extends AbstractAppState {
     private void addLights() {
         sun = new DirectionalLight();
         sun.setDirection(new Vector3f(1,-1,1));
-        sun.setColor(ColorRGBA.White.mult(1));
+        sun.setColor(ColorRGBA.White.mult(0.5f));
         node.addLight(sun);
         
         fog = new AmbientLight();
@@ -77,9 +79,12 @@ public class DroneState extends AbstractAppState {
     
     private void applyFilters() {
         filters = new FilterPostProcessor(app.getAssetManager());
-        
+                
         FXAAFilter fxaa = new FXAAFilter();
         filters.addFilter(fxaa);
+        
+        SSAOFilter ssao = new SSAOFilter();
+        filters.addFilter(ssao);
         
         app.getViewPort().addProcessor(filters);
     }
