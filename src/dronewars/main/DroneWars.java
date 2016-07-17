@@ -13,7 +13,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
-import dronewars.input.DroneController;
+import dronewars.input.HangarController;
 import dronewars.input.EditorController;
 import dronewars.input.EditorLoadingController;
 import dronewars.input.ExitController;
@@ -90,7 +90,7 @@ public class DroneWars extends StereoApplication {
                 , new MainMenuController(this)
                 , new ModesController(this)
                 , new ExitController(this)
-                , new DroneController(this)
+                , new HangarController(this)
                 , new PlayerLoadingController(this)
                 , new PlayerController(this)
                 , new EditorLoadingController(this)
@@ -99,7 +99,7 @@ public class DroneWars extends StereoApplication {
                 , new SpectatorController(this)
         );
         
-        String[] screens = {"Drone", "Editor", "EditorLoading", "Exit", "MainMenu",
+        String[] screens = {"Hangar", "Editor", "EditorLoading", "Exit", "MainMenu",
                             "Player", "PlayerLoading", "Settings", "Spectator",
                             "SpectatorLoading", "Start", "Modes"};
         for (String screen : screens) {
@@ -126,8 +126,8 @@ public class DroneWars extends StereoApplication {
                 
                 inputManager.addMapping("LS_UP", new JoyAxisTrigger(id, 0, true));
                 inputManager.addMapping("LS_DOWN", new JoyAxisTrigger(id, 0, false));
-                inputManager.addMapping("LS_LEFT", new JoyAxisTrigger(id, 1, true));
-                inputManager.addMapping("LS_RIGHT", new JoyAxisTrigger(id, 1, false));
+                inputManager.addMapping("LS_LEFT", new JoyAxisTrigger(id, 1, false));
+                inputManager.addMapping("LS_RIGHT", new JoyAxisTrigger(id, 1, true));
                 
                 inputManager.addMapping("RS_UP", new JoyAxisTrigger(id, 2, true));
                 inputManager.addMapping("RS_DOWN", new JoyAxisTrigger(id, 2, false));

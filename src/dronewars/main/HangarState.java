@@ -11,27 +11,26 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.FXAAFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.scene.Node;
-import dronewars.serializable.Drone;
+import dronewars.serializable.Aircraft;
 
 /**
  *
  * @author Jan David Kleiß
  */
-public class DroneState extends AbstractAppState {
+public class HangarState extends AbstractAppState {
         
     private Node node;
-    private Drone drone;
+    private Aircraft drone;
     private AmbientLight fog;
     private DirectionalLight sun;
     private ChaseCamera chaseCam;
     private SimpleApplication app;
     private FilterPostProcessor filters;
     
-    public DroneState(Drone drone) {
+    public HangarState(Aircraft drone) {
         this.drone = drone;
     }
     
@@ -89,7 +88,7 @@ public class DroneState extends AbstractAppState {
         app.getViewPort().addProcessor(filters);
     }
     
-    public Drone getDrone() {
+    public Aircraft getDrone() {
         return drone;
     }
     

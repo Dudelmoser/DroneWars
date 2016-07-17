@@ -11,7 +11,7 @@ import com.jme3.scene.Node;
  */
 public class Level {
     private String name = "Default";
-    private Vector3f gravity = new Vector3f(0, -32, 0);
+    private Vector3f gravity = new Vector3f(0, -30, 0);
     
     private Sky sky;
     private Water water;

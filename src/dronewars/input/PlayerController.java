@@ -4,7 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import dronewars.main.PlayerState;
-import dronewars.serializable.Drone;
+import dronewars.serializable.Aircraft;
 /** 
  * 
  * @author Jan David Kleiß
@@ -14,7 +14,7 @@ public class PlayerController extends DefaultController {
     private final float analogTreshold = 0.5f;
     private boolean joystick = false;
     
-    private Drone drone;
+    private Aircraft drone;
     private PlayerState state;
     
     private AnalogListener analogListener = new AnalogListener() {
@@ -65,7 +65,6 @@ public class PlayerController extends DefaultController {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-            System.out.println("ACTION " + name + " " + keyPressed);
             if (drone == null) {
                 drone = state.getDrone();
                 return;

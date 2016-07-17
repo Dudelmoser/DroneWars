@@ -16,7 +16,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import dronewars.serializable.Drone;
+import dronewars.serializable.Aircraft;
 import dronewars.serializable.Level;
 import dronewars.ui.CameraWidget;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class PlayerState extends AbstractAppState {
    
     private Settings settings;
     
-    private Drone drone;
+    private Aircraft drone;
     private Level level;
     private ChaseCamera chaseCam;
     
@@ -62,15 +62,15 @@ public class PlayerState extends AbstractAppState {
         Path path = Paths.get(System.getProperty("user.dir") + "/drone.json");
         try {
             String json = new String(Files.readAllBytes(path));
-            drone = new GsonBuilder().create().fromJson(json, Drone.class);
+            drone = new GsonBuilder().create().fromJson(json, Aircraft.class);
         } catch (IOException ex) {
-            drone = new Drone();
+            drone = new Aircraft();
         }
         drone.create(level.getNode(), level.getBullet(), app.getAssetManager());
         drone.getControl().setPhysicsLocation(new Vector3f(0, 100, 0));
         drone.setThrottle(1);
         
-        setCameraMode(2);
+        initCamera();
     }
     
     @Override
@@ -86,31 +86,18 @@ public class PlayerState extends AbstractAppState {
         
     }
      
-    public void setCameraMode(int mode) {
-        if (chaseCam == null) {
-            chaseCam = new ChaseCamera(app.getCamera(), drone.getSpatial(), app.getInputManager());
-            chaseCam.setDefaultHorizontalRotation(0);
-            chaseCam.setDefaultDistance(10);
-            chaseCam.setDefaultVerticalRotation(FastMath.PI / 8);
-            
-            app.getFlyByCamera().setMoveSpeed(20);
-        }
-        if (mode == 0) {
-            chaseCam.setEnabled(false);
-            app.getFlyByCamera().setEnabled(true);
-            app.getCamera().setLocation(specPosition);
-            app.getCamera().setRotation(new Quaternion().fromAngles(specAngles));
-        } else {
-            app.getFlyByCamera().setEnabled(false);
-            chaseCam.setEnabled(true);
-            if (mode == 2) {
-                chaseCam.setSmoothMotion(true);
-                chaseCam.setTrailingEnabled(true);
-            }
-        }
+    public void initCamera() {        
+        app.getFlyByCamera().setEnabled(false);
+        chaseCam = new ChaseCamera(app.getCamera(), drone.getSpatial(), app.getInputManager());
+        chaseCam.setDefaultHorizontalRotation(0);
+        chaseCam.setDefaultDistance(10);
+        chaseCam.setDefaultVerticalRotation(FastMath.PI / 8);
+        chaseCam.setEnabled(true);
+        chaseCam.setSmoothMotion(true);
+        chaseCam.setTrailingEnabled(true);
     }
     
-    public Drone getDrone() {
+    public Aircraft getDrone() {
         return drone;
     }
     
