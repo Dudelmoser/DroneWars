@@ -34,7 +34,7 @@ public class SpectatorState extends AbstractAppState {
         this.app = (SimpleApplication) application;
         
         level = new Level();
-        level.create(app);
+        level.create(app, null);
         
         settings = new Settings();
         settings.setProfile(2);

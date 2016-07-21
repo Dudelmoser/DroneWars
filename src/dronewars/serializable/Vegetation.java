@@ -89,7 +89,8 @@ public class Vegetation {
                         RigidBodyControl control = new RigidBodyControl(shape);
                         control.setMass(0);
                         spatial.addControl(control);
-                        bullet.getPhysicsSpace().add(spatial);
+                        if (bullet != null)
+                            bullet.getPhysicsSpace().add(spatial);
                     }
                     
                     node.attachChild(spatial);

@@ -54,7 +54,7 @@ public class DroneWars extends StereoApplication {
         DisplayMode displayMode = device.getDisplayMode();
 //        settings.setResolution(displayMode.getWidth(), displayMode.getHeight());
         settings.setResolution(1920, 1080);
-        settings.setFrequency(displayMode.getRefreshRate());
+        settings.setFrameRate(60);
         settings.setBitsPerPixel(displayMode.getBitDepth());
 //        settings.setFullscreen(device.isFullScreenSupported());
         
@@ -125,7 +125,6 @@ public class DroneWars extends StereoApplication {
                 List<JoystickButton> buttons = joystick.getButtons();
                 
                 inputManager.addMapping("LS_UP", new JoyAxisTrigger(id, 0, true));
-                inputManager.addMapping("LS_DOWN", new JoyAxisTrigger(id, 0, false));
                 inputManager.addMapping("LS_LEFT", new JoyAxisTrigger(id, 1, false));
                 inputManager.addMapping("LS_RIGHT", new JoyAxisTrigger(id, 1, true));
                 
@@ -156,7 +155,6 @@ public class DroneWars extends StereoApplication {
 
     private void addKeyboardMappings() {
         inputManager.addMapping("L_UP",  new KeyTrigger(KeyInput.KEY_W));
-        inputManager.addMapping("L_DOWN",  new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("L_LEFT",  new KeyTrigger(KeyInput.KEY_A));
         inputManager.addMapping("L_RIGHT",  new KeyTrigger(KeyInput.KEY_D));
         
@@ -167,8 +165,8 @@ public class DroneWars extends StereoApplication {
         
         inputManager.addMapping("ACTION_1", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("ACTION_2", new KeyTrigger(KeyInput.KEY_LSHIFT));
-        inputManager.addMapping("ACTION_3", new KeyTrigger(KeyInput.KEY_E));
-        inputManager.addMapping("ACTION_4", new KeyTrigger(KeyInput.KEY_Q));
+        inputManager.addMapping("ACTION_3", new KeyTrigger(KeyInput.KEY_R));
+        inputManager.addMapping("ACTION_4", new KeyTrigger(KeyInput.KEY_F));
         
         inputManager.addMapping("OPTION_1", new KeyTrigger(KeyInput.KEY_1));
         inputManager.addMapping("OPTION_2", new KeyTrigger(KeyInput.KEY_2));

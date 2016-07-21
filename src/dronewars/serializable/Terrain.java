@@ -76,7 +76,8 @@ public class Terrain {
         RigidBodyControl terrainControl = new RigidBodyControl(terrainBox, 0);
         getTerrainQuad().addControl(terrainControl);
         
-        bullet.getPhysicsSpace().add(terrain);
+        if (bullet != null)
+            bullet.getPhysicsSpace().add(terrain);
                 
         vegetation = new Vegetation();
         Texture spawnTex = assetManager.loadTexture(

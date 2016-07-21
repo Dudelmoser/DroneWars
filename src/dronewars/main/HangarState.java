@@ -14,7 +14,7 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FXAAFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.scene.Node;
-import dronewars.serializable.Aircraft;
+import dronewars.serializable.Airplane;
 
 /**
  *
@@ -23,15 +23,14 @@ import dronewars.serializable.Aircraft;
 public class HangarState extends AbstractAppState {
         
     private Node node;
-    private Aircraft drone;
+    private Airplane airplane;
     private AmbientLight fog;
     private DirectionalLight sun;
     private ChaseCamera chaseCam;
     private SimpleApplication app;
     private FilterPostProcessor filters;
-    
-    public HangarState(Aircraft drone) {
-        this.drone = drone;
+    public HangarState(Airplane airplane) {
+        this.airplane = airplane;
     }
     
     @Override
@@ -50,13 +49,13 @@ public class HangarState extends AbstractAppState {
         node = new Node();
         app.getRootNode().attachChild(node);
         
-        drone.create(node, null, app.getAssetManager());
+        airplane.create(node, app.getAssetManager());
         
         addLights();
         applyFilters();
         
         app.getCamera().setFrustumNear(0.5f);
-        chaseCam = new ChaseCamera(app.getCamera(), drone.getSpatial(), app.getInputManager());
+        chaseCam = new ChaseCamera(app.getCamera(), airplane.getSpatial(), app.getInputManager());
         chaseCam.setMinDistance(1.5f);
         chaseCam.setMaxDistance(5);
         chaseCam.setDefaultDistance(2);
@@ -88,8 +87,8 @@ public class HangarState extends AbstractAppState {
         app.getViewPort().addProcessor(filters);
     }
     
-    public Aircraft getDrone() {
-        return drone;
+    public Airplane getDrone() {
+        return airplane;
     }
     
     @Override

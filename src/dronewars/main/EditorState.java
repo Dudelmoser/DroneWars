@@ -12,12 +12,10 @@ import com.jme3.light.Light;
 import com.jme3.light.LightList;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.post.SceneProcessor;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import dronewars.serializable.Level;
-import java.util.List;
 
 /**
  *
@@ -38,7 +36,7 @@ public class EditorState extends AbstractAppState {
         this.app = (SimpleApplication) application;
         
         level = new Level();
-        level.create(app);
+        level.create(app, null);
         
         settings = new Settings();
         settings.setProfile(2);

@@ -10,7 +10,7 @@ import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
 import dronewars.main.HangarState;
-import dronewars.serializable.Aircraft;
+import dronewars.serializable.Airplane;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,7 +26,7 @@ import java.util.Map.Entry;
  */
 public class HangarController extends DefaultController {
 
-    private Aircraft drone;
+    private Airplane drone;
     private AppState state;
     
     private ActionListener actionListener = new ActionListener() {
@@ -52,9 +52,9 @@ public class HangarController extends DefaultController {
         Path path = Paths.get(System.getProperty("user.dir") + "/drone.json");
         try {
             String json = new String(Files.readAllBytes(path));
-            drone = new GsonBuilder().create().fromJson(json, Aircraft.class);
+            drone = new GsonBuilder().create().fromJson(json, Airplane.class);
         } catch (IOException ex) {
-            drone = new Aircraft();
+            drone = new Airplane();
         }
         state = new HangarState(drone);
         stateManager.attach(state);
