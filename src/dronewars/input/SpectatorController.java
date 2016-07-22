@@ -1,10 +1,10 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import dronewars.main.SpectatorState;
+import dronewars.main.StereoApplication;
 
 /**
  *
@@ -30,12 +30,13 @@ public class SpectatorController extends DefaultController {
         }
     };
     
-    public SpectatorController(SimpleApplication app) {
+    public SpectatorController(StereoApplication app) {
         super(app);
     }
     
     @Override
     public void onStartScreen() {
+        inputManager.setCursorVisible(false);
         if (state == null)
             state = stateManager.getState(SpectatorState.class);
         state.setEnabled(true);
@@ -46,6 +47,7 @@ public class SpectatorController extends DefaultController {
     
     @Override
     public void onEndScreen() {
+        inputManager.setCursorVisible(true);
         state.setEnabled(false);
         
         inputManager.removeListener(actionListener);

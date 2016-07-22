@@ -1,8 +1,8 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import dronewars.main.PlayerState;
+import dronewars.main.StereoApplication;
 
 /**
  *
@@ -10,7 +10,7 @@ import dronewars.main.PlayerState;
  */
 public class PlayerLoadingController extends DefaultController {
 
-    public PlayerLoadingController(SimpleApplication app) {
+    public PlayerLoadingController(StereoApplication app) {
         super(app);
     }
 

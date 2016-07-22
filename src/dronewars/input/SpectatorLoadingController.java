@@ -1,8 +1,8 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import dronewars.main.SpectatorState;
+import dronewars.main.StereoApplication;
 
 /**
  *
@@ -10,7 +10,7 @@ import dronewars.main.SpectatorState;
  */
 public class SpectatorLoadingController extends DefaultController {
 
-    public SpectatorLoadingController(SimpleApplication app) {
+    public SpectatorLoadingController(StereoApplication app) {
         super(app);
     }
 

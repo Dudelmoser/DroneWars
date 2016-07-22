@@ -5,6 +5,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import dronewars.main.WarplaneControl;
 import dronewars.main.PlayerState;
+import dronewars.main.StereoApplication;
 /** 
  * 
  * @author Jan David Kleiß
@@ -151,12 +152,13 @@ public class PlayerController extends DefaultController {
         }
     };
 
-    public PlayerController(SimpleApplication app) {
+    public PlayerController(StereoApplication app) {
         super(app);
     }
     
     @Override
     public void onStartScreen() {
+        inputManager.setCursorVisible(false);
         if (state == null)
             state = stateManager.getState(PlayerState.class);
         state.setEnabled(true);
@@ -175,6 +177,7 @@ public class PlayerController extends DefaultController {
     
     @Override
     public void onEndScreen() {
+        inputManager.setCursorVisible(true);
         state.setEnabled(false);
         
         inputManager.removeListener(analogListener);

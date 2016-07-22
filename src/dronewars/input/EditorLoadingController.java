@@ -1,8 +1,8 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import dronewars.main.EditorState;
+import dronewars.main.StereoApplication;
 
 /**
  *
@@ -10,7 +10,7 @@ import dronewars.main.EditorState;
  */
 public class EditorLoadingController extends DefaultController {
     
-    public EditorLoadingController(SimpleApplication app) {
+    public EditorLoadingController(StereoApplication app) {
         super(app);
     }
 

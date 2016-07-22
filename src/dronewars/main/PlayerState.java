@@ -15,6 +15,8 @@ public class PlayerState extends LevelState {
     private Warzone warzone;
     private ChaseCamera chaseCam;
     
+    private boolean stereo = true;
+    
     @Override
     public void init() {
         warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,

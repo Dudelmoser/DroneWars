@@ -1,7 +1,7 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.ActionListener;
+import dronewars.main.StereoApplication;
 
 /**
  *
@@ -17,7 +17,7 @@ public class MainMenuController extends DefaultController {
         }
     };
     
-    public MainMenuController(SimpleApplication app) {
+    public MainMenuController(StereoApplication app) {
         super(app);
     }
     

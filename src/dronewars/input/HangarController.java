@@ -1,6 +1,5 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.ColorRGBA;
@@ -10,6 +9,7 @@ import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.screen.Screen;
 import dronewars.main.HangarState;
 import dronewars.main.JsonFactory;
+import dronewars.main.StereoApplication;
 import dronewars.serializable.Airplane;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -36,7 +36,7 @@ public class HangarController extends DefaultController {
         }
     };
     
-    public HangarController(SimpleApplication app) {
+    public HangarController(StereoApplication app) {
         super(app);
     }
 

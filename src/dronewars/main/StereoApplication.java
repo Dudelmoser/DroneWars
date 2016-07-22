@@ -20,9 +20,7 @@ public abstract class StereoApplication extends SimpleApplication {
     Camera cam2;
     ViewPort viewPort2;
 
-    public void init() {
-        System.out.println(speed);
-        
+    public void init() {        
         if (stereo) {
             buffer1 = new FrameBuffer(cam.getWidth(), cam.getHeight(), 1);
             tex1 = new Texture2D(cam.getWidth(), cam.getHeight(), Format.RGBA8);
@@ -34,6 +32,7 @@ public abstract class StereoApplication extends SimpleApplication {
             viewPort2 = renderManager.createMainView("Invisible", cam2);
             viewPort2.setClearFlags(true, true, true);
             viewPort2.attachScene(rootNode);
+            
             buffer2 = new FrameBuffer(cam.getWidth(), cam.getHeight(), 1);
             tex2 = new Texture2D(cam.getWidth(), cam.getHeight(), Format.RGBA8);
             buffer2.setColorTexture(tex2);

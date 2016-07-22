@@ -1,6 +1,5 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.ActionListener;
@@ -8,6 +7,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import dronewars.main.StereoApplication;
 
 /**
  *
@@ -30,7 +30,7 @@ public class DefaultController implements ScreenController {
         }
     };
     
-    public DefaultController(SimpleApplication app) {
+    public DefaultController(StereoApplication app) {
         this.inputManager = app.getInputManager();
         this.stateManager = app.getStateManager();
     }

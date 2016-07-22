@@ -1,7 +1,7 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.ActionListener;
+import dronewars.main.StereoApplication;
 
 /**
  *
@@ -20,7 +20,7 @@ public class StartController extends DefaultController {
         }
     };
     
-    public StartController(SimpleApplication app) {
+    public StartController(StereoApplication app) {
         super(app);
     }
     

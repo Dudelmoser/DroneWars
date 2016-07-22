@@ -13,8 +13,8 @@ public class EditorState extends LevelState {
     private float[] specAngles = new float[]{0, 2.56f, 0};
     
     @Override
-    protected void init() {        
-        app.getFlyByCamera().setEnabled(true);
+    protected void init() {
+        app.getFlyByCamera().setEnabled(false);
         app.getCamera().setLocation(specPosition);
         app.getCamera().setRotation(new Quaternion().fromAngles(specAngles));
     }

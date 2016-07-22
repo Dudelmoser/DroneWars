@@ -1,11 +1,11 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.water.WaterFilter;
 import dronewars.main.EditorState;
+import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
 
 /**
@@ -68,7 +68,7 @@ public class EditorController extends DefaultController {
         }
     };
     
-    public EditorController(SimpleApplication app) {
+    public EditorController(StereoApplication app) {
         super(app);
     }
     
