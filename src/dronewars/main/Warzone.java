@@ -75,29 +75,26 @@ public class Warzone implements UdpEventHandler {
         Iterator<Missile> iterator = missiles.iterator();
         while(iterator.hasNext()) {
             Missile missile = iterator.next();
-            if (missile.isActive())
-                missile.update(tpf);
             if (missile.hasExpired()) {
-                missiles.remove(missile);
+                missile.remove();
                 addExplosion(missile.getPosition());
+                iterator.remove();
+            } else if (missile.isActive()) {
+                missile.update(tpf);
             }
         }
         
         for (int i = 0; i < effects.size(); i++) {
             if (effects.get(i).hasExpired()) {
                 effects.remove(i);
+            } else {
+                effects.get(i).update(tpf);
             }
         }
     }
     
     public void addPlayer() {
-        Path path = Paths.get(System.getProperty("user.dir") + "/drone.json");
-        try {
-            String json = new String(Files.readAllBytes(path));
-            player = new GsonBuilder().create().fromJson(json, Airplane.class);
-        } catch (IOException ex) {
-            player = new Airplane();
-        }
+        player = JsonFactory.load("airplane.json", Airplane.class);
         player.create(node, assetManager);
         player.getSpatial().setLocalTranslation(0, 200, 0);
         control = new WarplaneControl(player, this);
@@ -113,7 +110,7 @@ public class Warzone implements UdpEventHandler {
         enemies.add(airplane);
     }
     
-    public Airplane getPlayer() {
+    public Airplane getPlayerAirplane() {
         return player;
     }
     
@@ -131,7 +128,7 @@ public class Warzone implements UdpEventHandler {
     }
     
     public void addMissile() {
-        Missile missile = new Missile(control, enemies, node, 
+        Missile missile = new Missile(control, enemies, this, node.getParent(), 
                 level.getTerrain().getTerrainQuad(), assetManager);
         missiles.add(missile);
     }
@@ -143,8 +140,8 @@ public class Warzone implements UdpEventHandler {
     }
     
     public void addExplosion(Vector3f position) {
-        Explosion explosion = new Explosion(timer, assetManager);
-        explosion.trigger(position, node);
+        Explosion explosion = new Explosion(node, 10, position, timer, assetManager);
+        effects.add(explosion);
     }
     
     public void destroy() {

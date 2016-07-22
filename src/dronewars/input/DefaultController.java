@@ -18,7 +18,7 @@ public class DefaultController implements ScreenController {
     protected Nifty nifty;
     protected InputManager inputManager;
     protected AppStateManager stateManager;
-    
+        
     protected ActionListener keyListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
@@ -49,5 +49,4 @@ public class DefaultController implements ScreenController {
     
     @Override
     public void onEndScreen() {}
-    
 }

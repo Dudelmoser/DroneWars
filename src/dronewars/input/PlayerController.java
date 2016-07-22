@@ -21,7 +21,11 @@ public class PlayerController extends DefaultController {
     private AnalogListener analogListener = new AnalogListener() {
         @Override
         public void onAnalog(String name, float value, float tpf) {
-            long now = System.currentTimeMillis();
+            if (drone == null) {
+                drone = state.getCombatControl();
+                return;
+            }
+            
             if (name.equals("ACTION_1")) {
                 drone.fireShot();
             } else if(name.equals("ACTION_2")) {
@@ -30,12 +34,7 @@ public class PlayerController extends DefaultController {
             
             if (!joystick)
                 return;
-            
-            if (drone == null) {
-                drone = state.getCombatControl();
-                return;
-            }
-            
+                        
             float res = value / tpf;
             if (res < analogTreshold)
                 res = 0;

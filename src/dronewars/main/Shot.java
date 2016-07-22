@@ -6,6 +6,7 @@
 package dronewars.main;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
@@ -34,6 +35,7 @@ public class Shot extends Effect {
     
     private Node parent;
     private Node bulletTrail;
+    private AudioNode sound;
         
     public Shot(Node parent, Spatial emitter, Timer timer, AssetManager assetManager) {
         super(0.7f, timer);
@@ -55,6 +57,12 @@ public class Shot extends Effect {
         bulletTrail.attachChild(trail2);
         
         parent.attachChild(bulletTrail);
+        
+        sound = new AudioNode(assetManager, "Sounds/shot.wav", false);
+        sound.setPositional(true);
+        sound.setLocalTranslation(emitter.getLocalTranslation());
+        parent.attachChild(sound);
+        sound.play();
     }
     
     private Geometry getTrail(AssetManager assetManager, Timer timer) {
@@ -85,6 +93,13 @@ public class Shot extends Effect {
     
     @Override
     public void remove() {
+        System.out.println("shot removed");
+        parent.detachChild(sound);
         parent.detachChild(bulletTrail);
+    }
+    
+    @Override
+    public void update(float tpf) {
+        
     }
 }

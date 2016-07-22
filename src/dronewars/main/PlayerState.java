@@ -1,62 +1,25 @@
 package dronewars.main;
 
-import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
-import dronewars.serializable.Settings;
-import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioRenderer;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.input.ChaseCamera;
-import com.jme3.input.InputManager;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Node;
-import dronewars.serializable.Level;
 
 /**
  *
  * @author Jan David Kleiß
  */
-public class PlayerState extends AbstractAppState {
+public class PlayerState extends LevelState {
    
-    private static final Vector3f gravity = new Vector3f(0, -30, 0);
-    private static final float camSensitivity = 5;
-    private Settings settings;
+    private static final float camElevation = 10; // in degrees
+    private static final float camDistance = 10;
+    private static final float camSensitivity = 2;
     
     private Warzone warzone;
-    private Level level;
     private ChaseCamera chaseCam;
-    private SimpleApplication app;
-    private BulletAppState bullet;
     
     @Override
-    public void initialize(AppStateManager stateManager, Application application) {
-        this.app = (SimpleApplication) application;
-        
-        bullet = new BulletAppState();
-        app.getStateManager().attach(bullet);
-        bullet.getPhysicsSpace().setGravity(gravity);
-        
-        app.setDisplayFps(true);
-        app.setDisplayStatView(true);
-        
-        level = new Level();
-        level.create(app, bullet);
-        
-        settings = new Settings();
-        settings.setProfile(2);
-        settings.apply(app.getAssetManager(), app.getViewPort(), app.getCamera(),
-                       level.getTerrain().getTerrainQuad(), level.getSky().getSun(), 
-                       level.getWater().getWaterFilter(), app.getAudioRenderer());
-        
+    public void init() {
         warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
                 level, app.getAssetManager());
         warzone.addPlayer();
-        
-        bullet.getPhysicsSpace().clearForces();
         
         initCamera();
     }
@@ -68,51 +31,30 @@ public class PlayerState extends AbstractAppState {
                 level.getWater().update(tpf);
             if (warzone != null)
                 warzone.update(tpf);
+            app.getListener().setLocation(warzone.getPlayerAirplane().getSpatial().getLocalTranslation());
+            app.getListener().setRotation(warzone.getPlayerAirplane().getSpatial().getLocalRotation());
         }
     }
      
     public void initCamera() {        
         app.getFlyByCamera().setEnabled(false);
         chaseCam = new ChaseCamera(app.getCamera(), 
-                warzone.getPlayer().getSpatial(), app.getInputManager());
-        chaseCam.setTrailingSensitivity(camSensitivity);
+                warzone.getPlayerAirplane().getSpatial(), app.getInputManager());
+        chaseCam.setDefaultVerticalRotation((float)Math.toRadians(camElevation));
         chaseCam.setDefaultHorizontalRotation(0);
-        chaseCam.setDefaultDistance(10);
-        chaseCam.setDefaultVerticalRotation((float)Math.toRadians(10));
+        chaseCam.setDefaultDistance(camDistance);
         chaseCam.setEnabled(true);
         chaseCam.setSmoothMotion(true);
         chaseCam.setTrailingEnabled(true);
+        chaseCam.setTrailingSensitivity(camSensitivity);
+    }
+    
+    @Override
+    protected void remove() {
+        app.getRootNode().detachAllChildren();
     }
     
     public WarplaneControl getCombatControl() {
         return warzone.getControl();
-    }
-    
-    public AssetManager getAssetManager() {
-        return app.getAssetManager();
-    }
-    
-    public InputManager getInputManager() {
-        return app.getInputManager();
-    }
-    
-    public Node getRootNode() {
-        return app.getRootNode();
-    }
-    
-    public Camera getCamera() {
-        return app.getCamera();
-    }
-    
-    public AudioRenderer getAudioRenderer() {
-        return app.getAudioRenderer();
-    }
-    
-    public ViewPort getViewPort() {
-        return app.getViewPort();
-    }
-    
-    public Node getGuiNode() {
-        return app.getGuiNode();
     }
 }

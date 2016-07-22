@@ -31,6 +31,8 @@ public abstract class Effect {
         else
             return false;
     }
+ 
+    public abstract void update(float tpf);
     
     public abstract void remove();
 }

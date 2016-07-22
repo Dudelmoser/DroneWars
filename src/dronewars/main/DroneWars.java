@@ -21,6 +21,7 @@ import dronewars.input.MainMenuController;
 import dronewars.input.ModesController;
 import dronewars.input.PlayerController;
 import dronewars.input.PlayerLoadingController;
+import dronewars.input.SettingsController;
 import dronewars.input.SpectatorController;
 import dronewars.input.SpectatorLoadingController;
 import dronewars.input.StartController;
@@ -48,7 +49,7 @@ public class DroneWars extends StereoApplication {
         app.setDisplayStatView(false);
         app.setShowSettings(false);
         AppSettings settings = new AppSettings(true);
-        
+                
         // automatically detect the right resolution, color depth etc.
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         DisplayMode displayMode = device.getDisplayMode();
@@ -75,14 +76,9 @@ public class DroneWars extends StereoApplication {
                 audioRenderer, guiViewPort);
         guiViewPort.addProcessor(display);
         Nifty nifty = display.getNifty();
-        nifty.setIgnoreMouseEvents(false);
-        nifty.setIgnoreKeyboardEvents(false);
-        
-        // init screen controller
-        // TODO: maybe attach nifty to state manager
-        
-        getFlyByCamera().setDragToRotate(true);
-        viewPort.setBackgroundColor(backgroundColor);
+        flyCam.setEnabled(false);
+        inputManager.setCursorVisible(true);
+        viewPort.setBackgroundColor(backgroundColor);        
         
         // load menu screens from xml files
         nifty.registerScreenController(
@@ -97,6 +93,7 @@ public class DroneWars extends StereoApplication {
                 , new EditorController(this)
                 , new SpectatorLoadingController(this)
                 , new SpectatorController(this)
+                , new SettingsController(this)
         );
         
         String[] screens = {"Hangar", "Editor", "EditorLoading", "Exit", "MainMenu",

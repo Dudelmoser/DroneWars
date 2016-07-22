@@ -21,6 +21,8 @@ public abstract class StereoApplication extends SimpleApplication {
     ViewPort viewPort2;
 
     public void init() {
+        System.out.println(speed);
+        
         if (stereo) {
             buffer1 = new FrameBuffer(cam.getWidth(), cam.getHeight(), 1);
             tex1 = new Texture2D(cam.getWidth(), cam.getHeight(), Format.RGBA8);

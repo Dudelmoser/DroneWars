@@ -87,6 +87,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     public void collision(PhysicsCollisionEvent event) {
         if (!broken) {
             broken = true;
+            warzone.addExplosion(spatial.getLocalTranslation());
         } else if (crashTime == Long.MAX_VALUE 
                     && getAngularVelocity().length() < respawnTreshold) {
                 crashTime = System.currentTimeMillis();

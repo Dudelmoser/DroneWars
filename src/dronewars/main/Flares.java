@@ -66,4 +66,9 @@ public class Flares extends Effect {
         Node parent = flares.getParent();
         parent.detachChild(flares);
     }
+    
+    @Override
+    public void update(float tpf) {
+        
+    }
 }

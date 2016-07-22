@@ -6,6 +6,7 @@
 package dronewars.main;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Quaternion;
@@ -22,47 +23,64 @@ import java.util.List;
  */
 public class Missile {
     
-    private static final String path = "Models/Rocket/model.blend";
+    private static final String modelPath = "Models/Rocket/model.blend";
+    private static final String soundPath = "Sounds/missile.wav";
     private static final float velocity = 120;
     private static final float maxAngle = 45;
-    private static final long duration = 5000;
+    private static final int duration = 3000;
+    private static final float refDistance = 20;
+    private static final float maxDistance = 1000;
     private static Spatial model;
     
-    private int hashCode;
     private boolean active;
+    private int hashCode;
+    private long spawnTime;
     private Spatial missile;
     private Spatial target;
+    private AudioNode sound;
     
-    private long spawnTime;
-    
+    private Warzone zone;
     private TerrainQuad terrain;
     
-    public Missile(RigidBodyControl origin, List<Airplane> targets,
+    public Missile(RigidBodyControl origin, List<Airplane> targets, Warzone zone,
             Node parent, TerrainQuad terrain, AssetManager assetManager) {
-        this.terrain = terrain;
         
-        active = true;
-        if (model == null)
-            model = assetManager.loadModel(path);
-        missile = model.clone();
-        parent.attachChild(missile);
+        this.zone = zone;
         
+        init(parent, terrain, assetManager);      
         missile.setLocalTranslation(origin.getPhysicsLocation());
         missile.setLocalRotation(origin.getPhysicsRotation());
         
+        active = true;
         createHashCode();
         assignTarget(targets);
-        spawnTime = System.currentTimeMillis();
     }
     
-    public Missile(int hash, Node parent, AssetManager assetManager) {
+    public Missile(int hash, Node parent, TerrainQuad terrain, 
+            AssetManager assetManager) {
+        
+        init(parent, terrain, assetManager);
         active = false;
+        hashCode = hash;
+    }
+    
+    private void init(Node parent, TerrainQuad terrain, AssetManager assetManager) {
+        this.terrain = terrain;
+        
         if (model == null)
-            model = assetManager.loadModel(path);
+            model = assetManager.loadModel(modelPath);
         missile = model.clone();
         parent.attachChild(missile);
         
-        hashCode = hash;
+        
+        sound = new AudioNode(assetManager, soundPath, false);
+//        sound.setLooping(true);
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setRefDistance(refDistance);
+        parent.attachChild(sound);
+        sound.play();
+        
         spawnTime = System.currentTimeMillis();
     }
         
@@ -90,26 +108,33 @@ public class Missile {
         if (target != null) {
             Vector3f step = target.getLocalTranslation().subtract(missile.getLocalTranslation())
                     .normalize().mult(velocity * tpf);
-            Quaternion rot = new Quaternion().fromAngleAxis(0, step);
-            missile.setLocalRotation(rot);
             missile.move(step);
+            missile.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
         } else {
             Vector3f step = missile.getLocalRotation().mult(Vector3f.UNIT_Z)
                     .normalize().mult(-velocity * tpf);
             missile.move(step);
         }
         
+        sound.setLocalTranslation(missile.getLocalTranslation());
+        
+        checkForCollision();
+    } 
+    
+    public void update(Vector3f position, Quaternion rotation) {
+        missile.setLocalTranslation(position);
+        missile.setLocalRotation(rotation);
+    }
+    
+    private void checkForCollision() {
         CollisionResults results = new CollisionResults();
         terrain.collideWith(missile.getWorldBound(), results);
         
         if (results.size() > 0) {
             spawnTime = 0;
+            sound.stop();
+            zone.addExplosion(missile.getLocalTranslation());
         }
-    } 
-    
-    public void update(Vector3f position, Vector3f direction) {
-        missile.setLocalTranslation(position);
-        missile.setLocalRotation(new Quaternion().fromAngleAxis(0, direction));
     }
     
     public boolean isActive() {
@@ -117,9 +142,7 @@ public class Missile {
     }
     
     public boolean hasExpired() {
-        if (System.currentTimeMillis() - spawnTime > duration)
-            return true;
-        return false;
+        return System.currentTimeMillis() - spawnTime > duration;
     }
     
     public void setHashCode(int hashCode) {
@@ -144,7 +167,8 @@ public class Missile {
     }
     
     public void remove() {
-        System.out.println("removing missile");
-        missile.getParent().detachChild(missile);
+        Node parent = missile.getParent();
+        parent.detachChild(missile);
+        parent.detachChild(sound);
     }
 }
