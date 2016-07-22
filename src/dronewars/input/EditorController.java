@@ -84,7 +84,7 @@ public class EditorController extends DefaultController {
         String[] dirs = new File(path).list();
         ImageSelect selector = nifty.getCurrentScreen().findNiftyControl("mapSelect", ImageSelect.class);
         for (String dirName : dirs) {
-            String fileName = "Maps/" + dirName + "/height.png";
+            String fileName = "Maps/" + dirName + "/preview.jpg";
             RenderImageJme rImg = new RenderImageJme(fileName, true, display);
             NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);
             selector.addImage(nImg);
