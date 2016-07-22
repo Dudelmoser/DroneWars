@@ -1,5 +1,5 @@
 package dronewars.network;
 
-public interface UdpEventHandler{
+public interface UdpBroadcastHandler{
     public void onMessage(String host, int port, String line);
 }

@@ -13,8 +13,8 @@ import com.jme3.scene.Node;
 import com.jme3.system.Timer;
 import dronewars.serializable.Airplane;
 import java.util.HashSet;
-import dronewars.network.Udp;
-import dronewars.network.UdpEventHandler;
+import dronewars.network.UdpBroadcastSocket;
+import dronewars.network.UdpBroadcastHandler;
 import dronewars.serializable.Level;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,11 +30,11 @@ import java.util.Set;
  *
  * @author Jan David Kleiß
  */
-public class Warzone implements UdpEventHandler {
+public class Warzone implements UdpBroadcastHandler {
     
     private static final int PORT = 54321;
     
-    private Udp udp;
+    private UdpBroadcastSocket udp;
     private Node node;
     private Airplane player;
     private WarplaneControl control;
@@ -54,8 +54,7 @@ public class Warzone implements UdpEventHandler {
         this.bullet = bullet;
         this.assetManager = assetManager;
         
-        udp = new Udp("localhost", PORT);
-        udp.addEventHandler(this);
+        udp = new UdpBroadcastSocket(this, PORT, true);
         
         node = new Node("Airspace");
         parent.attachChild(node);
@@ -91,7 +90,7 @@ public class Warzone implements UdpEventHandler {
                 effects.get(i).update(tpf);
             }
         }
-        udp.send(player.getSpatial().getLocalTranslation().toString());
+        udp.send(player.serialize());
     }
     
     public void addPlayer() {
@@ -151,6 +150,6 @@ public class Warzone implements UdpEventHandler {
 
     @Override
     public void onMessage(String host, int port, String line) {
-        System.out.println("UDP message received!");
+        System.out.println(line);
     }
 }

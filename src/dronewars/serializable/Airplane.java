@@ -14,6 +14,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import dronewars.main.Deserializer;
+import dronewars.main.Serializer;
 import java.util.HashSet;
 import java.util.List;
 
@@ -22,9 +24,10 @@ import java.util.List;
  * @author Jan David Kleiß
  */
 public class Airplane {
-    
-    private String path = "Dragonfire";
-    private String name = "Ju 87 'Kanonenvogel'";
+        
+    private transient String uuid;
+        
+    private String type = "0";
     private ColorRGBA laserColor = new ColorRGBA(1, 0, 0, 1);
     private ColorRGBA primaryColor = new ColorRGBA(0.5f, 0.5f, 0.5f, 1);
     private ColorRGBA secondaryColor = new ColorRGBA(0.5f, 0.5f, 0.5f, 1);
@@ -41,8 +44,15 @@ public class Airplane {
     private transient HashSet<Spatial> zRotors = new HashSet();
     
     public Airplane() {}
+    
+    public Airplane(String[] serialized, Node parent, AssetManager assetManager) {
+        uuid = serialized[1];
+        type = serialized[2];
+        create(parent, assetManager);
+        update(serialized[3], serialized[4]);
+    }
         
-    public void create(Node parent, AssetManager assetManager) {
+    public final void create(Node parent, AssetManager assetManager) {
         this.parent = parent;
         this.assetManager = assetManager;
         
@@ -51,13 +61,23 @@ public class Airplane {
         assignParts();
     }
     
+    public String serialize() {
+        return uuid + ";" + type + ";" + Serializer.fromVector(spatial.getLocalTranslation())
+                + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
+    }
+    
+    public void update(String position, String quaternion) {
+        spatial.setLocalTranslation(Deserializer.toVector(position));
+        spatial.setLocalRotation(Deserializer.toQuaternion(quaternion));
+    }
+    
     public void destroy() {
         parent.detachChild(spatial);
         parent.detachChild(laser);
     }
     
     private void createAirplane() {
-        spatial = assetManager.loadModel("Airplanes/" + path + "/model.blend");
+        spatial = assetManager.loadModel("Airplanes/" + type + "/model.blend");
         spatial.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         
         parent.attachChild(spatial);
@@ -154,12 +174,8 @@ public class Airplane {
         return spatial;
     }
     
-    public String getPath() {
-        return path;
-    }
-    
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
     
     public ColorRGBA getLaserColor() {
