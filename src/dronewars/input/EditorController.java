@@ -5,17 +5,23 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.niftygui.RenderImageJme;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
+import de.lessvoid.nifty.render.NiftyImage;
 import dronewars.main.EditorState;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
 import dronewars.serializable.Precipitation;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Water;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,9 +38,11 @@ public class EditorController extends DefaultController {
     private ImageSelect mapSelect;
     private AssetManager assetManager;
     private Sky sky;
-        
-    public EditorController(StereoApplication app) {
+    private NiftyJmeDisplay display;
+    
+    public EditorController(StereoApplication app, NiftyJmeDisplay display) {
         super(app);
+        this.display = display;
     }
     
     @Override
@@ -51,7 +59,6 @@ public class EditorController extends DefaultController {
         state.setEnabled(false);
         inputManager.removeListener(actionListener);
         inputManager.removeListener(analogListener);
-        inputManager.setCursorVisible(false);
     }
 
    private void initFields() {
@@ -72,6 +79,16 @@ public class EditorController extends DefaultController {
 //        Image(new ImageBuilder() {{
 //            filename("/home/marek/photo2.jpg");
 //        }});
+        
+        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Maps";
+        String[] dirs = new File(path).list();
+        ImageSelect selector = nifty.getCurrentScreen().findNiftyControl("mapSelect", ImageSelect.class);
+        for (String dirName : dirs) {
+            String fileName = "Maps/" + dirName + "/preview.jpg";
+            RenderImageJme rImg = new RenderImageJme(fileName, true, display);
+            NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);
+            selector.addImage(nImg);
+       }
     }
     
     private void initSliders() {

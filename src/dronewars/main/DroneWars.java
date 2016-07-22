@@ -90,7 +90,7 @@ public class DroneWars extends StereoApplication {
                 , new PlayerLoadingController(this)
                 , new PlayerController(this)
                 , new EditorLoadingController(this)
-                , new EditorController(this)
+                , new EditorController(this, display)
                 , new SpectatorLoadingController(this)
                 , new SpectatorController(this)
                 , new SettingsController(this)
