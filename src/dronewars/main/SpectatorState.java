@@ -12,9 +12,16 @@ public class SpectatorState extends LevelState {
     private Vector3f specPosition = new Vector3f(-100, 50, 140);
     private float[] specAngles = new float[]{0, 2.56f, 0};
     
+    private Warzone warzone;
+    
     @Override
-    protected void init() {        
+    protected void init() {
+        
+        warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
+                level, app.getAssetManager());
+        
         app.getFlyByCamera().setEnabled(true);
+        app.getFlyByCamera().setMoveSpeed(100);
         app.getCamera().setLocation(specPosition);
         app.getCamera().setRotation(new Quaternion().fromAngles(specAngles));
     }

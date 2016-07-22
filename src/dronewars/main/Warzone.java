@@ -91,6 +91,7 @@ public class Warzone implements UdpEventHandler {
                 effects.get(i).update(tpf);
             }
         }
+        udp.send(player.getSpatial().getLocalTranslation().toString());
     }
     
     public void addPlayer() {
