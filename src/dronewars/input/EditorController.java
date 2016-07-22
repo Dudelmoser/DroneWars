@@ -51,7 +51,6 @@ public class EditorController extends DefaultController {
         state.setEnabled(false);
         inputManager.removeListener(actionListener);
         inputManager.removeListener(analogListener);
-        inputManager.setCursorVisible(false);
     }
 
    private void initFields() {
