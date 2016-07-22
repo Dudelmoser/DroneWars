@@ -2,6 +2,7 @@ package dronewars.serializable;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
@@ -10,6 +11,7 @@ import com.jme3.scene.Node;
  */
 public class Level {
     private String name = "Default";
+    private Vector3f gravity = new Vector3f(0, -32, 0);
     
     private Sky sky;
     private Water water;
@@ -18,10 +20,17 @@ public class Level {
     private Precipitation precipitation;
     
     private transient Node scene;
+    private transient BulletAppState bullet;
+    private transient SimpleApplication app;
         
-    public void create(SimpleApplication app, BulletAppState bullet) {        
+    public void create(SimpleApplication app, BulletAppState bullet) {
+        this.app = app;
+        
         scene = new Node("Scene");
         app.getRootNode().attachChild(scene);
+        
+        app.getStateManager().attach(bullet);
+        bullet.getPhysicsSpace().setGravity(gravity);
         
         sky = new Sky();
         sky.createSkybox(scene, app.getAssetManager());
@@ -64,5 +73,13 @@ public class Level {
     
     public Node getNode() {
         return scene;
+    }
+    
+    public BulletAppState getBullet() {
+        return bullet;
+    }
+    
+    public SimpleApplication getApp(){
+        return this.app;
     }
 }
