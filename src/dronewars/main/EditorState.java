@@ -14,7 +14,7 @@ public class EditorState extends LevelState {
     
     @Override
     protected void init() {        
-        app.getFlyByCamera().setEnabled(true);
+        app.getFlyByCamera().setEnabled(false);
         app.getCamera().setLocation(specPosition);
         app.getCamera().setRotation(new Quaternion().fromAngles(specAngles));
     }

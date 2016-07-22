@@ -102,15 +102,4 @@ public class HangarController extends DefaultController {
             setRgbSlider(part.getKey(), part.getValue());
         }
     }
-    
-    private void setRgbSlider(String id, ColorRGBA color) {
-        Screen screen = nifty.getCurrentScreen();
-        
-        Slider r = screen.findNiftyControl(id + "R", Slider.class);
-        r.setValue(color.r * 255);
-        Slider g = screen.findNiftyControl(id + "G", Slider.class);
-        g.setValue(color.g * 255);
-        Slider b = screen.findNiftyControl(id + "B", Slider.class);
-        b.setValue(color.b * 255);
-    }
 }

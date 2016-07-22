@@ -8,130 +8,6 @@
   <useControls filename="nifty-default-controls.xml" />
   <screen id="Editor" controller="dronewars.input.EditorController">
     <layer id="layer" childLayout="absolute">
-      <panel childLayout="center" backgroundColor="#30303999" width="200" 
-             height="100" x="-200" y="0">
-        <effect>
-          <onStartScreen name="fade" start="#0" end="#F" length="300" startDelay="200"/>
-          <onEndScreen name="fade" start="#F" end="#0" length="300" startDelay="0"/>
-          <onHover name="fade" start="#F" end="#D"/>
-        </effect>
-        <panel childLayout="horizontal">
-            
-          <panel childLayout="vertical" marginRight="50"> 
-            <control id="droneType" name="radioButtonGroup"/>
-            <control name="label" text="DRONE" marginBottom="20" align="center" 
-                     color="#E3DBC9" />
-            <panel childLayout="horizontal" marginBottom="10">
-              <control name="radioButton" id="real" group="droneType" />
-              <control name="label" text="Real" marginLeft="10"
-                       color="#E3DBC9" />
-            </panel>
-            <panel childLayout="horizontal" marginBottom="10">
-              <control name="radioButton" id="virtual" group="droneType" />
-              <control name="label" text="Virtual" marginLeft="10"
-                       color="#E3DBC9" />
-            </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="LASER" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="laserR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="laserG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="laserB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="ROTOR" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="rotorR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="rotorG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="rotorB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="SHELL" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="shellR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="shellG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="shellB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="FRAME" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="frameR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="frameG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="frameB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="WEAPON" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="weaponR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="weaponG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="weaponB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="gunR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="gunG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="gunB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-        </panel>
-      </panel>
-    </layer> <layer id="layer" childLayout="absolute">
       <panel childLayout="center" backgroundColor="#30303999" width="100%" 
              height="20%" x="0%" y="80%">
         <effect>
@@ -139,118 +15,64 @@
           <onEndScreen name="fade" start="#F" end="#0" length="300" startDelay="0"/>
           <onHover name="fade" start="#F" end="#D"/>
         </effect>
+        <!-- ROOT -->
         <panel childLayout="horizontal">
-            
+          
+          <!-- RAIN - RADIO BUTTON -->
           <panel childLayout="vertical" marginRight="50"> 
-            <control id="droneType" name="radioButtonGroup"/>
-            <control name="label" text="DRONE" marginBottom="20" align="center" 
+            <control id="rain_options" name="radioButtonGroup"/>
+            <control name="label" text="RAIN OPTIONS" marginBottom="20" align="center" 
                      color="#E3DBC9" />
             <panel childLayout="horizontal" marginBottom="10">
-              <control name="radioButton" id="real" group="droneType" />
-              <control name="label" text="Real" marginLeft="10"
+              <control name="radioButton" id="rain_on" group="rain_options" />
+              <control name="label" text="On" marginLeft="10"
                        color="#E3DBC9" />
             </panel>
             <panel childLayout="horizontal" marginBottom="10">
-              <control name="radioButton" id="virtual" group="droneType" />
-              <control name="label" text="Virtual" marginLeft="10"
+              <control name="radioButton" id="rain_off" group="rain_options" />
+              <control name="label" text="Off" marginLeft="10"
                        color="#E3DBC9" />
             </panel>
           </panel>
           
+          <!-- WATER - BUTTON & SLIDER -->
           <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="LASER" color="#E3DBC9" marginRight="10" align="right"/>
+              <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
               <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="laserR" name="horizontalSlider" min="0" max="255"/>
+                <control id="water_color_btn" name="button" label="Random Color" onPrimaryClick="onClick()" visibleToMouse="true"/>
               </panel>
               <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="laserG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="laserB" name="horizontalSlider" min="0" max="255"/>
+                <control name="label" text="Height" color="#E3DBC9" marginRight="10"/>
+                <control id="water_height_slider" name="horizontalSlider" min="0" max="255" onChange="onChangeWater()"/>
               </panel>
           </panel>
           
+          <!-- LIGHT - SLIDER -->
           <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="ROTOR" color="#E3DBC9" marginRight="10" align="right"/>
+              <control name="label" text="LIGHT OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
               <panel childLayout="horizontal">
                 <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="rotorR" name="horizontalSlider" min="0" max="255"/>
+                <control id="light_slider_R" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
               </panel>
               <panel childLayout="horizontal">
                 <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="rotorG" name="horizontalSlider" min="0" max="255"/>
+                <control id="light_slider_G" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
               </panel>
               <panel childLayout="horizontal">
                 <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="rotorB" name="horizontalSlider" min="0" max="255"/>
+                <control id="light_slider_B" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
               </panel>
           </panel>
           
+          <!-- IMAGE SELECT -->
           <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="SHELL" color="#E3DBC9" marginRight="10" align="right"/>
               <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="shellR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="shellG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="shellB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="FRAME" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="frameR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="frameG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="frameB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="WEAPON" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="weaponR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="weaponG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="weaponB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-          </panel>
-          
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="gunR" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="gunG" name="horizontalSlider" min="0" max="255"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="gunB" name="horizontalSlider" min="0" max="255"/>
-              </panel>
+                    <control name="label" text="Map" color="#E3DBC9" marginRight="10"/>
+                    <control id="mapSelect" name="imageSelect" width="280px"
+                             imageWidth="100%" imageHeight="100%"
+                             imageList="Maps/Default/alpha.png,Maps/Tabula/alpha.png" />
+                    <!-- imageList w/o spaces! -->
+               </panel>
           </panel>
           
         </panel>
