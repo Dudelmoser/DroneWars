@@ -70,6 +70,9 @@ public class Warzone implements UdpBroadcastHandler {
     }
     
     public void update(float tpf) {
+        
+        // to prevent some sort of timeout bug for the spectator
+        udp.send("");
         if (player != null) {
             if (control != null) {
                 player.getSpatial().updateLogicalState(tpf);
@@ -101,16 +104,19 @@ public class Warzone implements UdpBroadcastHandler {
         
         while(!buffer.empty()) {
             String[] parts = buffer.pop().split(";");
-            System.out.println(parts[0]);
             switch(parts[0]) {
                 case "PLANE":
-                    if (enemies.containsKey(parts[0])) {
-                        enemies.get(parts[1]).update(parts[3], parts[4]);
+                    if (enemies.containsKey(parts[1])) {
+                        enemies.get(parts[1]).push(parts[3], parts[4]);
                     } else {
                         enemies.put(parts[1], new Airplane(parts, node, assetManager));
                     }
                     break;
             }
+        }
+        
+        for (Airplane enemy : enemies.values()) {
+            enemy.update();
         }
     }
     
@@ -165,7 +171,6 @@ public class Warzone implements UdpBroadcastHandler {
 
     @Override
     public void onMessage(String host, int port, String line) {
-        System.out.println(host);
         buffer.add(line);
     }
 }

@@ -6,6 +6,7 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -43,14 +44,14 @@ public class Airplane {
     private transient HashSet<Spatial> xRotors = new HashSet();
     private transient HashSet<Spatial> yRotors = new HashSet();
     private transient HashSet<Spatial> zRotors = new HashSet();
-    
+        
     public Airplane() {}
     
     public Airplane(String[] serialized, Node parent, AssetManager assetManager) {
         uuid = serialized[1];
         path = serialized[2];
         create(parent, assetManager);
-        update(serialized[3], serialized[4]);
+        push(serialized[3], serialized[4]);
     }
         
     public final void create(Node parent, AssetManager assetManager) {
@@ -72,9 +73,30 @@ public class Airplane {
                 + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
     }
     
-    public void update(String position, String quaternion) {
-        spatial.setLocalTranslation(Deserializer.toVector(position));
-        spatial.setLocalRotation(Deserializer.toQuaternion(quaternion));
+    private long[] times = new long[2];
+    private Vector3f[] positions = new Vector3f[2];
+    private Quaternion[] rotations = new Quaternion[2];
+    
+    public void update() {
+        long now = System.currentTimeMillis();
+        long span = times[0] - times[1];
+        if (span == 0)
+            return;
+        long passed = now - times[0];
+        float fac = passed / (float) span;
+        Vector3f interPos = positions[1].add(positions[0].subtract(positions[1]).mult(fac));
+        Quaternion interRot = new Quaternion().slerp(rotations[0], rotations[1], fac);
+        spatial.setLocalTranslation(interPos);
+        spatial.setLocalRotation(interRot);
+    }
+    
+    public void push(String position, String rotation) {
+        rotations[1] = rotations[0];
+        rotations[0] = Deserializer.toQuaternion(rotation);
+        positions[1] = positions[0];
+        positions[0] = Deserializer.toVector(position);
+        times[1] = times[0];
+        times[0] = System.currentTimeMillis();
     }
     
     public void destroy() {

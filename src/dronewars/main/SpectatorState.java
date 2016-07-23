@@ -34,6 +34,8 @@ public class SpectatorState extends LevelState {
             if (warzone != null) {
                 warzone.update(tpf);
             }
+            app.getListener().setLocation(app.getCamera().getLocation());
+            app.getListener().setRotation(app.getCamera().getRotation());
         }
     }
     

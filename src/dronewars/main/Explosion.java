@@ -41,6 +41,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.system.Timer;
 
@@ -98,12 +99,7 @@ public class Explosion extends Effect {
             roundspark.emitAllParticles();
             state++;
         }
-//        if (time > 1f + .05f && state == 1){
-//            flame.emitAllParticles();
-//            state++;
-//        }
         
-        // rewind the effect
         if (time > 5 && state == 2){
             flash.killAllParticles();
             spark.killAllParticles();
@@ -144,6 +140,9 @@ public class Explosion extends Effect {
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
         mat.setBoolean("PointSprite", true);
         flame.setMaterial(mat);
+                
+        flame.setQueueBucket(RenderQueue.Bucket.Translucent);
+        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(flame);
     }
 
@@ -167,6 +166,9 @@ public class Explosion extends Effect {
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flash.png"));
         mat.setBoolean("PointSprite", true);
         flash.setMaterial(mat);
+                
+        flash.setQueueBucket(RenderQueue.Bucket.Translucent);
+        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(flash);
     }
 
@@ -189,6 +191,9 @@ public class Explosion extends Effect {
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/roundspark.png"));
         mat.setBoolean("PointSprite", true);
         roundspark.setMaterial(mat);
+                
+        roundspark.setQueueBucket(RenderQueue.Bucket.Translucent);
+        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(roundspark);
     }
 
@@ -210,6 +215,9 @@ public class Explosion extends Effect {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/spark.png"));
         spark.setMaterial(mat);
+                
+        spark.setQueueBucket(RenderQueue.Bucket.Translucent);
+        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(spark);
     }
 
@@ -231,6 +239,9 @@ public class Explosion extends Effect {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/smoketrail.png"));
         smoketrail.setMaterial(mat);
+                
+        smoketrail.setQueueBucket(RenderQueue.Bucket.Translucent);
+        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(smoketrail);
     }
 
@@ -254,6 +265,9 @@ public class Explosion extends Effect {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/Debris.png"));
         debris.setMaterial(mat);
+                
+        debris.setQueueBucket(RenderQueue.Bucket.Translucent);
+        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(debris);
     }
 
@@ -275,6 +289,9 @@ public class Explosion extends Effect {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/shockwave.png"));
         shockwave.setMaterial(mat);
+                
+        shockwave.setQueueBucket(RenderQueue.Bucket.Translucent);
+        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(shockwave);
     }
     
