@@ -42,8 +42,6 @@ public class Sky {
     }
     
     public void update(AssetManager assetManager) {
-//        sun.setColor(sunColor.rgba());
-//        fog.setColor(fogColor.rgba());
         Node parent = sky.getParent();
         parent.detachChild(sky);
         createSkybox(parent, assetManager);

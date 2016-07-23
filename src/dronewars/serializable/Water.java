@@ -140,14 +140,14 @@ public class Water {
     /**
      * @return the waterColor
      */
-    public ColorRGBA getWaterColor() {
+    public ColorRGBA getColor() {
         return waterColor;
     }
 
     /**
      * @param waterColor the waterColor to set
      */
-    public void setWaterColor(ColorRGBA waterColor) {
+    public void setColor(ColorRGBA waterColor) {
         this.waterColor = waterColor;
     }
 
@@ -219,6 +219,7 @@ public class Water {
      */
     public void setReflectivity(float reflectivity) {
         this.reflectivity = reflectivity;
+        water.setRefractionConstant(reflectivity);
     }
 
     /**
