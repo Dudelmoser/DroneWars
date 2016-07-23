@@ -31,6 +31,9 @@ public class SpectatorState extends LevelState {
         if (isEnabled()) {
             if (level.getWater() != null)
                 level.getWater().update(tpf);
+            if (warzone != null) {
+                warzone.update(tpf);
+            }
         }
     }
     

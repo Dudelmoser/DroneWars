@@ -54,6 +54,7 @@ public class Airplane {
     }
         
     public final void create(Node parent, AssetManager assetManager) {
+        this.uuid = Integer.toString((int)(System.currentTimeMillis() & 0x00000000FFFFFFFFL));
         this.parent = parent;
         this.assetManager = assetManager;
         

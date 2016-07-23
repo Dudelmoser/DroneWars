@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  *
@@ -35,6 +36,7 @@ import java.util.Set;
 public class Warzone implements UdpBroadcastHandler {
     
     private static final int PORT = 54321;
+    private Stack<String> buffer;
     
     private UdpBroadcastSocket udp;
     private Node node;
@@ -61,38 +63,55 @@ public class Warzone implements UdpBroadcastHandler {
         node = new Node("Airspace");
         parent.attachChild(node);
         
+        buffer = new Stack<>();
         enemies = new HashMap<>();
-        effects = new ArrayList();
+        effects = new ArrayList<>();
         missiles = Collections.synchronizedSet(new HashSet<Missile>());
     }
     
     public void update(float tpf) {
-        if (control != null) {
-            player.getSpatial().updateLogicalState(tpf);
-            control.refresh(tpf);
-            player.update(tpf, control.getMainRotorSpeed(), control.getYawRotorSpeed());
+        if (player != null) {
+            if (control != null) {
+                player.getSpatial().updateLogicalState(tpf);
+                control.refresh(tpf);
+                player.update(tpf, control.getMainRotorSpeed(), control.getYawRotorSpeed());
+            }
+
+            Iterator<Missile> iterator = missiles.iterator();
+            while(iterator.hasNext()) {
+                Missile missile = iterator.next();
+                if (missile.hasExpired()) {
+                    missile.remove();
+                    addExplosion(missile.getPosition());
+                    iterator.remove();
+                } else if (missile.isActive()) {
+                    missile.update(tpf);
+                }
+            }
+
+            for (int i = 0; i < effects.size(); i++) {
+                if (effects.get(i).hasExpired()) {
+                    effects.remove(i);
+                } else {
+                    effects.get(i).update(tpf);
+                }
+            }
+            udp.send(player.serialize());
         }
         
-        Iterator<Missile> iterator = missiles.iterator();
-        while(iterator.hasNext()) {
-            Missile missile = iterator.next();
-            if (missile.hasExpired()) {
-                missile.remove();
-                addExplosion(missile.getPosition());
-                iterator.remove();
-            } else if (missile.isActive()) {
-                missile.update(tpf);
+        while(!buffer.empty()) {
+            String[] parts = buffer.pop().split(";");
+            System.out.println(parts[0]);
+            switch(parts[0]) {
+                case "PLANE":
+                    if (enemies.containsKey(parts[0])) {
+                        enemies.get(parts[1]).update(parts[3], parts[4]);
+                    } else {
+                        enemies.put(parts[1], new Airplane(parts, node, assetManager));
+                    }
+                    break;
             }
         }
-        
-        for (int i = 0; i < effects.size(); i++) {
-            if (effects.get(i).hasExpired()) {
-                effects.remove(i);
-            } else {
-                effects.get(i).update(tpf);
-            }
-        }
-        udp.send(player.serialize());
     }
     
     public void addPlayer() {
@@ -146,15 +165,7 @@ public class Warzone implements UdpBroadcastHandler {
 
     @Override
     public void onMessage(String host, int port, String line) {
-        String[] parts = line.split(";");
-        switch(parts[0]) {
-            case "PLANE":
-                if (enemies.containsKey(parts[0])) {
-                    enemies.get(parts[1]).update(parts[3], parts[4]);
-                } else {
-                    enemies.put(parts[1], new Airplane(parts, node, assetManager));
-                }
-                break;
-        }
+        System.out.println(host);
+        buffer.add(line);
     }
 }
