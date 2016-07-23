@@ -22,8 +22,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,7 +40,7 @@ public class Warzone implements UdpBroadcastHandler {
     private Node node;
     private Airplane player;
     private WarplaneControl control;
-    private List<Airplane> enemies;
+    private Map<String, Airplane> enemies;
     private List<Effect> effects;
     private Set<Missile> missiles;
     
@@ -54,12 +56,12 @@ public class Warzone implements UdpBroadcastHandler {
         this.bullet = bullet;
         this.assetManager = assetManager;
         
-        udp = new UdpBroadcastSocket(this, PORT, true);
+        udp = new UdpBroadcastSocket(this, PORT);
         
         node = new Node("Airspace");
         parent.attachChild(node);
         
-        enemies = new ArrayList();
+        enemies = new HashMap<>();
         effects = new ArrayList();
         missiles = Collections.synchronizedSet(new HashSet<Missile>());
     }
@@ -103,12 +105,6 @@ public class Warzone implements UdpBroadcastHandler {
         if (bullet != null)
             bullet.getPhysicsSpace().add(player.getSpatial());
     }
-
-    public void addAirplane() {
-        Airplane airplane = new Airplane();
-        airplane.create(node, assetManager);
-        enemies.add(airplane);
-    }
     
     public Airplane getPlayerAirplane() {
         return player;
@@ -150,6 +146,15 @@ public class Warzone implements UdpBroadcastHandler {
 
     @Override
     public void onMessage(String host, int port, String line) {
-        System.out.println(line);
+        String[] parts = line.split(";");
+        switch(parts[0]) {
+            case "PLANE":
+                if (enemies.containsKey(parts[0])) {
+                    enemies.get(parts[1]).update(parts[3], parts[4]);
+                } else {
+                    enemies.put(parts[1], new Airplane(parts, node, assetManager));
+                }
+                break;
+        }
     }
 }

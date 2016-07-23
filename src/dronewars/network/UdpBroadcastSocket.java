@@ -19,7 +19,6 @@ public class UdpBroadcastSocket {
     
     private int port;
     private boolean closed;
-    private boolean identifiable;
     private String uuid;
 
     private DatagramSocket socket;
@@ -27,15 +26,11 @@ public class UdpBroadcastSocket {
     private static final Logger logger = Logger.getLogger(
             UdpBroadcastSocket.class.getName());
 
-    public UdpBroadcastSocket(UdpBroadcastHandler handler, int port, boolean identifiable) {
+    public UdpBroadcastSocket(UdpBroadcastHandler handler, int port) {
         this.port = port;
         this.handler = handler;
-        this.identifiable = identifiable;
-        
-        if (identifiable) {
-            String time = String.valueOf(System.currentTimeMillis());
-            uuid = time.substring(time.length() - uuidLength, time.length());
-        }
+        String time = String.valueOf(System.currentTimeMillis());
+        uuid = time.substring(time.length() - uuidLength);
         open();
         listen();
     }
@@ -53,7 +48,7 @@ public class UdpBroadcastSocket {
                             if (packet.getLength() > 0) {
                                 String data = new String(packet.getData(), 0, packet.getLength());
                                 if (!data.substring(0, uuidLength).equals(uuid)) {
-                                    handler.onMessage(packet.getAddress().getHostAddress(), packet.getPort(), data);
+                                    handler.onMessage(packet.getAddress().getHostAddress(), packet.getPort(), data.substring(uuidLength));
                                 }
                             }
                         } catch (Exception ex) {
@@ -77,11 +72,7 @@ public class UdpBroadcastSocket {
     public void send(String data) {
         try {
             byte[] buffer;
-            if (identifiable) {
-                buffer = (uuid + data).getBytes();
-            } else {
-                buffer = data.getBytes();
-            }
+            buffer = (uuid + data).getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, 
                     new InetSocketAddress("255.255.255.255", port));
             socket.send(packet);

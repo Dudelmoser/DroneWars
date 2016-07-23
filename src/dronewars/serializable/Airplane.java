@@ -25,9 +25,10 @@ import java.util.List;
  */
 public class Airplane {
         
+    private transient final String type = "PLANE";
     private transient String uuid;
         
-    private String type = "0";
+    private String path = "0";
     private ColorRGBA laserColor = new ColorRGBA(1, 0, 0, 1);
     private ColorRGBA primaryColor = new ColorRGBA(0.5f, 0.5f, 0.5f, 1);
     private ColorRGBA secondaryColor = new ColorRGBA(0.5f, 0.5f, 0.5f, 1);
@@ -47,7 +48,7 @@ public class Airplane {
     
     public Airplane(String[] serialized, Node parent, AssetManager assetManager) {
         uuid = serialized[1];
-        type = serialized[2];
+        path = serialized[2];
         create(parent, assetManager);
         update(serialized[3], serialized[4]);
     }
@@ -61,8 +62,12 @@ public class Airplane {
         assignParts();
     }
     
+    public boolean equals(String uuid) {
+        return this.uuid.equals(uuid);
+    }
+    
     public String serialize() {
-        return uuid + ";" + type + ";" + Serializer.fromVector(spatial.getLocalTranslation())
+        return type + ";" + uuid + ";" + path + ";" + Serializer.fromVector(spatial.getLocalTranslation())
                 + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
     }
     
@@ -77,7 +82,7 @@ public class Airplane {
     }
     
     private void createAirplane() {
-        spatial = assetManager.loadModel("Airplanes/" + type + "/model.blend");
+        spatial = assetManager.loadModel("Airplanes/" + path + "/model.blend");
         spatial.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         
         parent.attachChild(spatial);
@@ -174,8 +179,8 @@ public class Airplane {
         return spatial;
     }
     
-    public String getType() {
-        return type;
+    public String getPath() {
+        return path;
     }
     
     public ColorRGBA getLaserColor() {

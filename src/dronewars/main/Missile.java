@@ -16,6 +16,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import dronewars.serializable.Airplane;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -42,7 +44,7 @@ public class Missile {
     private Warzone zone;
     private TerrainQuad terrain;
     
-    public Missile(RigidBodyControl origin, List<Airplane> targets, Warzone zone,
+    public Missile(RigidBodyControl origin, Map<String, Airplane> targets, Warzone zone,
             Node parent, TerrainQuad terrain, AssetManager assetManager) {
         
         this.zone = zone;
@@ -90,10 +92,11 @@ public class Missile {
                 + (int) (System.currentTimeMillis() & 0x00000000FFFFFFFFL);   
     }
     
-    private void assignTarget(List<Airplane> targets) {
+    private void assignTarget(Map<String, Airplane> targets) {
         Vector3f forward = missile.getLocalRotation().mult(Vector3f.UNIT_Z);
         target = null;
-        for (Airplane tgt : targets) {
+        for (Entry<String,Airplane> entry : targets.entrySet()) {
+            Airplane tgt = entry.getValue();
             Vector3f tgtDir = tgt.getSpatial().getLocalTranslation()
                     .subtract(missile.getLocalTranslation());
             if (forward.angleBetween(tgtDir) < maxAngle) {
