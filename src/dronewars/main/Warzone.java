@@ -107,7 +107,7 @@ public class Warzone implements UdpBroadcastHandler {
             switch(parts[0]) {
                 case "PLANE":
                     if (enemies.containsKey(parts[1])) {
-                        enemies.get(parts[1]).push(parts[3], parts[4]);
+                        enemies.get(parts[1]).update(parts);
                     } else {
                         enemies.put(parts[1], new Airplane(parts, node, assetManager));
                     }
@@ -116,7 +116,7 @@ public class Warzone implements UdpBroadcastHandler {
         }
         
         for (Airplane enemy : enemies.values()) {
-            enemy.update();
+            enemy.update(tpf);
         }
     }
     

@@ -74,34 +74,70 @@ public class Airplane {
                 + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
     }
     
-    private long[] times = new long[2];
-    private Vector3f[] positions = new Vector3f[2];
-    private Quaternion[] rotations = new Quaternion[2];
+    private long[] tRec = new long[2];
+    private long[] tSend = new long[2];
+    private Vector3f[] pos = new Vector3f[2];
+    private Quaternion[] rot = new Quaternion[2];
     
-    public void update() {
-        if (positions[0] == null || positions[1] == null)
-            return;
-        long now = System.currentTimeMillis();
-        long span = times[0] - times[1];
-        if (span == 0)
-            return;
-        long passed = now - times[0];
-        float fac = passed / (float) span;
-        Vector3f interPos = positions[1].add(positions[0].subtract(positions[1]).mult(fac));
-        Quaternion interRot = new Quaternion().slerp(rotations[0], rotations[1], fac);
-        spatial.setLocalTranslation(interPos);
-        
-        System.out.println();
-        spatial.setLocalRotation(interRot);
+//    public void update(float tpf) {
+//        if (positions[0] == null || positions[1] == null)
+//            return;
+//        float dt = (times[0] - times[1]) / 1000f;
+//        if (dt == 0)
+//            return;
+//        Vector3f dp = positions[0].subtract(positions[1]);
+//        velocities[1] = velocities[0];
+//        velocities[0] = dp.divide(dt);
+//        spatial.move(vel.mult(tpf));
+//        System.out.println(vel.length());
+////        Quaternion interRot = new Quaternion().slerp(rotations[0], rotations[1], fac);
+////        spatial.setLocalRotation(interRot);
+//    }
+//    
+//    public void update(String[] parts) {
+//        long tNew = Long.parseLong(parts[3]);
+//        if (tNew > times[0]) {
+//            times[1] = times[0];
+//            times[0] = Long.parseLong(parts[3]);
+//            positions[1] = positions[0];
+//            positions[0] = Deserializer.toVector(parts[4]);
+//            rotations[1] = rotations[0];
+//            rotations[0] = Deserializer.toQuaternion(parts[5]);
+//        } else if (tNew > times[1]) {
+//            times[1] = tNew;
+//            positions[1] = Deserializer.toVector(parts[4]);
+//            rotations[1] = Deserializer.toQuaternion(parts[5]);
+//        }
+//        
+////        if (counter++ % predict == 0) {
+////            spatial.setLocalTranslation(positions[0]);
+////        }
+//        if (counter++ == 0) {
+//            spatial.setLocalTranslation(positions[0]);
+//        }
+//        spatial.setLocalRotation(rotations[0]);
+//    }
+    
+    public void update(float tpf) {
+        float fac = (System.currentTimeMillis() - tRec[0]) / (float) (tSend[0] - tSend[1]);
+        System.out.println(fac);
+        spatial.setLocalTranslation(pos[1].interpolate(pos[0], fac));
+        spatial.setLocalRotation(new Quaternion().slerp(rot[0], rot[1], fac));
     }
     
     public void update(String[] parts) {
-        times[1] = times[0];
-        times[0] = Long.parseLong(parts[3]);
-        positions[1] = positions[0];
-        positions[0] = Deserializer.toVector(parts[4]);
-        rotations[1] = rotations[0];
-        rotations[0] = Deserializer.toQuaternion(parts[5]);
+        long tNew = Long.parseLong(parts[3]);
+        if (tNew > tSend[0]) {
+            tSend[1] = tSend[0];
+            tSend[0] = tNew;
+            tRec[1] = tRec[0];
+            tRec[0] = System.currentTimeMillis();
+            pos[1] = pos[0];
+            pos[0] = Deserializer.toVector(parts[4]);
+            rot[1] = rot[0];
+            rot[0] = Deserializer.toQuaternion(parts[5]);
+        }
+        spatial.setLocalRotation(rot[0]);
     }
     
     public void destroy() {
