@@ -93,4 +93,8 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
                 crashTime = System.currentTimeMillis();
         }
     }
+    
+    public void hover() {
+        setKinematic(!isKinematic());
+    }
 }

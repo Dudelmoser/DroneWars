@@ -16,21 +16,21 @@ public class PlayerController extends DefaultController {
     
     private boolean joystick = false;
     
-    private WarplaneControl drone;
+    private WarplaneControl warplane;
     private PlayerState state;
     
     private AnalogListener analogListener = new AnalogListener() {
         @Override
         public void onAnalog(String name, float value, float tpf) {
-            if (drone == null) {
-                drone = state.getCombatControl();
+            if (warplane == null) {
+                warplane = state.getCombatControl();
                 return;
             }
             
             if (name.equals("ACTION_1")) {
-                drone.fireShot();
+                warplane.fireShot();
             } else if(name.equals("ACTION_2")) {
-                drone.fireMissile();
+                warplane.fireMissile();
             }
             
             if (!joystick)
@@ -42,25 +42,25 @@ public class PlayerController extends DefaultController {
             
             switch (name) {
                 case "LS_UP":
-                    drone.setThrottle(res);
+                    warplane.setThrottle(res);
                     break;
                 case "LS_LEFT":
-                    drone.setYaw(res);
+                    warplane.setYaw(res);
                     break;
                 case "LS_RIGHT":
-                    drone.setYaw(-res);
+                    warplane.setYaw(-res);
                     break;
                 case "RS_UP":
-                    drone.setPitch(res);
+                    warplane.setPitch(res);
                     break;
                 case "RS_DOWN":
-                    drone.setPitch(-res);
+                    warplane.setPitch(-res);
                     break;
                 case "RS_LEFT":
-                    drone.setRoll(res);
+                    warplane.setRoll(res);
                     break;
                 case "RS_RIGHT":
-                    drone.setRoll(-res);
+                    warplane.setRoll(-res);
                     break;
             }
         }
@@ -70,33 +70,33 @@ public class PlayerController extends DefaultController {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-            if (drone == null) {
-                drone = state.getCombatControl();
+            if (warplane == null) {
+                warplane = state.getCombatControl();
                 return;
             }
 
             if (keyPressed) {
                 switch (name) {
                     case "L_UP":
-                        drone.setThrottle(1);
+                        warplane.setThrottle(1);
                         break;
                     case "L_LEFT":
-                        drone.setYaw(-1);
+                        warplane.setYaw(-1);
                         break;
                     case "L_RIGHT":
-                        drone.setYaw(1);
+                        warplane.setYaw(1);
                         break;
                     case "R_UP":
-                        drone.setPitch(1);
+                        warplane.setPitch(1);
                         break;
                     case "R_DOWN":
-                        drone.setPitch(-1);
+                        warplane.setPitch(-1);
                         break;
                     case "R_LEFT":
-                        drone.setRoll(1);
+                        warplane.setRoll(1);
                         break;
                     case "R_RIGHT":
-                        drone.setRoll(-1);
+                        warplane.setRoll(-1);
                         break;
                 }
             }
@@ -104,31 +104,31 @@ public class PlayerController extends DefaultController {
             if (!keyPressed) {
                 switch (name) {
                     case "L_UP":
-                        drone.setThrottle(0);
+                        warplane.setThrottle(0);
                         break;
                     case "L_LEFT":
-                        drone.setYaw(0);
+                        warplane.setYaw(0);
                         break;
                     case "L_RIGHT":
-                        drone.setYaw(0);
+                        warplane.setYaw(0);
                         break;
                     case "R_UP":
-                        drone.setPitch(0);
+                        warplane.setPitch(0);
                         break;
                     case "R_DOWN":
-                        drone.setPitch(0);
+                        warplane.setPitch(0);
                         break;
                     case "R_LEFT":
-                        drone.setRoll(0);
+                        warplane.setRoll(0);
                         break;
                     case "R_RIGHT":
-                        drone.setRoll(0);
+                        warplane.setRoll(0);
                         break;
                     case "ACTION_3":
-                        drone.respawn();
+                        warplane.hover();
                         break;
                     case "ACTION_4":
-                        drone.useFlares();
+                        warplane.useFlares();
                         break;
                     case "OPTION_1":
                         break;

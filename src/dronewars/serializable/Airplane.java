@@ -78,6 +78,8 @@ public class Airplane {
     private Quaternion[] rotations = new Quaternion[2];
     
     public void update() {
+        if (positions[0] == null || positions[1] == null)
+            return;
         long now = System.currentTimeMillis();
         long span = times[0] - times[1];
         if (span == 0)

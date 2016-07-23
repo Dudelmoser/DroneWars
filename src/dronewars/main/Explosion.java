@@ -141,8 +141,8 @@ public class Explosion extends Effect {
         mat.setBoolean("PointSprite", true);
         flame.setMaterial(mat);
                 
-        flame.setQueueBucket(RenderQueue.Bucket.Translucent);
-        mat.getAdditionalRenderState().setDepthWrite(true);
+//        flame.setQueueBucket(RenderQueue.Bucket.Translucent);
+//        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(flame);
     }
 
@@ -167,8 +167,8 @@ public class Explosion extends Effect {
         mat.setBoolean("PointSprite", true);
         flash.setMaterial(mat);
                 
-        flash.setQueueBucket(RenderQueue.Bucket.Translucent);
-        mat.getAdditionalRenderState().setDepthWrite(true);
+//        flash.setQueueBucket(RenderQueue.Bucket.Translucent);
+//        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(flash);
     }
 
@@ -192,8 +192,8 @@ public class Explosion extends Effect {
         mat.setBoolean("PointSprite", true);
         roundspark.setMaterial(mat);
                 
-        roundspark.setQueueBucket(RenderQueue.Bucket.Translucent);
-        mat.getAdditionalRenderState().setDepthWrite(true);
+//        roundspark.setQueueBucket(RenderQueue.Bucket.Translucent);
+//        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(roundspark);
     }
 
@@ -216,8 +216,8 @@ public class Explosion extends Effect {
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/spark.png"));
         spark.setMaterial(mat);
                 
-        spark.setQueueBucket(RenderQueue.Bucket.Translucent);
-        mat.getAdditionalRenderState().setDepthWrite(true);
+//        spark.setQueueBucket(RenderQueue.Bucket.Translucent);
+//        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(spark);
     }
 
@@ -240,8 +240,8 @@ public class Explosion extends Effect {
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/smoketrail.png"));
         smoketrail.setMaterial(mat);
                 
-        smoketrail.setQueueBucket(RenderQueue.Bucket.Translucent);
-        mat.getAdditionalRenderState().setDepthWrite(true);
+//        smoketrail.setQueueBucket(RenderQueue.Bucket.Translucent);
+//        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(smoketrail);
     }
 
@@ -290,8 +290,8 @@ public class Explosion extends Effect {
         mat.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/shockwave.png"));
         shockwave.setMaterial(mat);
                 
-        shockwave.setQueueBucket(RenderQueue.Bucket.Translucent);
-        mat.getAdditionalRenderState().setDepthWrite(true);
+//        shockwave.setQueueBucket(RenderQueue.Bucket.Translucent);
+//        mat.getAdditionalRenderState().setDepthWrite(true);
         explosion.attachChild(shockwave);
     }
     
