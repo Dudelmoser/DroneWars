@@ -74,10 +74,6 @@ public class Airplane {
                 + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
     }
     
-    private long[] tRec = new long[2];
-    private long[] tSend = new long[2];
-    private Vector3f[] pos = new Vector3f[2];
-    private Quaternion[] rot = new Quaternion[2];
     
 //    public void update(float tpf) {
 //        if (positions[0] == null || positions[1] == null)
@@ -117,13 +113,35 @@ public class Airplane {
 //        }
 //        spatial.setLocalRotation(rotations[0]);
 //    }
+        
+//    public void update(float tpf) {
+//        float fac = (System.currentTimeMillis() - tRec[0]) / (float) (tSend[0] - tSend[1]);
+//        System.out.println();
+//        spatial.setLocalTranslation(pos[1].interpolate(pos[0], fac));
+//        spatial.setLocalRotation(new Quaternion().slerp(rot[0], rot[1], fac));
+//    }
     
     public void update(float tpf) {
+        if (pos[0] == null || pos[1] == null || vel[0].length() > maxStep)
+            return;
+        
         float fac = (System.currentTimeMillis() - tRec[0]) / (float) (tSend[0] - tSend[1]);
-        System.out.println(fac);
-        spatial.setLocalTranslation(pos[1].interpolate(pos[0], fac));
-        spatial.setLocalRotation(new Quaternion().slerp(rot[0], rot[1], fac));
+        if (fac > 1) {
+            spatial.setLocalTranslation(pos[0].add(vel[0].mult(fac - 1)));
+            spatial.setLocalRotation(new Quaternion().slerp(rot[0], rot[1], fac));
+        } else {
+            spatial.setLocalTranslation(pos[1].interpolate(pos[0], fac));
+            spatial.setLocalRotation(new Quaternion().slerp(rot[0], rot[1], fac));
+        }
     }
+    
+    private final float maxStep = 100;
+    private long[] tRec = new long[2];
+    private long[] tSend = new long[2];
+    private Vector3f[] pos = new Vector3f[2];
+    private Vector3f[] vel = new Vector3f[2];
+    private Quaternion[] rot = new Quaternion[2];
+    // rotational velocity extrapolation missing
     
     public void update(String[] parts) {
         long tNew = Long.parseLong(parts[3]);
@@ -136,8 +154,12 @@ public class Airplane {
             pos[0] = Deserializer.toVector(parts[4]);
             rot[1] = rot[0];
             rot[0] = Deserializer.toQuaternion(parts[5]);
+                        
+            if (pos[1] != null) {
+                vel[1] = vel[0];
+                vel[0] = pos[0].subtract(pos[1]).divide((tSend[0] - tSend[1]) / 1000f);
+            }
         }
-        spatial.setLocalRotation(rot[0]);
     }
     
     public void destroy() {
