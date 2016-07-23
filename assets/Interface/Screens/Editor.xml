@@ -8,73 +8,106 @@
   <useControls filename="nifty-default-controls.xml" />
   <screen id="Editor" controller="dronewars.input.EditorController">
     <layer id="layer" childLayout="absolute">
-      <panel childLayout="center" backgroundColor="#30303999" width="100%" 
-             height="20%" x="0%" y="80%">
+      <panel childLayout="center" backgroundColor="#303030cc" width="100%" 
+             height="20%" x="0%" y="70%">
         <effect>
           <onStartScreen name="fade" start="#0" end="#F" length="300" startDelay="200"/>
           <onEndScreen name="fade" start="#F" end="#0" length="300" startDelay="0"/>
           <onHover name="fade" start="#F" end="#D"/>
         </effect>
         <!-- ROOT -->
-        <panel childLayout="horizontal">
-          
-          <!-- RAIN - RADIO BUTTON -->
-          <panel childLayout="vertical" marginRight="50"> 
-            <control id="rain_options" name="radioButtonGroup"/>
-            <control name="label" text="RAIN OPTIONS" marginBottom="20" align="center" 
-                     color="#E3DBC9" />
-            <panel childLayout="horizontal" marginBottom="10">
-              <control name="radioButton" id="rain_on" group="rain_options" />
-              <control name="label" text="On" marginLeft="10"
-                       color="#E3DBC9" />
+        <panel childLayout="vertical">
+            <panel childLayout ="vertical">
+                <control name="horizontalScrollbar" id="scrollBar"/>
             </panel>
-            <panel childLayout="horizontal" marginBottom="10">
-              <control name="radioButton" id="rain_off" group="rain_options" />
-              <control name="label" text="Off" marginLeft="10"
-                       color="#E3DBC9" />
+            <panel childLayout="horizontal" id="scrollArea">
+
+              <!-- IMAGE SELECT -->
+              <panel childLayout="vertical" marginRight="80">  
+                  <panel childLayout="horizontal">
+                        <control name="label" text="MAP" color="#E3DBC9" marginRight="10"/>
+                        <control id="mapSelect" name="imageSelect" height="70%" width="240px"
+                                  imageWidth="100%" />
+                   </panel>
+              </panel>
+
+              <!-- RAIN - RADIO BUTTON -->
+              <panel childLayout="vertical" marginRight="80"> 
+                <control id="rain_options" name="radioButtonGroup"/>
+                <control name="label" text="RAIN OPTIONS" marginBottom="20" align="center" 
+                         color="#E3DBC9" />
+                <panel childLayout="horizontal" marginBottom="10">
+                  <control name="radioButton" id="rain_on" group="rain_options" />
+                  <control name="label" text="On" marginLeft="10"
+                           color="#E3DBC9" />
+                </panel>
+                <panel childLayout="horizontal" marginBottom="10">
+                  <control name="radioButton" id="rain_off" group="rain_options" />
+                  <control name="label" text="Off" marginLeft="10"
+                           color="#E3DBC9" />
+                </panel>
+              </panel>
+
+              <!-- WATER - OPTIONS -->
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="Height" color="#E3DBC9" marginRight="10"/>
+                    <control id="water_height_slider" name="horizontalSlider" min="0" max="255" onChange="onChangeWaterHeight()"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
+                    <control id="water_reflection_slider" name="horizontalSlider" min="0" max="255" onChange="onChangeWaterReflection()"/>
+                  </panel>
+              </panel>
+
+              <!-- WATER - SLIDER -->
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="WATER COLOR" color="#E3DBC9" marginRight="10"/>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
+                    <control id="water_slider_R" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
+                    <control id="water_slider_G" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
+                    <control id="water_slider_B" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                  </panel>
+                  <panel id="water_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
+                  </panel>
+              </panel>
+
+              <!-- LIGHT - SLIDER -->
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="LIGHT COLOR" color="#E3DBC9" marginRight="10"/>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
+                    <control id="light_slider_R" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
+                    <control id="light_slider_G" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
+                    <control id="light_slider_B" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                  </panel>
+                  <panel id="light_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
+                  </panel>
+              </panel>
+              
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="SKY OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
+                  <panel childLayout="horizontal">
+                    <control id="sky_btn" name="button" label="Change Sky" onPrimaryClick="onClick()" visibleToMouse="true"/>
+                  </panel>
+              </panel>
+              
             </panel>
           </panel>
-          
-          <!-- WATER - BUTTON & SLIDER -->
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control id="water_color_btn" name="button" label="Random Color" onPrimaryClick="onClick()" visibleToMouse="true"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="Height" color="#E3DBC9" marginRight="10"/>
-                <control id="water_height_slider" name="horizontalSlider" min="0" max="255" onChange="onChangeWater()"/>
-              </panel>
-          </panel>
-          
-          <!-- LIGHT - SLIDER -->
-          <panel childLayout="vertical" marginRight="50">  
-              <control name="label" text="LIGHT OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
-              <panel childLayout="horizontal">
-                <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                <control id="light_slider_R" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                <control id="light_slider_G" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
-              </panel>
-              <panel childLayout="horizontal">
-                <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                <control id="light_slider_B" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
-              </panel>
-          </panel>
-          
-          <!-- IMAGE SELECT -->
-          <panel childLayout="vertical" marginRight="50">  
-              <panel childLayout="horizontal">
-                    <control name="label" text="Map" color="#E3DBC9" marginRight="10"/>
-                    <control id="mapSelect" name="imageSelect" width="280px"
-                             imageWidth="100%" imageHeight="100%" />
-                    <!-- imageList w/o spaces! -->
-               </panel>
-          </panel>
-          
-        </panel>
       </panel>
     </layer>
   </screen>
