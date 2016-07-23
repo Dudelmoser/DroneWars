@@ -33,15 +33,15 @@ public class PlayerState extends LevelState {
                 level.getWater().update(tpf);
             if (warzone != null)
                 warzone.update(tpf);
-            app.getListener().setLocation(warzone.getPlayerAirplane().getSpatial().getLocalTranslation());
-            app.getListener().setRotation(warzone.getPlayerAirplane().getSpatial().getLocalRotation());
+            app.getListener().setLocation(warzone.getPlayer().getSpatial().getLocalTranslation());
+            app.getListener().setRotation(warzone.getPlayer().getSpatial().getLocalRotation());
         }
     }
      
     public void initCamera() {        
         app.getFlyByCamera().setEnabled(false);
         chaseCam = new ChaseCamera(app.getCamera(), 
-                warzone.getPlayerAirplane().getSpatial(), app.getInputManager());
+                warzone.getPlayer().getSpatial(), app.getInputManager());
         chaseCam.setDefaultVerticalRotation((float)Math.toRadians(camElevation));
         chaseCam.setDefaultHorizontalRotation(0);
         chaseCam.setDefaultDistance(camDistance);
@@ -57,6 +57,6 @@ public class PlayerState extends LevelState {
     }
     
     public WarplaneControl getCombatControl() {
-        return warzone.getControl();
+        return warzone.getPlayer().getControl();
     }
 }

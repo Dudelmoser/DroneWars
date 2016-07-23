@@ -10,7 +10,7 @@ import de.lessvoid.nifty.screen.Screen;
 import dronewars.main.HangarState;
 import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
-import dronewars.serializable.Airplane;
+import dronewars.serializable.Warplane;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -21,7 +21,7 @@ import java.util.Map.Entry;
 public class HangarController extends DefaultController {
 
     private static final String fileName = "airplane.json";
-    private Airplane airplane;
+    private Warplane airplane;
     private AppState state;
     
     private ActionListener actionListener = new ActionListener() {
@@ -44,7 +44,7 @@ public class HangarController extends DefaultController {
     public void onStartScreen() {
         inputManager.addListener(actionListener, "BACK");
         
-        airplane = JsonFactory.load(fileName, Airplane.class);
+        airplane = JsonFactory.load(fileName, Warplane.class);
         state = new HangarState(airplane);
         stateManager.attach(state);
         state.setEnabled(true);

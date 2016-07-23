@@ -8,7 +8,7 @@ package dronewars.main;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dronewars.serializable.Airplane;
+import dronewars.serializable.Warplane;
 
 /**
  *
@@ -33,7 +33,7 @@ public class AirplaneControl extends RigidBodyControl {
     private float yawRotorSpeed;
     private float mainRotorSpeed;
     
-    public AirplaneControl(Airplane airplane) {
+    public AirplaneControl(Warplane airplane) {
         super(airplane.getCollisionShape());
         spatial = airplane.getSpatial();
         setGravity(new Vector3f(0, -gravity, 0));

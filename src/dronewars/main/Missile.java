@@ -7,17 +7,14 @@ package dronewars.main;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import dronewars.serializable.Airplane;
-import java.util.List;
+import dronewars.serializable.Warplane;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  *
@@ -31,7 +28,6 @@ public class Missile {
     private static final float maxAngle = (float)Math.toRadians(45);
     private static final int duration = 3000;
     private static final float refDistance = 20;
-    private static final float maxDistance = 1000;
     private static Spatial model;
     
     private boolean active;
@@ -44,18 +40,18 @@ public class Missile {
     private Warzone zone;
     private TerrainQuad terrain;
     
-    public Missile(RigidBodyControl origin, Map<String, Airplane> targets, Warzone zone,
+    public Missile(Warplane player, Map<String, Warplane> enemies, Warzone zone,
             Node parent, TerrainQuad terrain, AssetManager assetManager) {
         
         this.zone = zone;
         
         init(parent, terrain, assetManager);      
-        missile.setLocalTranslation(origin.getPhysicsLocation());
-        missile.setLocalRotation(origin.getPhysicsRotation());
+        missile.setLocalTranslation(player.getSpatial().getLocalTranslation());
+        missile.setLocalRotation(player.getSpatial().getLocalRotation());
         
         active = true;
         createHashCode();
-        assignTarget(targets);
+        assignTarget(enemies);
     }
     
     public Missile(int hash, Node parent, TerrainQuad terrain, 
@@ -76,7 +72,7 @@ public class Missile {
         
         
         sound = new AudioNode(assetManager, soundPath, false);
-//        sound.setLooping(true);
+        sound.setLooping(true);
         sound.setPositional(true);
         sound.setReverbEnabled(false);
         sound.setRefDistance(refDistance);
@@ -92,11 +88,11 @@ public class Missile {
                 + (int) (System.currentTimeMillis() & 0x00000000FFFFFFFFL);   
     }
     
-    private void assignTarget(Map<String,Airplane> targets) {
+    private void assignTarget(Map<String,Warplane> targets) {
         Vector3f forward = missile.getLocalRotation().mult(Vector3f.UNIT_Z)
                 .mult(-1).normalize();
         target = null;
-        for (Airplane tgt : targets.values()) {
+        for (Warplane tgt : targets.values()) {
             Vector3f tgtDir = tgt.getSpatial().getLocalTranslation()
                     .subtract(missile.getLocalTranslation()).normalize();
             System.out.println(forward.angleBetween(tgtDir));

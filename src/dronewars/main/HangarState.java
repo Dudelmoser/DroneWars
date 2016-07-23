@@ -14,7 +14,7 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FXAAFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.scene.Node;
-import dronewars.serializable.Airplane;
+import dronewars.serializable.Warplane;
 
 /**
  *
@@ -23,13 +23,13 @@ import dronewars.serializable.Airplane;
 public class HangarState extends AbstractAppState {
         
     private Node node;
-    private Airplane airplane;
+    private Warplane airplane;
     private AmbientLight fog;
     private DirectionalLight sun;
     private ChaseCamera chaseCam;
     private SimpleApplication app;
     private FilterPostProcessor filters;
-    public HangarState(Airplane airplane) {
+    public HangarState(Warplane airplane) {
         this.airplane = airplane;
     }
     
@@ -49,7 +49,7 @@ public class HangarState extends AbstractAppState {
         node = new Node();
         app.getRootNode().attachChild(node);
         
-        airplane.create(node, app.getAssetManager());
+        airplane.createStatic(node, app.getAssetManager());
         
         addLights();
         applyFilters();
@@ -87,7 +87,7 @@ public class HangarState extends AbstractAppState {
         app.getViewPort().addProcessor(filters);
     }
     
-    public Airplane getDrone() {
+    public Warplane getDrone() {
         return airplane;
     }
     

@@ -3,6 +3,7 @@ package dronewars.input;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -11,8 +12,11 @@ import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
+import de.lessvoid.nifty.elements.render.PanelRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
+import de.lessvoid.nifty.tools.Color;
 import dronewars.main.EditorState;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
@@ -20,9 +24,10 @@ import dronewars.serializable.Precipitation;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Water;
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +55,7 @@ public class EditorController extends DefaultController {
         //screen = nifty.getCurrentScreen();
         initFields();
         initSliders();
+        initPics();
         addInputListeners();
         inputManager.setCursorVisible(true);
     }
@@ -72,23 +78,6 @@ public class EditorController extends DefaultController {
         precipitation = level.getPrecipitation();
         sky = level.getSky();
         assetManager = level.getApp().getAssetManager();
-        
-        // LOCAL FILE SYSTEM
-//        assetManager.registerLoader(AWTLoader.class, "png");
-//        assetManager.registerLocator("/", FileLocator.class);
-//        Image(new ImageBuilder() {{
-//            filename("/home/marek/photo2.jpg");
-//        }});
-        
-        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Maps";
-        String[] dirs = new File(path).list();
-        ImageSelect selector = nifty.getCurrentScreen().findNiftyControl("mapSelect", ImageSelect.class);
-        for (String dirName : dirs) {
-            String fileName = "Maps/" + dirName + "/preview.jpg";
-            RenderImageJme rImg = new RenderImageJme(fileName, true, display);
-            NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);
-            selector.addImage(nImg);
-       }
     }
     
     private void initSliders() {
@@ -99,6 +88,22 @@ public class EditorController extends DefaultController {
         }
         
         setRgbSlider("light_slider_", sky.getSunColor());
+    }
+
+    private void initPics() {
+        // define path to maps directory and list all sub directories (maps)
+        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Maps";
+        String[] dirs = new File(path).list();
+        
+        // load preview.jpg's of all map directories to mapSelect control
+        ImageSelect selector = nifty.getCurrentScreen().findNiftyControl("mapSelect", ImageSelect.class);
+        
+        for (String dirName : dirs) {
+            String fileName = "Maps/" + dirName + "/preview.jpg";
+            RenderImageJme rImg = new RenderImageJme(fileName, true, display);
+            NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);
+            selector.addImage(nImg);
+       }
     }
     
     private AnalogListener analogListener = new AnalogListener() {
@@ -118,7 +123,6 @@ public class EditorController extends DefaultController {
                     shift = keyPressed ? true : false;
                     break;
                 case "OPTION_1":
-                    setWaterColor();
                     break;
                 case "OPTION_2":
                     break;
@@ -150,13 +154,13 @@ public class EditorController extends DefaultController {
         // inputManager.addListener(analogListener, "...");
     }
 
-    @NiftyEventSubscriber(id = "water_color_btn")
+    @NiftyEventSubscriber(id = "sky_btn")
     public void onClick(String id, NiftyMousePrimaryClickedEvent event){
-        setWaterColor();
+        setSky();
     }
     
     @NiftyEventSubscriber(id = "water_height_slider")
-    public void onChangeWater(String id, SliderChangedEvent event){
+    public void onChangeWaterHeight(String id, SliderChangedEvent event){
         Slider s = event.getSlider();
         boolean sliderHasFocus = s.hasFocus();
         int val = (int)event.getValue();
@@ -166,41 +170,106 @@ public class EditorController extends DefaultController {
         }
     }
     
+    @NiftyEventSubscriber(id = "water_reflection_slider")
+    public void onChangeWaterReflection(String id, SliderChangedEvent event){
+        Slider s = event.getSlider();
+        boolean sliderHasFocus = s.hasFocus();
+        int val = (int)event.getValue();
+        
+        if(sliderHasFocus){
+            setWaterReflection(val);
+        }
+    }
+    
     @NiftyEventSubscriber(pattern = "light_slider_.")
-    public void onChangeLight(String id, SliderChangedEvent event){
+    public void onChangeLightColor(String id, SliderChangedEvent event){
         Slider s = event.getSlider();
         boolean sliderHasFocus = s.hasFocus();
         int val = (int)event.getValue();
         
         if(sliderHasFocus){
             setLightColor(s.getId(), val);
+            
         }
     }
     
-     private void setWaterColor() {
-        water.getWaterFilter().setWaterColor(ColorRGBA.randomColor());
+    @NiftyEventSubscriber(pattern = "water_slider_.")
+    public void onChangeWaterColor(String id, SliderChangedEvent event){
+        Slider s = event.getSlider();
+        boolean sliderHasFocus = s.hasFocus();
+        int val = (int)event.getValue();
+        
+        if(sliderHasFocus){
+            setWaterColor(s.getId(), val);
+            
+        }
     }
     
     private void setWaterHeight(float h) {
         water.setWaterLevel(h / (float)5.5);
-        state.update(h);
+        //state.update(h);
+    }
+    
+    private void setWaterReflection(float h) {
+        water.setReflectivity(h / 255);
+    }
+    
+     private void setWaterColor(String id, float v) {
+        ArrayList<Object> list = new ArrayList();
+        list.add(water);
+        setColor(list, v, id);
     }
     
     private void setLightColor(String id, float v){
+        ArrayList<Object> list = new ArrayList();
+        list.add(sky.getSun());
+        list.add(sky.getAmbient());
+        setColor(list, v, id);
+    }
+
+    private void setColor(ArrayList<Object> oToChange, float v, String id) {
         float val = v/255; // MAP VALUES
-        DirectionalLight sun = sky.getSun();
-        ColorRGBA sunColor = sun.getColor();
+        boolean isLight = oToChange.contains(sky.getSun()) || oToChange.contains(sky.getAmbient());
+        boolean isWater = oToChange.contains(water);
+        ColorRGBA newColor = new ColorRGBA(255, 255, 255, 255); 
+                
+        if(isLight) newColor = sky.getSun().getColor();
+        if(isWater) newColor = water.getColor();
+
         switch(id.charAt(id.length() - 1)){ //last char [RBG(A)]
             case 'R':
-                sunColor.r = val;
+                newColor.r = val;
                 break;
             case 'G':
-                sunColor.g = val;
+                newColor.g = val;
                 break;
             case 'B':
-                sunColor.b = val;
+                newColor.b = val;
                 break;
         }
-        sun.setColor(sunColor);
+        
+        if(isLight){
+            sky.getSun().setColor(newColor);
+            sky.getAmbient().setColor(newColor);
+        } 
+        if(isWater){
+            water.setColor(newColor);
+        }
+        
+        setColorPreview(id, newColor);
+    }
+
+    private void setColorPreview(String id, ColorRGBA sunColor) {
+        String previewId = id.substring(0, id.length()-1);
+        Element preview = nifty.getCurrentScreen().findElementByName(previewId + "preview");
+        Color c = new Color(sunColor.r, sunColor.g, sunColor.b, sunColor.a);
+        preview.getRenderer(PanelRenderer.class).setBackgroundColor(c);
+    }
+
+    private void setSky() {
+        int currSky = Integer.parseInt(sky.getName());
+        int newSky = (currSky == 6) ? 0 : (currSky + 1); // max. 6 skies in assets, starts with 0
+        sky.setName(String.valueOf(newSky));
+        sky.update(assetManager);
     }
 }

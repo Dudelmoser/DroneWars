@@ -5,21 +5,16 @@
 
 package dronewars.main;
 
-import com.google.gson.GsonBuilder;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.system.Timer;
-import dronewars.serializable.Airplane;
+import dronewars.serializable.Warplane;
 import java.util.HashSet;
 import dronewars.network.UdpBroadcastSocket;
 import dronewars.network.UdpBroadcastHandler;
 import dronewars.serializable.Level;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,9 +35,8 @@ public class Warzone implements UdpBroadcastHandler {
     
     private UdpBroadcastSocket udp;
     private Node node;
-    private Airplane player;
-    private WarplaneControl control;
-    private Map<String, Airplane> enemies;
+    private Warplane player;
+    private Map<String, Warplane> enemies;
     private List<Effect> effects;
     private Set<Missile> missiles;
     
@@ -69,17 +63,11 @@ public class Warzone implements UdpBroadcastHandler {
         missiles = Collections.synchronizedSet(new HashSet<Missile>());
     }
     
-    public void update(float tpf) {
-        
-        // to prevent some sort of timeout bug for the spectator
+    public void update(float tpf) {        
+        // prevents some sort of timeout bug for the spectator
         udp.send("");
+        
         if (player != null) {
-            if (control != null) {
-                player.getSpatial().updateLogicalState(tpf);
-                control.refresh(tpf);
-                player.update(tpf, control.getMainRotorSpeed(), control.getYawRotorSpeed());
-            }
-
             Iterator<Missile> iterator = missiles.iterator();
             while(iterator.hasNext()) {
                 Missile missile = iterator.next();
@@ -99,6 +87,7 @@ public class Warzone implements UdpBroadcastHandler {
                     effects.get(i).update(tpf);
                 }
             }
+            player.update(tpf);
             udp.send(player.serialize());
         }
         
@@ -109,34 +98,27 @@ public class Warzone implements UdpBroadcastHandler {
                     if (enemies.containsKey(parts[1])) {
                         enemies.get(parts[1]).update(parts);
                     } else {
-                        enemies.put(parts[1], new Airplane(parts, node, assetManager));
+                        Warplane plane = new Warplane();
+                        plane.createPassive(parts, node, assetManager);
+                        enemies.put(parts[1], plane);
                     }
                     break;
             }
         }
         
-        for (Airplane enemy : enemies.values()) {
+        for (Warplane enemy : enemies.values()) {
             enemy.update(tpf);
         }
     }
     
     public void addPlayer() {
-        player = JsonFactory.load("airplane.json", Airplane.class);
-        player.create(node, assetManager);
-        player.getSpatial().setLocalTranslation(0, 200, 0);
-        control = new WarplaneControl(player, this);
-        bullet.getPhysicsSpace().addCollisionListener(control);
-        player.getSpatial().addControl(control);
-        if (bullet != null)
-            bullet.getPhysicsSpace().add(player.getSpatial());
+        player = JsonFactory.load("airplane.json", Warplane.class);
+        player.createActive(this, bullet, assetManager);
+        player.getControl().setPhysicsLocation(new Vector3f(0,200,0));
     }
     
-    public Airplane getPlayerAirplane() {
+    public Warplane getPlayer() {
         return player;
-    }
-    
-    public WarplaneControl getControl() {
-        return control;
     }
 
     public Node getNode() {
@@ -149,7 +131,7 @@ public class Warzone implements UdpBroadcastHandler {
     }
     
     public void addMissile() {
-        Missile missile = new Missile(control, enemies, this, node.getParent(), 
+        Missile missile = new Missile(player, enemies, this, node, 
                 level.getTerrain().getTerrainQuad(), assetManager);
         missiles.add(missile);
     }

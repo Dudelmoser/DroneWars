@@ -9,7 +9,7 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dronewars.serializable.Airplane;
+import dronewars.serializable.Warplane;
 
 /**
  *
@@ -33,7 +33,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     
     private Warzone warzone;
         
-    public WarplaneControl(Airplane airplane, Warzone warzone) {
+    public WarplaneControl(Warplane airplane, Warzone warzone) {
         super(airplane);
         this.warzone = warzone;
     }
