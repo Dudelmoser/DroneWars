@@ -20,7 +20,6 @@ import dronewars.serializable.Precipitation;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Water;
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +49,7 @@ public class EditorController extends DefaultController {
         //screen = nifty.getCurrentScreen();
         initFields();
         initSliders();
+        initPics();
         addInputListeners();
         inputManager.setCursorVisible(true);
     }
@@ -72,23 +72,7 @@ public class EditorController extends DefaultController {
         precipitation = level.getPrecipitation();
         sky = level.getSky();
         assetManager = level.getApp().getAssetManager();
-        
-        // LOCAL FILE SYSTEM
-//        assetManager.registerLoader(AWTLoader.class, "png");
-//        assetManager.registerLocator("/", FileLocator.class);
-//        Image(new ImageBuilder() {{
-//            filename("/home/marek/photo2.jpg");
-//        }});
-        
-        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Maps";
-        String[] dirs = new File(path).list();
-        ImageSelect selector = nifty.getCurrentScreen().findNiftyControl("mapSelect", ImageSelect.class);
-        for (String dirName : dirs) {
-            String fileName = "Maps/" + dirName + "/preview.jpg";
-            RenderImageJme rImg = new RenderImageJme(fileName, true, display);
-            NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);
-            selector.addImage(nImg);
-       }
+   
     }
     
     private void initSliders() {
@@ -99,6 +83,22 @@ public class EditorController extends DefaultController {
         }
         
         setRgbSlider("light_slider_", sky.getSunColor());
+    }
+
+    private void initPics() {
+        // define path to maps directory and list all sub directories (maps)
+        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Maps";
+        String[] dirs = new File(path).list();
+        
+        // load preview.jpg's of all map directories to mapSelect control
+        ImageSelect selector = nifty.getCurrentScreen().findNiftyControl("mapSelect", ImageSelect.class);
+        
+        for (String dirName : dirs) {
+            String fileName = "Maps/" + dirName + "/preview.jpg";
+            RenderImageJme rImg = new RenderImageJme(fileName, true, display);
+            NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);
+            selector.addImage(nImg);
+       }
     }
     
     private AnalogListener analogListener = new AnalogListener() {
