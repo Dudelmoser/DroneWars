@@ -51,7 +51,7 @@ public class Airplane {
         uuid = serialized[1];
         path = serialized[2];
         create(parent, assetManager);
-        push(serialized[3], serialized[4]);
+        update(serialized);
     }
         
     public final void create(Node parent, AssetManager assetManager) {
@@ -69,7 +69,8 @@ public class Airplane {
     }
     
     public String serialize() {
-        return type + ";" + uuid + ";" + path + ";" + Serializer.fromVector(spatial.getLocalTranslation())
+        return type + ";" + uuid + ";" + path + ";" + System.currentTimeMillis() 
+                + ";" + Serializer.fromVector(spatial.getLocalTranslation())
                 + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
     }
     
@@ -89,16 +90,18 @@ public class Airplane {
         Vector3f interPos = positions[1].add(positions[0].subtract(positions[1]).mult(fac));
         Quaternion interRot = new Quaternion().slerp(rotations[0], rotations[1], fac);
         spatial.setLocalTranslation(interPos);
+        
+        System.out.println();
         spatial.setLocalRotation(interRot);
     }
     
-    public void push(String position, String rotation) {
-        rotations[1] = rotations[0];
-        rotations[0] = Deserializer.toQuaternion(rotation);
-        positions[1] = positions[0];
-        positions[0] = Deserializer.toVector(position);
+    public void update(String[] parts) {
         times[1] = times[0];
-        times[0] = System.currentTimeMillis();
+        times[0] = Long.parseLong(parts[3]);
+        positions[1] = positions[0];
+        positions[0] = Deserializer.toVector(parts[4]);
+        rotations[1] = rotations[0];
+        rotations[0] = Deserializer.toQuaternion(parts[5]);
     }
     
     public void destroy() {
@@ -111,6 +114,10 @@ public class Airplane {
         spatial.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         
         parent.attachChild(spatial);
+    }
+    
+    public String getUuid() {
+        return uuid;
     }
     
     private void createLaser() {

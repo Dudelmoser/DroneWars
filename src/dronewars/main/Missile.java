@@ -28,7 +28,7 @@ public class Missile {
     private static final String modelPath = "Models/Rocket/model.blend";
     private static final String soundPath = "Sounds/missile.wav";
     private static final float velocity = 120;
-    private static final float maxAngle = 45;
+    private static final float maxAngle = (float)Math.toRadians(45);
     private static final int duration = 3000;
     private static final float refDistance = 20;
     private static final float maxDistance = 1000;
@@ -92,17 +92,17 @@ public class Missile {
                 + (int) (System.currentTimeMillis() & 0x00000000FFFFFFFFL);   
     }
     
-    private void assignTarget(Map<String, Airplane> targets) {
-        Vector3f forward = missile.getLocalRotation().mult(Vector3f.UNIT_Z);
+    private void assignTarget(Map<String,Airplane> targets) {
+        Vector3f forward = missile.getLocalRotation().mult(Vector3f.UNIT_Z)
+                .mult(-1).normalize();
         target = null;
-        for (Entry<String,Airplane> entry : targets.entrySet()) {
-            Airplane tgt = entry.getValue();
+        for (Airplane tgt : targets.values()) {
             Vector3f tgtDir = tgt.getSpatial().getLocalTranslation()
-                    .subtract(missile.getLocalTranslation());
+                    .subtract(missile.getLocalTranslation()).normalize();
+            System.out.println(forward.angleBetween(tgtDir));
             if (forward.angleBetween(tgtDir) < maxAngle) {
-                if (target != null && target.getLocalTranslation().length() > tgtDir.length()) {
-                    target = tgt.getSpatial();
-                }
+                target = tgt.getSpatial();
+                    break;
             }
         }
     }
