@@ -17,47 +17,40 @@
         </effect>
         <!-- ROOT -->
         <panel childLayout="vertical">
+            <!--
             <panel childLayout ="vertical">
                 <control name="horizontalScrollbar" id="scrollBar"/>
             </panel>
+            -->
             <panel childLayout="horizontal" id="scrollArea">
 
               <!-- IMAGE SELECT -->
               <panel childLayout="vertical" marginRight="80">  
-                  <panel childLayout="horizontal">
+                  <panel childLayout="horizontal" align="center">
                         <control name="label" text="MAP" color="#E3DBC9" marginRight="10"/>
                         <control id="mapSelect" name="imageSelect" height="70%" width="240px"
                                   imageWidth="100%" />
                    </panel>
               </panel>
 
-              <!-- RAIN - RADIO BUTTON -->
-              <panel childLayout="vertical" marginRight="80"> 
-                <control id="rain_options" name="radioButtonGroup"/>
-                <control name="label" text="RAIN OPTIONS" marginBottom="20" align="center" 
-                         color="#E3DBC9" />
-                <panel childLayout="horizontal" marginBottom="10">
-                  <control name="radioButton" id="rain_on" group="rain_options" />
-                  <control name="label" text="On" marginLeft="10"
-                           color="#E3DBC9" />
-                </panel>
-                <panel childLayout="horizontal" marginBottom="10">
-                  <control name="radioButton" id="rain_off" group="rain_options" />
-                  <control name="label" text="Off" marginLeft="10"
-                           color="#E3DBC9" />
-                </panel>
+              <!-- RAIN - Options -->
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="RAIN OPTIONS" color="#E3DBC9" marginRight="10" align="center"/>
+                  <panel childLayout="horizontal" align="center">
+                    <control id="rain_btn" name="button" label="Toggle Rain" visibleToMouse="true"/>
+                  </panel>
               </panel>
 
               <!-- WATER - OPTIONS -->
               <panel childLayout="vertical" marginRight="80">  
-                  <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
-                  <panel childLayout="horizontal">
+                  <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10"/>
+                  <panel childLayout="horizontal" align="right">
                     <control name="label" text="Height" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_height_slider" name="horizontalSlider" min="0" max="255" onChange="onChangeWaterHeight()"/>
+                    <control id="water_height_slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
-                  <panel childLayout="horizontal">
+                  <panel childLayout="horizontal" align="right">
                     <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_reflection_slider" name="horizontalSlider" min="0" max="255" onChange="onChangeWaterReflection()"/>
+                    <control id="water_reflection_slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
               </panel>
 
@@ -66,15 +59,15 @@
                   <control name="label" text="WATER COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
                     <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_slider_R" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                    <control id="water_slider_R" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_slider_G" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                    <control id="water_slider_G" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_slider_B" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                    <control id="water_slider_B" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel id="water_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
                   </panel>
@@ -85,15 +78,15 @@
                   <control name="label" text="LIGHT COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
                     <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                    <control id="light_slider_R" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                    <control id="light_slider_R" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                    <control id="light_slider_G" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                    <control id="light_slider_G" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                    <control id="light_slider_B" name="horizontalSlider" min="0" max="255" onChange="onChangeLight()"/>
+                    <control id="light_slider_B" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel id="light_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
                   </panel>
@@ -101,8 +94,8 @@
               
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="SKY OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
-                  <panel childLayout="horizontal">
-                    <control id="sky_btn" name="button" label="Change Sky" onPrimaryClick="onClick()" visibleToMouse="true"/>
+                  <panel childLayout="horizontal" align="center">
+                    <control id="sky_btn" name="button" label="Change Sky" visibleToMouse="true"/>
                   </panel>
               </panel>
               

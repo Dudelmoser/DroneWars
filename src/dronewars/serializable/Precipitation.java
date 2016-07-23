@@ -214,4 +214,12 @@ public class Precipitation {
     public void setEndColor(ColorRGBA endColor) {
         this.endColor = endColor;
     }
+
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+    
+    public void setEnabled(boolean bool){
+        this.enabled = bool;
+    }
 }
