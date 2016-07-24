@@ -74,15 +74,17 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     }
 
     public void respawn() {
-        crashTime = Long.MAX_VALUE;
-        broken = false;
         setLinearVelocity(Vector3f.ZERO);
         setAngularVelocity(Vector3f.ZERO);
-        Vector3f spawn = getRandomSpawn();
+        Vector3f spawn = getSpawnOnCircle(warzone.getRadius(), SPAWN_HEIGHT);
+        System.out.println(spawn);
         setPhysicsLocation(spawn);
         Quaternion toCenter = new Quaternion();
-        toCenter.lookAt(spawn.negate(), Vector3f.UNIT_Y);
+        toCenter.lookAt(spawn, Vector3f.UNIT_Y);
         setPhysicsRotation(toCenter);
+        
+        crashTime = Long.MAX_VALUE;
+        broken = false;
     }
 
     @Override
@@ -100,15 +102,24 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
         setKinematic(!isKinematic());
     }
         
-    private Vector3f getRandomSpawn() {
-        Vector3f rnd = Vector3f.UNIT_Y.mult(SPAWN_HEIGHT);
+    private Vector3f getSpawnOnSquare(float width, float height) {
+        Vector3f rnd = new Vector3f(-width / 2, height, -width / 2);
         if (Math.random() > 0.5) {
-            rnd.x = (float)Math.random() * warzone.getSize();
-            rnd.z = warzone.getSize();
+            rnd.x += (float)Math.random() * width;
+            rnd.z += Math.random() > 0.5 ? width : -width;
         } else {
-            rnd.x = warzone.getSize();
-            rnd.z = (float)Math.random() * warzone.getSize();
+            rnd.x += Math.random() > 0.5 ? width : -width;
+            rnd.z += (float)Math.random() * width;
         }
+        return rnd;
+    }
+    
+    private Vector3f getSpawnOnCircle(float radius, float height) {
+        Vector3f rnd = new Vector3f(0, height, 0);
+        float rndX = (float) (Math.random() * radius);
+        float rndZ = (float) Math.sqrt(Math.abs(rndX*rndX - radius*radius));
+        rnd.x = Math.random() > 0.5 ? rndX : -rndX;
+        rnd.z = Math.random() > 0.5 ? rndZ : -rndZ;
         return rnd;
     }
 }

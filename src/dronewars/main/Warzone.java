@@ -32,6 +32,7 @@ public class Warzone implements UdpBroadcastHandler {
     
     private static final int PORT = 54321;
     private static final int SIZE = 1024;
+    private static final int RADIUS = 768;
     private Stack<String> buffer;
     
     private UdpBroadcastSocket udp;
@@ -89,6 +90,7 @@ public class Warzone implements UdpBroadcastHandler {
                 }
             }
             player.update(tpf);
+//            if (player.getSpatial())
             udp.send(player.serialize());
         }
         
@@ -115,8 +117,8 @@ public class Warzone implements UdpBroadcastHandler {
     public void addPlayer() {
         player = JsonFactory.load(Warplane.class);
         player.createActive(this, bullet, assetManager);
+        player.getControl().setPhysicsLocation(Vector3f.UNIT_Y.mult(100));
         player.getControl().respawn();
-//        player.getControl().setPhysicsLocation();
     }
     
     public Warplane getPlayer() {
@@ -160,5 +162,9 @@ public class Warzone implements UdpBroadcastHandler {
 
     public float getSize() {
         return SIZE;
+    }
+    
+    public float getRadius() {
+        return RADIUS;
     }
 }
