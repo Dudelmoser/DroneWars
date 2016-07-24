@@ -12,9 +12,11 @@ import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.Label;
+import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
+import de.lessvoid.nifty.screen.Screen;
 import static dronewars.input.DefaultController.logger;
 import dronewars.main.EditorState;
 import dronewars.main.JsonFactory;
@@ -34,7 +36,7 @@ import java.util.Map;
 
 /**
  *
- * @author Jan David Kleiß
+ * @author Jan David KleiÃŸ
  */
 public class EditorController extends DefaultController {
     private Level level;
@@ -175,6 +177,11 @@ public class EditorController extends DefaultController {
             case "Rain":
                 level.getPrecipitation().toggle();
                 break;
+            case "Terrain":
+                Screen screen = nifty.getCurrentScreen();
+                float y = screen.findNiftyControl("Terrain_Scale_Y", Slider.class).getValue();
+                float xz = screen.findNiftyControl("Terrain_Scale_XZ", Slider.class).getValue();
+                level.getTerrain().setScaleVector(new Vector3f(xz, y, xz));
             case "Level_Save":
                 save();
                 break;
@@ -182,7 +189,7 @@ public class EditorController extends DefaultController {
 
     }
     
-    @NiftyEventSubscriber(pattern = ".*")
+    @NiftyEventSubscriber(pattern = ".*_Slider")
     public void onSliderChanged(String id, SliderChangedEvent event) {
         String[] parts = id.split("_");
         try {
@@ -244,7 +251,7 @@ public class EditorController extends DefaultController {
     
     public void loadLevel(String filename){
         // TODO
-        // state.cleanup << vollständig?
+        // state.cleanup << vollstÃ¤ndig?
         // loadJson from filename: level = JsonFactory.load(PATH + Level.class);
         // state.initialize
     }
