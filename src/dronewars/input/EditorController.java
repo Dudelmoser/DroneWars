@@ -48,7 +48,6 @@ public class EditorController extends DefaultController {
     
     @Override
     public void onStartScreen() {
-        //screen = nifty.getCurrentScreen();
         initFields();
         initSliders();
         initPics();
@@ -102,7 +101,7 @@ public class EditorController extends DefaultController {
         public void onAction(String name, boolean keyPressed, float tpf) {
             switch(name) {
                 case "BACK": // KEY_ESCAPE
-                    nifty.gotoScreen("MainMenu");
+                    nifty.gotoScreen("Exit");
                     break;
                 case "ACTION_2":  // KEY_LSHIFT
                     shift = keyPressed ? true : false;
@@ -221,15 +220,6 @@ public class EditorController extends DefaultController {
         if(isWater){
             water.setColor(newColor);
         }
-        
-        setColorPreview(id, newColor);
-    }
-
-    private void setColorPreview(String id, ColorRGBA sunColor) {
-//        String previewId = id.substring(0, id.length()-1);
-//        Element preview = nifty.getCurrentScreen().findElementByName(previewId + "preview");
-//        Color c = new Color(sunColor.r, sunColor.g, sunColor.b, sunColor.a);
-//        preview.getRenderer(PanelRenderer.class).setBackgroundColor(c);
     }
 
     private void setSky() {
@@ -251,8 +241,8 @@ public class EditorController extends DefaultController {
     }
     
     public void loadMap(int i) {
-        String name = mapNames[i];
-        state.setRenderedObject(name);
+//        String name = mapNames[i];
+//        state.setRenderedObject(name);
 //        selector.setSelectedImageIndex(getNextImageIndex());
     }
     
