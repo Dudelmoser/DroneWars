@@ -141,8 +141,8 @@ public class Warzone implements UdpBroadcastHandler {
     }
 
     public void addFlares() {
-        Flares flares = new Flares(timer, assetManager);
-        flares.trigger(player.getSpatial().getLocalTranslation(), node);
+        Flares flares = new Flares(player.getSpatial().getLocalTranslation(), 
+                node, timer, assetManager);
         effects.add(flares);
     }
     

@@ -6,6 +6,7 @@
 package dronewars.main;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.material.Material;
@@ -23,9 +24,10 @@ public class Flares extends Effect {
     private static final float velocity = 10;
     private static ParticleEmitter template;
     
+    private AudioNode sound;
     private ParticleEmitter flares;
     
-    public Flares(Timer timer, AssetManager assetManager) {
+    public Flares(Vector3f position, Node parent, Timer timer, AssetManager assetManager) {
         super(4, timer);
         if (template == null) {
             template = new ParticleEmitter("Flares", ParticleMesh.Type.Triangle, 20);
@@ -46,9 +48,7 @@ public class Flares extends Effect {
             template.setStartColor(ColorRGBA.White);
             template.setEndColor(ColorRGBA.White);
         }
-    }
     
-    public void trigger(Vector3f position, Node parent) {
         flares = template.clone();
         Vector3f rndVel = new Vector3f((float) Math.random(), 0,
                 (float) Math.random()).normalize().mult(velocity);
@@ -59,12 +59,21 @@ public class Flares extends Effect {
         parent.attachChild(flares);
         flares.emitAllParticles(); 
         flares.setParticlesPerSec(0);
+        
+        sound = new AudioNode(assetManager, "Sounds/flares.wav", false);
+        sound.setPositional(true);
+        sound.setRefDistance(20);
+        sound.setReverbEnabled(false);
+        sound.setVolume(10);
+        parent.attachChild(sound);
+        sound.play();
     }
 
     @Override
     public void remove() {
-        Node parent = flares.getParent();
-        parent.detachChild(flares);
+        flares.removeFromParent();
+        sound.stop();
+        sound.removeFromParent();
     }
     
     @Override
