@@ -91,7 +91,7 @@ public class EditorController extends DefaultController {
         options.put("Water_LevelVariance_Slider",water.getLevelVariance());
         options.put("Water_WaveAmplitude_Slider", water.getWaveAmplitude());
         
-        options.put("Water_Color_", water.getColor());
+        options.put("Water_WaterColor_", water.getWaterColor());
         options.put("Sky_SunColor_", sky.getSunColor());
         options.put("Sky_AmbientColor_", sky.getAmbientColor());
         
@@ -195,6 +195,7 @@ public class EditorController extends DefaultController {
                 color.getClass().getDeclaredField(parts[2].toLowerCase()).setFloat(color, event.getValue() / 255f);
                 Method rgbSetter = obj.getClass().getMethod("set" + parts[1], ColorRGBA.class);
                 rgbSetter.invoke(obj, color);
+                System.out.println("set" + parts[1] + "_" + color.r + "_" + color.g + "_" + color.b);
             } else if (id.contains("Vector") || id.contains("Direction")) {
                 Method rgbGetter = obj.getClass().getMethod("get" + parts[1]);
                 Vector3f vec = ((Vector3f) rgbGetter.invoke(obj)).clone();

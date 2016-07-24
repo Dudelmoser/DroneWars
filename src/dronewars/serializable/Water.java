@@ -109,12 +109,14 @@ public class Water {
         return waves;
     }
     
-    public ColorRGBA getColor() {
+    public ColorRGBA getWaterColor() {
         return color;
     }
     
-    public void setColor(ColorRGBA color) {
+    public void setWaterColor(ColorRGBA color) {
         this.color.set(color);
+        water.setWaterColor(color);
+        water.setDeepWaterColor(color);
     }
     
     public float getLevel() {

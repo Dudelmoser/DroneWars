@@ -59,22 +59,24 @@
                   </panel>
               </panel>
 
+              <!-- WATER COLOR - SLIDER -->
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="WATER COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
                     <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                    <control id="Water_Color_R_Slider" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Water_WaterColor_R_Slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                    <control id="Water_Color_G_Slider" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Water_WaterColor_G_Slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                    <control id="Water_Color_B_Slider" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Water_WaterColor_B_Slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
               </panel>
 
+              <!-- SUN COLOR - SLIDER -->
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="SUN COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
@@ -90,7 +92,6 @@
                     <control id="Sky_SunColor_B_Slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
               </panel>
-              
               
               <!-- AMBIENT - SLIDER -->
               <panel childLayout="vertical" marginRight="80">  
