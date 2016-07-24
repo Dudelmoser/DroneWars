@@ -28,24 +28,23 @@ import java.util.List;
  * @author Jan David Kleiß
  */
 public class Warplane {
-        
-    private transient final String type = "PLANE";
-    private transient String uuid;
+            
+    private transient static final String type = "PLANE";
 
-    private String path = "0";
-    private ColorRGBA laserColor = new ColorRGBA(1, 0, 0, 1);
-    private ColorRGBA primaryColor = new ColorRGBA(0.5f, 0.5f, 0.5f, 1);
-    private ColorRGBA secondaryColor = new ColorRGBA(0.5f, 0.5f, 0.5f, 1);
+    private String name = "0";
+    private ColorRGBA color = ColorRGBA.Gray;
+    private ColorRGBA laserColor = ColorRGBA.Red;
     
     private transient final float laserLength = 100;
     private transient final float laserWidth = 0.004f;
+    private transient final float maxStep = 100;
     
-    private final float maxStep = 100;
-    private long[] tRec = new long[2];
-    private long[] tSend = new long[2];
-    private Vector3f[] pos = new Vector3f[2];
-    private Vector3f[] vel = new Vector3f[2];
-    private Quaternion[] rot = new Quaternion[2];
+    private transient String uuid;
+    private transient long[] tRec = new long[2];
+    private transient long[] tSend = new long[2];
+    private transient Vector3f[] pos = new Vector3f[2];
+    private transient Vector3f[] vel = new Vector3f[2];
+    private transient Quaternion[] rot = new Quaternion[2];
     // rotational velocity extrapolation missing
     
     private transient AssetManager assetManager;
@@ -64,7 +63,7 @@ public class Warplane {
     }
     
     public String serialize() {
-        return type + ";" + uuid + ";" + path + ";" + System.currentTimeMillis() 
+        return type + ";" + uuid + ";" + name + ";" + System.currentTimeMillis() 
                 + ";" + Serializer.fromVector(spatial.getLocalTranslation())
                 + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
     }
@@ -114,14 +113,14 @@ public class Warplane {
         }
     }
     
-    private void updateLaser() {
+    public void updateLaser() {
         laser.setLocalTranslation(spatial.getLocalTranslation());
         laser.setLocalRotation(spatial.getLocalRotation());
         Vector3f forward = spatial.getLocalRotation().getRotationColumn(2);
         laser.move(forward.mult(-laserLength));
     }
     
-    private void updateRotors(float mainRotorSpeed, float yawRotorSpeed) {
+    public void updateRotors(float mainRotorSpeed, float yawRotorSpeed) {
         for (Spatial rotor : xRotors) {
             rotor.rotate(yawRotorSpeed, 0, 0);
         }
@@ -158,8 +157,10 @@ public class Warplane {
     }
         
     public void createPassive(String[] serialized, Node parent, AssetManager assetManager) {
+        this.parent = parent;
+        this.assetManager = assetManager;
         uuid = serialized[1];
-        path = serialized[2];
+        name = serialized[2];
         
         createSpatial();
         createLaser();
@@ -169,18 +170,20 @@ public class Warplane {
     }
     
     public void createStatic(Node parent, AssetManager assetManager) {
+        this.parent = parent;
+        this.assetManager = assetManager;
         createSpatial();
         createLaser();
         assignParts();
     }
     
-    public void destroy() {
+    public void remove() {
         parent.detachChild(spatial);
         parent.detachChild(laser);
     }
     
     private void createSpatial() {
-        spatial = assetManager.loadModel("Airplanes/" + path + "/model.blend");
+        spatial = assetManager.loadModel(getClass().getSimpleName() + "s/" + name + "/model.blend");
         spatial.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         parent.attachChild(spatial);
     }
@@ -212,12 +215,9 @@ public class Warplane {
             } else if (name.contains("zrotor")) {
                 zRotors.add(child);
             }
-            if (name.contains("primary")) {
+            if (name.contains("color")) {
                 Geometry geom = (Geometry) ((Node) child).getChild(0);
-                geom.getMaterial().setColor("Diffuse", primaryColor);
-            } else if (name.contains("secondary")) {
-                Geometry geom = (Geometry) ((Node) child).getChild(0);
-                geom.getMaterial().setColor("Diffuse", secondaryColor);
+                geom.getMaterial().setColor("Diffuse", color);
             }
         }
     }
@@ -239,8 +239,12 @@ public class Warplane {
         return uuid;
     }
         
-    public String getPath() {
-        return path;
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
     
     public Spatial getSpatial() {
@@ -255,27 +259,19 @@ public class Warplane {
         return CollisionShapeFactory.createBoxShape(spatial);
     }
     
+    public ColorRGBA getColor() {
+        return color;
+    }
+
+    public void setColor(ColorRGBA color) {
+        this.color = color;
+    }
+    
     public ColorRGBA getLaserColor() {
         return laserColor;
     }
     
     public void setLaserColor(ColorRGBA laserColor) {
         this.laserColor = laserColor;
-    }
-
-    public ColorRGBA getPrimaryColor() {
-        return primaryColor;
-    }
-
-    public void setPrimaryColor(ColorRGBA shellColor) {
-        this.primaryColor = shellColor;
-    }
-
-    public ColorRGBA getSecondaryColor() {
-        return secondaryColor;
-    }
-
-    public void setSecondaryColor(ColorRGBA rotorColor) {
-        this.secondaryColor = rotorColor;
     }
 }

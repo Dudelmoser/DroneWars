@@ -1,12 +1,12 @@
 package dronewars.input;
 
-import com.jme3.app.state.AppState;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.ColorRGBA;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.NiftyEventSubscriber;
-import de.lessvoid.nifty.controls.Slider;
+import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
-import de.lessvoid.nifty.screen.Screen;
+import dronewars.main.EditorState;
 import dronewars.main.HangarState;
 import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
@@ -18,11 +18,12 @@ import java.util.Map.Entry;
  *
  * @author Jan David Kleiß
  */
-public class HangarController extends DefaultController {
-
-    private static final String fileName = "airplane.json";
-    private Warplane airplane;
-    private AppState state;
+public class HangarController extends DefaultController {    
+    private String[] planeNames;
+    private Warplane plane;
+    private HangarState state;
+    private NiftyJmeDisplay display;
+    private ImageSelect selector;
     
     private ActionListener actionListener = new ActionListener() {
         @Override
@@ -31,75 +32,69 @@ public class HangarController extends DefaultController {
                 switch (name) {
                     case "BACK":
                         nifty.gotoScreen("MainMenu");
+                        break;
+                    case "START":
+                        System.exit(0);
+                        break;
                 }
             }
         }
     };
     
-    public HangarController(StereoApplication app) {
+    public HangarController(StereoApplication app, NiftyJmeDisplay display) {
         super(app);
+        this.display = display;
     }
 
     @Override
     public void onStartScreen() {
-        inputManager.addListener(actionListener, "BACK");
+        inputManager.addListener(actionListener, "BACK", "START");
+        plane = JsonFactory.load(Warplane.class);
         
-        airplane = JsonFactory.load(fileName, Warplane.class);
-        state = new HangarState(airplane);
+        state = new HangarState(plane);
         stateManager.attach(state);
-        state.setEnabled(true);
         
-        initSliders();
+        setRgbSlider("color", plane.getColor());
+        setRgbSlider("laser", plane.getLaserColor());
+        
+        selector = nifty.getCurrentScreen().findNiftyControl("planeSelect", ImageSelect.class);
+        planeNames = fillImageSelector(selector, 
+                plane.getClass().getSimpleName() + "s", "preview.jpg", display);
+        selector.setSelectedImageIndex(Integer.parseInt(plane.getName()));
     }
 
     @Override
     public void onEndScreen() {
-        JsonFactory.save(fileName, airplane);
-        state.setEnabled(false);
+        JsonFactory.save(plane);
         stateManager.detach(state);
     }
     
     @NiftyEventSubscriber(pattern = ".*")
     public void onSliderChangedEvent(final String id, final SliderChangedEvent event) {
         switch(id) {
+            case "colorR":
+                plane.getColor().r = event.getValue() / 255;
+                break;
+            case "colorG":
+                plane.getColor().g = event.getValue() / 255;
+                break;
+            case "colorB":
+                plane.getColor().b = event.getValue() / 255;
+                break;
             case "laserR":
-                airplane.getLaserColor().r = event.getValue() / 255;
+                plane.getLaserColor().r = event.getValue() / 255;
                 break;
             case "laserG":
-                airplane.getLaserColor().g = event.getValue() / 255;
+                plane.getLaserColor().g = event.getValue() / 255;
                 break;
             case "laserB":
-                airplane.getLaserColor().b = event.getValue() / 255;
-                break;
-            case "rotorR":
-                airplane.getSecondaryColor().r = event.getValue() / 255;
-                break;
-            case "rotorG":
-                airplane.getSecondaryColor().g = event.getValue() / 255;
-                break;
-            case "rotorB":
-                airplane.getSecondaryColor().b = event.getValue() / 255;
-                break;
-            case "shellR":
-                airplane.getPrimaryColor().r = event.getValue() / 255;
-                break;
-            case "shellG":
-                airplane.getPrimaryColor().g = event.getValue() / 255;
-                break;
-            case "shellB":
-                airplane.getPrimaryColor().b = event.getValue() / 255;
+                plane.getLaserColor().b = event.getValue() / 255;
                 break;
         }
     }
-
-    private void initSliders() {
-        HashMap<String, ColorRGBA> parts = new HashMap();
-        parts.put("laser", airplane.getLaserColor());
-        parts.put("shell", airplane.getPrimaryColor());
-        parts.put("rotor", airplane.getSecondaryColor());
-        
-        for (Entry<String, ColorRGBA> part : parts.entrySet()) {
-            setRgbSlider(part.getKey(), part.getValue());
-        }
+    
+    public void loadPlane() {
+        String name = planeNames[selector.getSelectedImageIndex()];
+        state.setWarplane(name);
     }
 }

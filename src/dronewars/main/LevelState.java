@@ -37,14 +37,13 @@ public abstract class LevelState extends AbstractAppState {
     @Override
     public void initialize(AppStateManager stateManager, Application application) {
         app = (StereoApplication) application;
-        app.setDisplayFps(true);
-        app.setDisplayStatView(true);
+        app.setDisplayFps(false);
+        app.setDisplayStatView(false);
         
         bullet = new BulletAppState();
         app.getStateManager().attach(bullet);
         bullet.getPhysicsSpace().setGravity(gravity);
         
-        level = new Level();
         level = new Level();
         level.create(app, bullet);
         

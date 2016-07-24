@@ -1,10 +1,8 @@
 package dronewars.main;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.input.ChaseCamera;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
@@ -21,27 +19,30 @@ import dronewars.serializable.Warplane;
  * @author Jan David Kleiß
  */
 public class HangarState extends AbstractAppState {
-        
+    
+    private static final Vector3f camPos = new Vector3f(0, 2, 4);
+    private static final float rotSpeed = FastMath.HALF_PI / 4;
+    
     private Node node;
-    private Warplane airplane;
+    private Warplane plane;
     private AmbientLight fog;
     private DirectionalLight sun;
-    private ChaseCamera chaseCam;
-    private SimpleApplication app;
+    private StereoApplication app;
     private FilterPostProcessor filters;
-    public HangarState(Warplane airplane) {
-        this.airplane = airplane;
+    
+    public HangarState(Warplane plane) {
+        this.plane = plane;
     }
     
     @Override
     public void cleanup() {
-        app.getRootNode().detachChild(node);
+        node.removeFromParent();
         app.getViewPort().removeProcessor(filters);
     }
     
     @Override
     public void initialize(AppStateManager stateManager, Application application) {
-        this.app = (SimpleApplication) application;
+        this.app = (StereoApplication) application;
         
         app.setDisplayFps(false);
         app.setDisplayStatView(false);
@@ -49,24 +50,16 @@ public class HangarState extends AbstractAppState {
         node = new Node();
         app.getRootNode().attachChild(node);
         
-        airplane.createStatic(node, app.getAssetManager());
+        plane.createStatic(node, app.getAssetManager());
         
         addLights();
         applyFilters();
-        
-        app.getCamera().setFrustumNear(0.5f);
-        chaseCam = new ChaseCamera(app.getCamera(), airplane.getSpatial(), app.getInputManager());
-        chaseCam.setMinDistance(1.5f);
-        chaseCam.setMaxDistance(5);
-        chaseCam.setDefaultDistance(2);
-        chaseCam.setZoomSensitivity(0.05f);
-        chaseCam.setDefaultVerticalRotation(FastMath.PI / 8);
-        chaseCam.setDefaultHorizontalRotation(FastMath.PI / -1.6f);
+        setCamera();
     }
     
     private void addLights() {
         sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(1,-1,1));
+        sun.setDirection(camPos.negate());
         sun.setColor(ColorRGBA.White.mult(0.5f));
         node.addLight(sun);
         
@@ -86,11 +79,27 @@ public class HangarState extends AbstractAppState {
         
         app.getViewPort().addProcessor(filters);
     }
-    
-    public Warplane getDrone() {
-        return airplane;
+
+    private void setCamera() {
+        app.getCamera().setFrustumNear(0.5f);
+        app.getCamera().setLocation(camPos);
+        app.getCamera().lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
     }
     
     @Override
-    public void update(float tpf) {}
+    public void update(float tpf) {
+        plane.getSpatial().rotate(0, tpf * rotSpeed, 0);
+        plane.updateLaser();
+        plane.updateRotors(1, 1);
+    }
+    
+    public void setWarplane(String name) {
+        plane.setName(name);
+        plane.remove();
+        plane.createStatic(node, app.getAssetManager());
+    }
+    
+    public Warplane getWarplane() {
+        return plane;
+    }
 }

@@ -19,6 +19,10 @@ import java.nio.file.Paths;
  */
 public class JsonFactory {
     
+    public static <T> T load(Class<T> type) {
+        return load(type.getSimpleName() + ".json", type);
+    }
+    
     public static <T> T load(String relativePath, Class<T> type) {
         Path path = Paths.get(System.getProperty("user.dir") + "/" + relativePath);
         try {
@@ -32,6 +36,10 @@ public class JsonFactory {
                 return null;
             }
         }
+    }
+    
+    public static <T> void save(T obj) {
+        save(obj.getClass().getSimpleName() + ".json", obj);
     }
     
     public static <T> void save(String relativePath, T obj) {
