@@ -10,7 +10,7 @@
   <screen id="Editor" controller="dronewars.input.EditorController">
     <layer id="layer" childLayout="absolute">
       <panel childLayout="center" backgroundColor="#303030cc" width="100%" 
-             height="20%" x="0%" y="80%">
+             height="25%" x="0%" y="75%">
         <effect>
           <onStartScreen name="fade" start="#0" end="#F" length="300" startDelay="200"/>
           <onEndScreen name="fade" start="#F" end="#0" length="300" startDelay="0"/>
@@ -30,28 +30,27 @@
                    </panel>
               </panel>
 
-              <!-- RAIN AND SKY - Options -->
-              <panel childLayout="vertical" marginRight="80">  
-                  <control name="label" text="RAIN OPTIONS" color="#E3DBC9" marginRight="10" align="center"/>
-                  <control id="Rain_Button" name="button" label="Toggle Rain" visibleToMouse="true"/>
-                  <control name="label" text="SKY OPTIONS" color="#E3DBC9" marginTop="10" marginRight="10" align="center"/>
-                  <control id="Sky_Button" name="button" label="Change Sky" visibleToMouse="true"/>
+              <panel childLayout="vertical">  
+              <!-- SKY - Options -->
+              <panel childLayout="vertical" marginRight="80" marginTop="20" align="center">  
+                <control name="label" text="SKY OPTIONS" color="#E3DBC9"  marginRight="10" />
+                <control id="Sky_Select" name="dropDown" width="180px"/>
               </panel>
-              
               <!-- TERRAIN OPTIONS-->
-              <panel childLayout="vertical" marginRight="80">  
+              <panel childLayout="vertical" marginRight="80" marginTop="20" align="center">  
                   <control name="label" text="TERRAIN OPTIONS" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal" align="right">
-                    <control name="label" text="Size" color="#E3DBC9" marginRight="10"/>
+                    <control name="label" text="Strech Y" color="#E3DBC9" marginRight="10"/>
                     <control id="Terrain_Scale_Y" name="horizontalSlider" 
                              initial="0.5" min="0" max="1" stepSize="0.1"/>
                   </panel>
                   <panel childLayout="horizontal" align="right">
-                    <control name="label" text="Size" color="#E3DBC9" marginRight="10"/>
+                    <control name="label" text="Strech X" color="#E3DBC9" marginRight="10"/>
                     <control id="Terrain_Scale_XZ" name="horizontalSlider" 
                              initial="1" min="1" max="2" stepSize="0.1"/>
                   </panel>
-                  <control id="Terrain_Button" name="button" label="Refresh" visibleToMouse="true"/>
+                  <control id="Terrain_Button" name="button" label="Refresh" visibleToMouse="true" marginTop="10" align="center"/>
+              </panel>
               </panel>
 
               <!-- WATER OPTIONS -->
@@ -74,9 +73,15 @@
                     <control name="label" text="Reflectivity" color="#E3DBC9" marginRight="10"/>
                     <control id="Water_Reflectivity_Slider" name="horizontalSlider" min="0" max="1" stepSize="0.01"/>
                   </panel>
+                    <!-- RAIN OPTIONS -->
+                  <panel childLayout="vertical" align="center" marginTop="20">
+                    <control name="label" text="RAIN OPTIONS" color="#E3DBC9" marginRight="10" align="center"/>
+                    <control id="Rain_Button" name="button" label="Toggle Rain" visibleToMouse="true" align="center"/>
+                  </panel>
               </panel>
 
               <!-- WATER COLOR - SLIDER -->
+              <panel childLayout="vertical">
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="WATER COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
@@ -92,7 +97,25 @@
                     <control id="Water_WaterColor_B_Slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
               </panel>
+              <!-- SUN DIRECTION - SLIDER -->
+              <panel childLayout="vertical" marginRight="80" marginTop="20" >  
+                  <control name="label" text="SUN DIRECTION" color="#E3DBC9" marginRight="10"/>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="X" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_SunDirection_X_Slider" name="horizontalSlider" min="-10" max="10"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="Y" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_SunDirection_Y_Slider" name="horizontalSlider" min="-10" max="0"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="Z" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_SunDirection_Z_Slider" name="horizontalSlider" min="-10" max="10"/>
+                  </panel>
+              </panel>
+              </panel>
 
+              <panel childLayout="vertical">
               <!-- SUN COLOR - SLIDER -->
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="SUN COLOR" color="#E3DBC9" marginRight="10"/>
@@ -111,7 +134,7 @@
               </panel>
               
               <!-- AMBIENT - SLIDER -->
-              <panel childLayout="vertical" marginRight="80">  
+              <panel childLayout="vertical" marginRight="80" marginTop="20" >  
                   <control name="label" text="AMBIENT COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
                     <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
@@ -126,23 +149,9 @@
                     <control id="Sky_AmbientColor_B_Slider" name="horizontalSlider" min="0" max="255"/>
                   </panel>
               </panel>
-              
-              <!-- SUN DIRECTION - SLIDER -->
-              <panel childLayout="vertical" marginRight="80">  
-                  <control name="label" text="SUN DIRECTION" color="#E3DBC9" marginRight="10"/>
-                  <panel childLayout="horizontal">
-                    <control name="label" text="X" color="#E3DBC9" marginRight="10"/>
-                    <control id="Sky_SunDirection_X_Slider" name="horizontalSlider" min="-10" max="10"/>
-                  </panel>
-                  <panel childLayout="horizontal">
-                    <control name="label" text="Y" color="#E3DBC9" marginRight="10"/>
-                    <control id="Sky_SunDirection_Y_Slider" name="horizontalSlider" min="-10" max="0"/>
-                  </panel>
-                  <panel childLayout="horizontal">
-                    <control name="label" text="Z" color="#E3DBC9" marginRight="10"/>
-                    <control id="Sky_SunDirection_Z_Slider" name="horizontalSlider" min="-10" max="10"/>
-                  </panel>
               </panel>
+              
+              
               
               <!-- LEVEL OPTIONS -->
               <panel childLayout="vertical" marginRight="80"> 
@@ -150,7 +159,7 @@
                   <panel childLayout="vertical">
                     <control name="label" text="Load" color="#E3DBC9" marginRight="10"/>
                     <control id="Level_Select" name="dropDown" width="180px"/>
-                    <control name="label" text="Name" color="#E3DBC9" marginRight="10"/>
+                    <control name="label" text="Name" color="#E3DBC9" marginRight="10" marginTop="20" />
                     <control id="Level_Name" name="textfield" width="180px" marginBottom="10"/>
                     <control id="Level_Save_Button" label="Save this Level" name="button" width="180px" visibleToMouse="true"/>
                   </panel>

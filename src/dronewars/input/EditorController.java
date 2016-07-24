@@ -23,8 +23,10 @@ import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
 import dronewars.serializable.Sky;
+import dronewars.serializable.Terrain;
 import dronewars.serializable.Water;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -36,7 +38,7 @@ import java.util.Map;
 
 /**
  *
- * @author Jan David KleiÃŸ
+ * @author Jan David Kleiß
  */
 public class EditorController extends DefaultController {
     private Level level;
@@ -45,9 +47,11 @@ public class EditorController extends DefaultController {
     private Label mapPresetName;
     private TextField levelName;
     private DropDown levelSelect;
+    private DropDown skySelect;
     private EditorState state;
     private NiftyJmeDisplay display;
     private AssetManager assetManager;
+    private Screen screen;
     
     public EditorController(StereoApplication app, NiftyJmeDisplay display) {
         super(app);
@@ -59,7 +63,7 @@ public class EditorController extends DefaultController {
         initFields();
         initSliders();
         initMapPreset();
-        initLevelControls();
+        initLevelAndSkyControls();
         addInputListeners();
         inputManager.setCursorVisible(true);
     }
@@ -77,9 +81,9 @@ public class EditorController extends DefaultController {
             state = stateManager.getState(EditorState.class);
             state.setEnabled(true);
         }
-        mapSelect = screen.findNiftyControl("mapSelect", ImageSelect.class);
         level = state.getLevel();
         assetManager = level.getApp().getAssetManager();
+        screen = nifty.getCurrentScreen();
     }
     
     private void initSliders() {
@@ -106,21 +110,24 @@ public class EditorController extends DefaultController {
     }
 
     private void initMapPreset() {
-        mapSelect = nifty.getCurrentScreen()
-            .findNiftyControl("mapSelect", ImageSelect.class);
+        mapSelect = screen.findNiftyControl("mapSelect", ImageSelect.class);
         mapNames = fillImageSelector(mapSelect, "Maps", "height.png", display);
+        int i = java.util.Arrays.asList(mapNames).indexOf(state.getLevel().getTerrain().getName());
+        mapSelect.setSelectedImageIndex(i);
         
-        mapPresetName = nifty.getCurrentScreen()
-            .findNiftyControl("mapPresetName", Label.class);
+        mapPresetName = screen.findNiftyControl("mapPresetName", Label.class);
         mapPresetName.setText(mapNames[mapSelect.getSelectedImageIndex()]);
     }
 
-    private void initLevelControls() {
-        levelName =  nifty.getCurrentScreen()
-            .findNiftyControl("Level_Name", TextField.class);
-        levelSelect =  nifty.getCurrentScreen()
-            .findNiftyControl("Level_Select", DropDown.class);
+    private void initLevelAndSkyControls() {
+        levelName =  screen.findNiftyControl("Level_Name", TextField.class);
+        levelSelect =  screen.findNiftyControl("Level_Select", DropDown.class);
         updateLevelSelect();
+        
+        skySelect = screen.findNiftyControl("Sky_Select", DropDown.class);
+        updateSkySelect();
+        int i = skySelect.getItems().indexOf(state.getLevel().getSky().getName());
+        skySelect.selectItemByIndex(i);
     }
     
     private AnalogListener analogListener = new AnalogListener() {
@@ -171,14 +178,10 @@ public class EditorController extends DefaultController {
     public void onClick(String id, NiftyMousePrimaryClickedEvent event){
         String name = id.replace("_Button", "");
         switch(name) {
-            case "Sky":
-                setSky();
-                break;
             case "Rain":
                 level.getPrecipitation().toggle();
                 break;
             case "Terrain":
-                Screen screen = nifty.getCurrentScreen();
                 float y = screen.findNiftyControl("Terrain_Scale_Y", Slider.class).getValue();
                 float xz = screen.findNiftyControl("Terrain_Scale_XZ", Slider.class).getValue();
                 level.getTerrain().setScaleVector(new Vector3f(xz, y, xz));
@@ -210,23 +213,14 @@ public class EditorController extends DefaultController {
             } else {
                 Method setter = obj.getClass().getMethod("set" + parts[1], float.class);
                 setter.invoke(obj, event.getValue());
-                if(id.equals("Water_Level_Slider")){
-//                    TODO:
-//                    level.getTerrain().getVegetation().create();
-//                    level.getTerrain().getVegetation().spawnSpecies();
-//                    -- or --
-//                    define a button to trigger vegetation respawn
-                }
             }
         } catch (Exception ex) {
             logger.log(java.util.logging.Level.SEVERE, "Slider reflection exception!", ex);
         }
     }
 
-    private void setSky() {
-        int currSky = Integer.parseInt(level.getSky().getName());
-        int newSky = (currSky == 6) ? 0 : (currSky + 1);
-        level.getSky().setName(String.valueOf(newSky));
+    private void setSky(String skyName) {
+        level.getSky().setName(skyName);
         level.getSky().update(assetManager);
     }
     
@@ -237,16 +231,21 @@ public class EditorController extends DefaultController {
     }
 
     private void loadHighmap(String mapName) {
-        // TODO
-        // define PATH + "/" + mapName + "/height.png"
-        // LEVEL > TERRAIN > CREATE()? aktuell ist hier map immer "DEFAULT" , setMap()?
-        // oder LEVEL CREATE?
+        Terrain terrain = state.getLevel().getTerrain();
+        terrain.setName(mapName);
+        terrain.reload();
+        state.update(1);
+        
     }
     
-    @NiftyEventSubscriber(pattern = "Level_Select")
-    public void onLevelSelect(String id, DropDownSelectionChangedEvent event){
-        levelName.setText((CharSequence) ((String) event.getSelection()).replace(".json", ""));
-        loadLevel((String) event.getSelection());
+    @NiftyEventSubscriber(pattern = ".*_Select")
+    public void onSelect(String id, DropDownSelectionChangedEvent event){
+        if(id.contains("Level")){
+            levelName.setText((CharSequence) ((String) event.getSelection()).replace(".json", ""));
+            loadLevel((String) event.getSelection());
+        } else if(id.contains("Sky")){
+            setSky((String) event.getSelection());
+        }
     }
     
     public void loadLevel(String filename){
@@ -272,11 +271,30 @@ public class EditorController extends DefaultController {
         return levels;
     }
 
+    private String[] getSavedSkies() {
+        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Skies";
+        String[] skies = new File(path).list(new FilenameFilter() {
+            @Override
+            public boolean accept(File current, String name) {
+                return new File(current, name).isDirectory();
+            }
+        });
+        return skies;
+    }
+
     private void updateLevelSelect() {
         ArrayList<String> levels = getSavedLevels();
         if(levelSelect.getItems().size() != 0){
             levelSelect.clear();
         }
         levelSelect.addAllItems(levels);
+    }
+
+    private void updateSkySelect() {
+        String[] skies = getSavedSkies();
+        if(!skySelect.getItems().isEmpty()){
+            skySelect.clear();
+        }
+        skySelect.addAllItems(new ArrayList(Arrays.asList(skies)));
     }
 }
