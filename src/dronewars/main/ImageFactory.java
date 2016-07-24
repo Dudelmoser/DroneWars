@@ -4,6 +4,7 @@
  */
 package dronewars.main;
 
+import dronewars.serializable.Gradient;
 import com.jhlabs.image.GaussianFilter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Image;
@@ -105,13 +106,13 @@ public class ImageFactory {
         return sum.mult(1 / 6f);
     }
     
-    public static Image getAlphaMap(BufferedImage heightMap, GradientABGR gradient) {
+    public static Image getAlphaMap(BufferedImage heightMap, Gradient gradient) {
         int width = heightMap.getWidth();
         int height = heightMap.getHeight();
 
         ByteBuffer data = BufferUtils.createByteBuffer(width * height * 4);
 
-        for (int z = 0; z < height; z++) {
+        for (int z = height - 1; z >= 0; z--) {
             for (int x = 0; x < width; x++) {
 
                 Color h = new Color(heightMap.getRGB(x, z));

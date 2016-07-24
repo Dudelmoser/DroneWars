@@ -15,8 +15,6 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
-import com.jme3.texture.Texture2D;
-import dronewars.main.GradientABGR;
 import dronewars.main.ImageFactory;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -29,10 +27,9 @@ import java.util.logging.Logger;
  */
 public class Terrain {
 
-    private String map = "Default";
-    private float height = 0.3f;
+    private String name = "Default";
+    private Vector3f scale = Vector3f.UNIT_XYZ;
     private int smoothing = 3;
-    private int scale = 1;
     private boolean wet = true;
     
     private String redTexture = "Cracked";
@@ -50,31 +47,39 @@ public class Terrain {
     private boolean wire = false;
     
     private Vegetation vegetation;
+    private Gradient alphaGradient;
+    private Gradient spawnGradient;
     
     private transient TerrainQuad terrain;
+    private transient Node parent;
+    private transient ColorRGBA sunColor;
+    private transient BulletAppState bullet;
+    private transient AssetManager assetManager;
     
     public Terrain() {}
         
-    public void create(Node node, BulletAppState bullet, 
+    public void create(Node parent, BulletAppState bullet, 
             ColorRGBA sunColor, AssetManager assetManager) {
+        this.parent = parent;
+        this.bullet = bullet;
+        this.sunColor = sunColor;
+        this.assetManager = assetManager;
         
-        Texture heightTex = assetManager.loadTexture(getRelativePath() + "height.png");
+        Texture heightTex = assetManager.loadTexture(getRelativePath("height.png"));
         BufferedImage heightImage = ImageFactory.toBufferedImage(heightTex.getImage());
         AbstractHeightMap heightMap = new ImageBasedHeightMap(heightTex.getImage());
         heightMap.load();
         heightMap.smooth(1, smoothing);
         
-        Image alphaImage;
-        BufferedImage alphaBuffer;
-        String alphaPath = getAbsolutePath() + "alpha.png";
+        String alphaPath = getAbsolutePath("alpha.png");
         try {
-            alphaBuffer = ImageFactory.load(alphaPath);
-            alphaImage = ImageFactory.toImage(alphaBuffer);
+            ImageFactory.load(alphaPath);
         } catch (IOException ex) {
-            alphaImage = ImageFactory.getAlphaMap(heightImage, new GradientABGR());
-            alphaBuffer = ImageFactory.toBufferedImage(alphaImage);
+            alphaGradient = new Gradient();
+            Image img = ImageFactory.getAlphaMap(heightImage, alphaGradient);
+            BufferedImage buffImg = ImageFactory.toBufferedImage(img);
             try {
-                ImageFactory.save(alphaBuffer, alphaPath);
+                ImageFactory.save(buffImg, alphaPath);
             } catch (IOException ex1) {
                 Logger.getLogger(Terrain.class.getName()).log(Level.SEVERE, null, ex1);
             }
@@ -82,13 +87,13 @@ public class Terrain {
         
         setTerrain(new TerrainQuad("Terrain", patchSize + 1, heightMap.getSize() + 1, 
                 heightMap.getScaledHeightMap()));
-        terrain.setMaterial(getTerrainMaterial(sunColor, alphaImage, assetManager));
+        terrain.setMaterial(getTerrainMaterial(sunColor, assetManager));
         terrain.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        terrain.setLocalScale(new Vector3f(scale, height, scale));
+        terrain.setLocalScale(scale);
         
         // avoids flickering when overlapping the horizon floor
         terrain.move(0, -0.1f, 0);
-        node.attachChild(terrain);
+        parent.attachChild(terrain);
         
         CollisionShape terrainBox =  CollisionShapeFactory.createMeshShape(terrain);
         RigidBodyControl terrainControl = new RigidBodyControl(terrainBox, 0);
@@ -98,36 +103,39 @@ public class Terrain {
             bullet.getPhysicsSpace().add(terrain);
         
         BufferedImage spawnImage;
-        String spawnPath = getAbsolutePath() + "spawn.png";        
+        String spawnPath = getAbsolutePath("spawn.png");        
         try {
             spawnImage = ImageFactory.load(spawnPath);
         } catch (IOException ex) {
-            spawnImage = alphaBuffer;
+            spawnGradient = new Gradient();
+            Image img = ImageFactory.getAlphaMap(heightImage, spawnGradient);
+            spawnImage = ImageFactory.toBufferedImage(img);
             try {
-                ImageFactory.save(alphaBuffer, spawnPath);
+                ImageFactory.save(spawnImage, spawnPath);
             } catch (IOException ex1) {
                 Logger.getLogger(Terrain.class.getName()).log(Level.SEVERE, null, ex1);
             }
         }
         
-        vegetation.create(spawnImage, terrain, bullet, node, assetManager);
+        if (vegetation == null)
+            vegetation = new Vegetation();
+        vegetation.create(spawnImage, terrain, bullet, parent, assetManager);
     }
     
-    private String getAbsolutePath() {
-        return System.getProperty("user.dir") + "/assets/Maps/" + map + "/";
+    private String getAbsolutePath(String file) {
+        return System.getProperty("user.dir") + "/assets/Maps/" + name + "/" + file;
     }
     
-    private String getRelativePath() {
-        return "Maps/" + map + "/";
+    private String getRelativePath(String file) {
+        return "Maps/" + name + "/" + file;
     }
     
-    public Material getTerrainMaterial(ColorRGBA sunColor, Image alphaMap, 
-            AssetManager assetManager) {
+    public Material getTerrainMaterial(ColorRGBA sunColor, AssetManager assetManager) {
         
         Material material = new Material(assetManager,
                 "Common/MatDefs/Terrain/TerrainLighting.j3md");
    
-        material.setTexture("AlphaMap", new Texture2D(alphaMap));
+        material.setTexture("AlphaMap", assetManager.loadTexture(getRelativePath("alpha.png")));
         
         Texture redDiffuse = assetManager.loadTexture(
                 "Textures/" + redTexture + "/diffuse.jpg");
@@ -184,219 +192,113 @@ public class Terrain {
         return material;
     }
     
-    /**
-     * @return the map
-     */
-    public String getMap() {
-        return map;
+    public void remove() {
+        vegetation.remove();
+        terrain.removeFromParent();
+    }
+    
+    public void reload() {
+        remove();
+        create(parent, bullet, sunColor, assetManager);
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public Gradient getAlphaGradient() {
+        return alphaGradient;
+    }
+    
+    public Gradient getSpawnGradient() {
+        return alphaGradient;
     }
 
-    /**
-     * @param map the map to set
-     */
-    public void setMap(String map) {
-        this.map = map;
+    public Vector3f getScale() {
+        return scale;
     }
 
-    /**
-     * @return the heightScale
-     */
-    public float getHeightScale() {
-        return height;
+    public void setHeightScale(Vector3f scale) {
+        this.scale = scale;
+        terrain.setLocalScale(scale);
     }
 
-    /**
-     * @param heightScale the heightScale to set
-     */
-    public void setHeightScale(float heightScale) {
-        this.height = heightScale;
-    }
-
-    /**
-     * @return the smoothing
-     */
-    public int getSmoothing() {
-        return smoothing;
-    }
-
-    /**
-     * @param smoothing the smoothing to set
-     */
-    public void setSmoothing(int smoothing) {
-        this.smoothing = smoothing;
-    }
-
-    /**
-     * @return the size
-     */
     public int getSize() {
         return terrain.getTerrainSize();
     }
-
-    /**
-     * @return the patchSize
-     */
-    public int getPatchSize() {
-        return patchSize;
-    }
-
-    /**
-     * @param patchSize the patchSize to set
-     */
-    public void setPatchSize(int patchSize) {
-        this.patchSize = patchSize;
-    }
-
-    /**
-     * @return the wet
-     */
-    public boolean isWet() {
-        return wet;
-    }
-
-    /**
-     * @param wet the wet to set
-     */
-    public void setWet(boolean wet) {
-        this.wet = wet;
-    }
-
-    /**
-     * @return the shininess
-     */
-    public int getShininess() {
-        return shininess;
-    }
-
-    /**
-     * @param shininess the shininess to set
-     */
-    public void setShininess(int shininess) {
-        this.shininess = shininess;
-    }
-
-    /**
-     * @return the redTexture
-     */
+    
     public String getRedTexture() {
         return redTexture;
     }
-
-    /**
-     * @param redTexture the redTexture to set
-     */
+    
     public void setRedTexture(String redTexture) {
         this.redTexture = redTexture;
     }
 
-    /**
-     * @return the redScale
-     */
     public int getRedScale() {
         return redScale;
     }
 
-    /**
-     * @param redScale the redScale to set
-     */
     public void setRedScale(int redScale) {
         this.redScale = redScale;
     }
-
-    /**
-     * @return the greenTexture
-     */
+    
     public String getGreenTexture() {
         return greenTexture;
     }
-
-    /**
-     * @param greenTexture the greenTexture to set
-     */
+    
     public void setGreenTexture(String greenTexture) {
         this.greenTexture = greenTexture;
     }
-
-    /**
-     * @return the greenScale
-     */
+    
     public int getGreenScale() {
         return greenScale;
     }
-
-    /**
-     * @param greenScale the greenScale to set
-     */
+    
     public void setGreenScale(int greenScale) {
         this.greenScale = greenScale;
     }
-
-    /**
-     * @return the blueTexture
-     */
+    
     public String getBlueTexture() {
         return blueTexture;
     }
-
-    /**
-     * @param blueTexture the blueTexture to set
-     */
+    
     public void setBlueTexture(String blueTexture) {
         this.blueTexture = blueTexture;
     }
-
-    /**
-     * @return the blueScale
-     */
+    
     public int getBlueScale() {
         return blueScale;
     }
-
-    /**
-     * @param blueScale the blueScale to set
-     */
+    
     public void setBlueScale(int blueScale) {
         this.blueScale = blueScale;
     }
-
-    /**
-     * @return the alphaTexture
-     */
+    
     public String getAlphaTexture() {
         return alphaTexture;
     }
-
-    /**
-     * @param alphaTexture the alphaTexture to set
-     */
+    
     public void setAlphaTexture(String alphaTexture) {
         this.alphaTexture = alphaTexture;
     }
-
-    /**
-     * @return the alphaScale
-     */
+    
     public int getAlphaScale() {
         return alphaScale;
     }
-
-    /**
-     * @param alphaScale the alphaScale to set
-     */
+    
     public void setAlphaScale(int alphaScale) {
         this.alphaScale = alphaScale;
     }
-
-    /**
-     * @return the terrain
-     */
+    
     public TerrainQuad getTerrainQuad() {
         return terrain;
     }
-
-    /**
-     * @param terrain the terrain to set
-     */
+    
     public void setTerrain(TerrainQuad terrain) {
         this.terrain = terrain;
     }
