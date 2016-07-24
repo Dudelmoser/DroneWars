@@ -114,7 +114,7 @@ public class Water {
     }
     
     public void setColor(ColorRGBA color) {
-        this.color = color;
+        this.color.set(color);
     }
     
     public float getLevel() {

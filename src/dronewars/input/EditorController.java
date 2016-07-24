@@ -14,6 +14,7 @@ import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import static dronewars.input.DefaultController.logger;
 import dronewars.main.EditorState;
+import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
 import dronewars.serializable.Precipitation;
@@ -53,6 +54,7 @@ public class EditorController extends DefaultController {
         state.setEnabled(false);
         inputManager.removeListener(actionListener);
         inputManager.removeListener(analogListener);
+        JsonFactory.save(level);
     }
 
    private void initFields() {
@@ -187,4 +189,7 @@ public class EditorController extends DefaultController {
 //        nextMap(event.getSelectedIndex());
     }
     
+    public void save() {
+        JsonFactory.save("Levels/", this);
+    }
 }

@@ -47,19 +47,19 @@
                   <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal" align="right">
                     <control name="label" text="Level" color="#E3DBC9" marginRight="10"/>
-                    <control id="Water_Level_Slider" name="horizontalSlider" min="0" max="48"/>
+                    <control id="Water_Level" name="horizontalSlider" min="0" max="48"/>
                   </panel>
                   <panel childLayout="horizontal" align="right">
-                    <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_reflection_slider" name="horizontalSlider" min="0" max="255"/>
+                    <control name="label" text="Variance" color="#E3DBC9" marginRight="10"/>
+                    <control id="Water_LevelVariance" name="horizontalSlider" min="0" max="10"/>
                   </panel>
                   <panel childLayout="horizontal" align="right">
-                    <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
-                    <control id="wave_amplitude" name="horizontalSlider" min="0" max="255"/>
+                    <control name="label" text="Amplitude" color="#E3DBC9" marginRight="10"/>
+                    <control id="Water_WaveAmplitude" name="horizontalSlider" min="0" max="5"/>
                   </panel>
                   <panel childLayout="horizontal" align="right">
-                    <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_reflection_slider" name="horizontalSlider" min="0" max="255"/>
+                    <control name="label" text="Reflectivity" color="#E3DBC9" marginRight="10"/>
+                    <control id="Water_Reflectivity" name="horizontalSlider" min="0" max="1" stepSize="0.01"/>
                   </panel>
               </panel>
 
@@ -118,19 +118,19 @@
                   <control name="label" text="SUN DIRECTION" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
                     <control name="label" text="X" color="#E3DBC9" marginRight="10"/>
-                    <control id="Sky_SunDirection_X" name="horizontalSlider" min="0" max="10"/>
+                    <control id="Sky_SunDirection_X" name="horizontalSlider" min="-10" max="10"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="Y" color="#E3DBC9" marginRight="10"/>
-                    <control id="Sky_SunDirection_Y" name="horizontalSlider" min="0" max="10"/>
+                    <control id="Sky_SunDirection_Y" name="horizontalSlider" min="-10" max="0"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="Z" color="#E3DBC9" marginRight="10"/>
-                    <control id="Sky_SunDirection_Z" name="horizontalSlider" min="0" max="10"/>
+                    <control id="Sky_SunDirection_Z" name="horizontalSlider" min="-10" max="10"/>
                   </panel>
               </panel>
               
-              <panel childLayout="vertical" marginRight="80">  
+              <panel childLayout="vertical" marginRight="80">
                   <control name="label" text="SKY OPTIONS" color="#E3DBC9" marginRight="10" align="right"/>
                   <panel childLayout="horizontal" align="center">
                     <control id="sky_btn" name="button" label="Change Sky" visibleToMouse="true"/>

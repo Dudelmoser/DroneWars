@@ -88,10 +88,7 @@ public class Sky {
     }
     
     public void setSunColor(ColorRGBA color) {
-        sunColor.r = color.r;
-        sunColor.g = color.g;
-        sunColor.b = color.b;
-        sunColor.a = color.a;
+        sunColor.set(color);
     }
     
     public ColorRGBA getAmbientColor() {

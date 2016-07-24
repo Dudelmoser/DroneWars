@@ -44,7 +44,7 @@ public abstract class LevelState extends AbstractAppState {
         app.getStateManager().attach(bullet);
         bullet.getPhysicsSpace().setGravity(gravity);
         
-        level = new Level();
+        level = JsonFactory.load(Level.class);
         level.create(app, bullet);
         
         settings = new Settings();
