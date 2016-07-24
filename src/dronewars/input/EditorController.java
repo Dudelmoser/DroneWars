@@ -23,6 +23,8 @@ import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
 import dronewars.serializable.Precipitation;
+import dronewars.serializable.Sky;
+import dronewars.serializable.Water;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
@@ -80,13 +82,26 @@ public class EditorController extends DefaultController {
     }
     
     private void initSliders() {
-        HashMap<String, Float> options = new HashMap();
-        options.put("water_height_slider", level.getWater().getLevel());
-        for (Map.Entry<String, Float> opt : options.entrySet()) {
-            setFloatSlider(opt.getKey(), opt.getValue());
-        }
+        HashMap<String, Object> options = new HashMap();
         
-        setColorSlider("light_slider_", level.getSky().getSunColor());
+        Water water = level.getWater();
+        Sky sky = level.getSky();
+        
+        options.put("Water_Level_Slider", water.getLevel());
+        options.put("Water_LevelVariance_Slider",water.getLevelVariance());
+        options.put("Water_WaveAmplitude_Slider", water.getWaveAmplitude());
+        
+        options.put("Water_Color_", water.getColor());
+        options.put("Sky_SunColor_", sky.getSunColor());
+        options.put("Sky_AmbientColor_", sky.getAmbientColor());
+        
+        for (Map.Entry<String, Object> opt : options.entrySet()) {
+            if(opt.getKey().contains("Color")){
+                setColorSlider(opt.getKey(), (ColorRGBA) opt.getValue());
+            } else {
+                setFloatSlider(opt.getKey(), (Float) opt.getValue());
+            }
+        }
     }
 
     private void initMapPreset() {
@@ -165,6 +180,7 @@ public class EditorController extends DefaultController {
                 save();
                 break;
         }
+
     }
     
     @NiftyEventSubscriber(pattern = ".*")
@@ -207,10 +223,6 @@ public class EditorController extends DefaultController {
     }
     
     public void nextMap(int i) {
-//        String name = mapNames[i];
-//        state.setRenderedObject(name);
-//        mapSelect.setSelectedImageIndex(getNextImageIndex());
-        
         mapPresetName.setText(mapNames[mapSelect.getSelectedImageIndex()]);
     }
     

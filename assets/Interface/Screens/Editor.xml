@@ -33,13 +33,9 @@
               <!-- RAIN AND SKY - Options -->
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="RAIN OPTIONS" color="#E3DBC9" marginRight="10" align="center"/>
-                  <panel childLayout="horizontal" align="center">
-                    <control id="Rain_Button" name="button" label="Toggle Rain" visibleToMouse="true"/>
-                  </panel>
+                  <control id="Rain_Button" name="button" label="Toggle Rain" visibleToMouse="true"/>
                   <control name="label" text="SKY OPTIONS" color="#E3DBC9" marginTop="10" marginRight="10" align="center"/>
-                  <panel childLayout="horizontal" align="center">
-                    <control id="Sky_Button" name="button" label="Change Sky" visibleToMouse="true"/>
-                  </panel>
+                  <control id="Sky_Button" name="button" label="Change Sky" visibleToMouse="true"/>
               </panel>
 
               <panel childLayout="vertical" marginRight="80">  
@@ -129,7 +125,7 @@
                     <control id="Sky_SunDirection_Z_Slider" name="horizontalSlider" min="-10" max="10"/>
                   </panel>
               </panel>
-
+              
               <!-- LEVEL OPTIONS -->
               <panel childLayout="vertical" marginRight="80"> 
                   <control name="label" text="LEVEL OPTIONS" color="#E3DBC9" marginRight="10"/>
@@ -141,9 +137,8 @@
                     <control id="Level_Save_Button" label="Save this Level" name="button" width="180px" visibleToMouse="true"/>
                   </panel>
               </panel>
-
-            </panel>
-                          
+              
+            </panel>   
          </panel>
       </panel>
     </layer>

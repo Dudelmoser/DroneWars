@@ -68,14 +68,14 @@ public class DefaultController implements ScreenController {
     public void onEndScreen() {}
     
     protected void setColorSlider(String id, ColorRGBA color) {        
-        Slider r = screen.findNiftyControl(id + "R", Slider.class);
+        Slider r = screen.findNiftyControl(id + "R_Slider", Slider.class);
         r.setValue(color.r * 255);
-        Slider g = screen.findNiftyControl(id + "G", Slider.class);
+        Slider g = screen.findNiftyControl(id + "G_Slider", Slider.class);
         g.setValue(color.g * 255);
-        Slider b = screen.findNiftyControl(id + "B", Slider.class);
+        Slider b = screen.findNiftyControl(id + "B_Slider", Slider.class);
         b.setValue(color.b * 255);
         try {
-            Slider a = screen.findNiftyControl(id + "A", Slider.class);
+            Slider a = screen.findNiftyControl(id + "A_Slider", Slider.class);
             b.setValue(color.b * 255);
         } catch (Exception e) {
             logger.log(Level.INFO, "{0} has no alpha channel!", id);
