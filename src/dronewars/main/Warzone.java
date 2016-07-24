@@ -31,6 +31,7 @@ import java.util.Stack;
 public class Warzone implements UdpBroadcastHandler {
     
     private static final int PORT = 54321;
+    private static final int SIZE = 1024;
     private Stack<String> buffer;
     
     private UdpBroadcastSocket udp;
@@ -112,9 +113,10 @@ public class Warzone implements UdpBroadcastHandler {
     }
     
     public void addPlayer() {
-        player = JsonFactory.load("airplane.json", Warplane.class);
+        player = JsonFactory.load(Warplane.class);
         player.createActive(this, bullet, assetManager);
-        player.getControl().setPhysicsLocation(new Vector3f(0,200,0));
+        player.getControl().respawn();
+//        player.getControl().setPhysicsLocation();
     }
     
     public Warplane getPlayer() {
@@ -154,5 +156,9 @@ public class Warzone implements UdpBroadcastHandler {
     @Override
     public void onMessage(String host, int port, String line) {
         buffer.add(line);
+    }
+
+    public float getSize() {
+        return SIZE;
     }
 }

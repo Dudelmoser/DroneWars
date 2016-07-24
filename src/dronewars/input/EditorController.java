@@ -3,11 +3,8 @@ package dronewars.input;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.niftygui.RenderImageJme;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.Slider;
@@ -15,7 +12,6 @@ import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import de.lessvoid.nifty.elements.render.PanelRenderer;
-import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.tools.Color;
 import dronewars.main.EditorState;
 import dronewars.main.StereoApplication;
@@ -23,11 +19,8 @@ import dronewars.serializable.Level;
 import dronewars.serializable.Precipitation;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Water;
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +34,7 @@ public class EditorController extends DefaultController {
     private Precipitation precipitation;
     private boolean shift = false;
     private ImageSelect mapSelect;
+    private String[] mapNames;
     private AssetManager assetManager;
     private Sky sky;
     private NiftyJmeDisplay display;
@@ -91,19 +85,9 @@ public class EditorController extends DefaultController {
     }
 
     private void initPics() {
-        // define path to maps directory and list all sub directories (maps)
-        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Maps";
-        String[] dirs = new File(path).list();
-        
-        // load preview.jpg's of all map directories to mapSelect control
-        ImageSelect selector = nifty.getCurrentScreen().findNiftyControl("mapSelect", ImageSelect.class);
-        
-        for (String dirName : dirs) {
-            String fileName = "Maps/" + dirName + "/preview.jpg";
-            RenderImageJme rImg = new RenderImageJme(fileName, true, display);
-            NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);
-            selector.addImage(nImg);
-       }
+        ImageSelect selector = nifty.getCurrentScreen()
+                .findNiftyControl("mapSelect", ImageSelect.class);
+        mapNames = fillImageSelector(selector, "Maps", "preview.jpg", display);
     }
     
     private AnalogListener analogListener = new AnalogListener() {

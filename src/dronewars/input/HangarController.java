@@ -93,8 +93,18 @@ public class HangarController extends DefaultController {
         }
     }
     
+    private int getNextIndex() {
+        int curIndex = selector.getSelectedImageIndex();
+        int maxIndex = selector.getImageCount() - 1;
+        int nextIndex = curIndex + 1;
+        if (curIndex + 1 > maxIndex)
+            return 0;
+        return nextIndex;
+    }
+    
     public void loadPlane() {
-        String name = planeNames[selector.getSelectedImageIndex()];
+        String name = planeNames[getNextIndex()];
         state.setWarplane(name);
+        selector.setSelectedImageIndex(getNextIndex());
     }
 }

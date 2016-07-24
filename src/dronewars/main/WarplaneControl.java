@@ -17,13 +17,12 @@ import dronewars.serializable.Warplane;
  */
 public class WarplaneControl extends AirplaneControl implements PhysicsCollisionListener {
     
+    private static final float SPAWN_HEIGHT = 200;
     private final int shotCooldown = 100;
     private final int missileCooldown = 2000;
-    private final int flaresCooldown = 10000;
-    private final int respawnDelay = 1000;
+    private final int flaresCooldown = 4000;
+    private final int respawnDelay = 2000;
     private final float respawnTreshold = 2;
-    
-    private Vector3f spawnpoint = new Vector3f(0, 300, 0);
         
     private long lastShot;
     private long lastMissile;
@@ -75,12 +74,15 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     }
 
     public void respawn() {
-        setLinearVelocity(Vector3f.ZERO);
-        setAngularVelocity(Vector3f.ZERO);
-        setPhysicsLocation(spawnpoint);
-        setPhysicsRotation(Quaternion.ZERO);
         crashTime = Long.MAX_VALUE;
         broken = false;
+        setLinearVelocity(Vector3f.ZERO);
+        setAngularVelocity(Vector3f.ZERO);
+        Vector3f spawn = getRandomSpawn();
+        setPhysicsLocation(spawn);
+        Quaternion toCenter = new Quaternion();
+        toCenter.lookAt(spawn.negate(), Vector3f.UNIT_Y);
+        setPhysicsRotation(toCenter);
     }
 
     @Override
@@ -96,5 +98,17 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     
     public void hover() {
         setKinematic(!isKinematic());
+    }
+        
+    private Vector3f getRandomSpawn() {
+        Vector3f rnd = Vector3f.UNIT_Y.mult(SPAWN_HEIGHT);
+        if (Math.random() > 0.5) {
+            rnd.x = (float)Math.random() * warzone.getSize();
+            rnd.z = warzone.getSize();
+        } else {
+            rnd.x = warzone.getSize();
+            rnd.z = (float)Math.random() * warzone.getSize();
+        }
+        return rnd;
     }
 }

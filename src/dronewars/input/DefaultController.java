@@ -90,10 +90,10 @@ public class DefaultController implements ScreenController {
         
         for (String dirName : dirs) {
             String imgPath;
-            String relPath = "/" + dirName + "/" + image;
+            String relPath = folder + "/" + dirName + "/" + image;
             File f = new File(basePath + relPath);
             if(f.exists() && !f.isDirectory()) {
-                imgPath = folder + relPath;
+                imgPath = relPath;
             } else {
                 imgPath = folder + "/" + image;
             }

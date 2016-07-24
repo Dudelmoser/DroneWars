@@ -26,7 +26,7 @@ public class Settings {
     private float volume = 0.5f;
     
     private boolean lod = true;
-    private int clippingDistance = 4096;
+    private int clippingDistance = 8192;
     
     private int reflectionMapSize = 256;
     

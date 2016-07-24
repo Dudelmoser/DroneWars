@@ -20,7 +20,7 @@ import dronewars.serializable.Warplane;
  */
 public class HangarState extends AbstractAppState {
     
-    private static final Vector3f camPos = new Vector3f(0, 2, 4);
+    private static final Vector3f camPos = new Vector3f(0, 1, 4);
     private static final float rotSpeed = FastMath.HALF_PI / 4;
     
     private Node node;
@@ -42,7 +42,7 @@ public class HangarState extends AbstractAppState {
     
     @Override
     public void initialize(AppStateManager stateManager, Application application) {
-        this.app = (StereoApplication) application;
+        app = (StereoApplication) application;
         
         app.setDisplayFps(false);
         app.setDisplayStatView(false);
