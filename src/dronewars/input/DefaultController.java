@@ -17,6 +17,7 @@ import dronewars.main.StereoApplication;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -66,18 +67,24 @@ public class DefaultController implements ScreenController {
     @Override
     public void onEndScreen() {}
     
-    protected void setRgbSlider(String id, ColorRGBA color) {        
+    protected void setColorSlider(String id, ColorRGBA color) {        
         Slider r = screen.findNiftyControl(id + "R", Slider.class);
         r.setValue(color.r * 255);
         Slider g = screen.findNiftyControl(id + "G", Slider.class);
         g.setValue(color.g * 255);
         Slider b = screen.findNiftyControl(id + "B", Slider.class);
         b.setValue(color.b * 255);
+        try {
+            Slider a = screen.findNiftyControl(id + "A", Slider.class);
+            b.setValue(color.b * 255);
+        } catch (Exception e) {
+            logger.log(Level.INFO, "{0} has no alpha channel!", id);
+        }
     }
     
-    protected void setSingleSlider(String id, float v){
+    protected void setFloatSlider(String id, float value){
         Slider slider = screen.findNiftyControl(id, Slider.class);
-        slider.setValue(v);
+        slider.setValue(value);
     }
 
     protected String[] fillImageSelector(ImageSelect selector, String folder, 
@@ -115,5 +122,4 @@ public class DefaultController implements ScreenController {
             return 0;
         return nextIndex;
     }
-    
 }

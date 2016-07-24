@@ -10,7 +10,6 @@ import com.jme3.scene.Node;
  * @author Jan David Kleiß
  */
 public class Level {
-    private String name = "Default";
     private Vector3f gravity = new Vector3f(0, -32, 0);
     
     private Sky sky;

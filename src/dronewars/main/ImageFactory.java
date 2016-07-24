@@ -4,7 +4,6 @@
  */
 package dronewars.main;
 
-import com.google.gson.GsonBuilder;
 import com.jhlabs.image.GaussianFilter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.texture.Image;
@@ -112,10 +111,10 @@ public class ImageFactory {
 
         ByteBuffer data = BufferUtils.createByteBuffer(width * height * 4);
 
-        for (int x = 0; x < width; x++) {
-            for (int z = 0; z < height; z++) {
+        for (int z = 0; z < height; z++) {
+            for (int x = 0; x < width; x++) {
 
-                Color h = new Color(heightMap.getRGB(z, x));
+                Color h = new Color(heightMap.getRGB(x, z));
                 Color c = gradient.getColorAt(h.getRed());
 
                 data.put((byte) c.getRed())
@@ -126,13 +125,5 @@ public class ImageFactory {
         }
                 
         return new Image(Image.Format.RGBA8, width, height, data);
-    }
-    
-    public static void main(String[] args) {
-        ColorRGBA avg2 = getSkyColor("Cloudy45");
-        System.out.println(avg2);
-        
-        String json = new GsonBuilder().create().toJson(avg2);
-        System.out.println(json);
     }
 }

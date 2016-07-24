@@ -26,7 +26,7 @@ public class StartController extends DefaultController {
     
     @Override
     public void onStartScreen() {
-        inputManager.addListener(actionListener, "BACK", "MENU", "ACTION_0");
+        inputManager.addListener(actionListener, "BACK", "START", "ACTION_1");
     }
     
     @Override

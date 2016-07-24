@@ -13,10 +13,15 @@ import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
+import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
+import com.jme3.texture.Texture2D;
+import dronewars.main.GradientABGR;
 import dronewars.main.ImageFactory;
-import dronewars.main.MapFactory;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -47,24 +52,37 @@ public class Terrain {
     private Vegetation vegetation;
     
     private transient TerrainQuad terrain;
-    private transient BufferedImage heightImage;
-    private transient BufferedImage spawnImage;
     
     public Terrain() {}
         
     public void create(Node node, BulletAppState bullet, 
             ColorRGBA sunColor, AssetManager assetManager) {
         
-        Texture heightTex = assetManager.loadTexture(
-                "Maps/" + map + "/height.png");
-        heightImage = MapFactory.fromImage(heightTex.getImage());
+        Texture heightTex = assetManager.loadTexture(getRelativePath() + "height.png");
+        BufferedImage heightImage = ImageFactory.toBufferedImage(heightTex.getImage());
         AbstractHeightMap heightMap = new ImageBasedHeightMap(heightTex.getImage());
         heightMap.load();
         heightMap.smooth(1, smoothing);
         
+        Image alphaImage;
+        BufferedImage alphaBuffer;
+        String alphaPath = getAbsolutePath() + "alpha.png";
+        try {
+            alphaBuffer = ImageFactory.load(alphaPath);
+            alphaImage = ImageFactory.toImage(alphaBuffer);
+        } catch (IOException ex) {
+            alphaImage = ImageFactory.getAlphaMap(heightImage, new GradientABGR());
+            alphaBuffer = ImageFactory.toBufferedImage(alphaImage);
+            try {
+                ImageFactory.save(alphaBuffer, alphaPath);
+            } catch (IOException ex1) {
+                Logger.getLogger(Terrain.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        
         setTerrain(new TerrainQuad("Terrain", patchSize + 1, heightMap.getSize() + 1, 
                 heightMap.getScaledHeightMap()));
-        terrain.setMaterial(getTerrainMaterial(sunColor, assetManager));
+        terrain.setMaterial(getTerrainMaterial(sunColor, alphaImage, assetManager));
         terrain.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         terrain.setLocalScale(new Vector3f(scale, height, scale));
         
@@ -78,20 +96,38 @@ public class Terrain {
         
         if (bullet != null)
             bullet.getPhysicsSpace().add(terrain);
-                
-        vegetation = new Vegetation();
-        Texture spawnTex = assetManager.loadTexture(
-                "Maps/" + map + "/spawn.png");
-        spawnImage = ImageFactory.toBufferedImage(spawnTex.getImage());
+        
+        BufferedImage spawnImage;
+        String spawnPath = getAbsolutePath() + "spawn.png";        
+        try {
+            spawnImage = ImageFactory.load(spawnPath);
+        } catch (IOException ex) {
+            spawnImage = alphaBuffer;
+            try {
+                ImageFactory.save(alphaBuffer, spawnPath);
+            } catch (IOException ex1) {
+                Logger.getLogger(Terrain.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        
         vegetation.create(spawnImage, terrain, bullet, node, assetManager);
     }
     
-    public Material getTerrainMaterial(ColorRGBA sunColor, AssetManager assetManager) {
+    private String getAbsolutePath() {
+        return System.getProperty("user.dir") + "/assets/Maps/" + map + "/";
+    }
+    
+    private String getRelativePath() {
+        return "Maps/" + map + "/";
+    }
+    
+    public Material getTerrainMaterial(ColorRGBA sunColor, Image alphaMap, 
+            AssetManager assetManager) {
+        
         Material material = new Material(assetManager,
                 "Common/MatDefs/Terrain/TerrainLighting.j3md");
    
-        material.setTexture("AlphaMap", assetManager.loadTexture(
-            "Maps/" + map + "/alpha.png"));
+        material.setTexture("AlphaMap", new Texture2D(alphaMap));
         
         Texture redDiffuse = assetManager.loadTexture(
                 "Textures/" + redTexture + "/diffuse.jpg");
@@ -146,10 +182,6 @@ public class Terrain {
             material.getAdditionalRenderState().setWireframe(true);
         
         return material;
-    }
-    
-    public BufferedImage getHeightmap() {
-        return heightImage;
     }
     
     /**

@@ -55,8 +55,8 @@ public class HangarController extends DefaultController {
         state = new HangarState(plane);
         stateManager.attach(state);
         
-        setRgbSlider("color", plane.getColor());
-        setRgbSlider("laser", plane.getLaserColor());
+        setColorSlider("color", plane.getColor());
+        setColorSlider("laser", plane.getLaserColor());
         
         planeSelect = nifty.getCurrentScreen().findNiftyControl("planeSelect", ImageSelect.class);
         planeNames = fillImageSelector(planeSelect, 

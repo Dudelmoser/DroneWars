@@ -71,10 +71,10 @@ public class EditorController extends DefaultController {
         HashMap<String, Float> options = new HashMap();
         options.put("water_height_slider", level.getWater().getLevel());
         for (Map.Entry<String, Float> opt : options.entrySet()) {
-            setSingleSlider(opt.getKey(), opt.getValue());
+            setFloatSlider(opt.getKey(), opt.getValue());
         }
         
-        setRgbSlider("light_slider_", level.getSky().getSunColor());
+        setColorSlider("light_slider_", level.getSky().getSunColor());
     }
 
     private void initPics() {
@@ -127,10 +127,15 @@ public class EditorController extends DefaultController {
         // inputManager.addListener(analogListener, "...");
     }
 
-    @NiftyEventSubscriber(pattern = ".*_btn")
+    @NiftyEventSubscriber(pattern = ".*_Button")
     public void onClick(String id, NiftyMousePrimaryClickedEvent event){
-        if(id.equals("sky_btn")) setSky();
-        if(id.equals("rain_btn")) toggleRain();
+        String name = id.replace("_Button", "");
+        switch(name) {
+            case "Sky":
+                break;
+            case "Rain":
+                level.getPrecipitation().toggle();
+        }
     }
     
     @NiftyEventSubscriber(pattern = ".*")
@@ -162,20 +167,9 @@ public class EditorController extends DefaultController {
 
     private void setSky() {
         int currSky = Integer.parseInt(level.getSky().getName());
-        int newSky = (currSky == 6) ? 0 : (currSky + 1); // max. 6 skies in assets, starts with 0
+        int newSky = (currSky == 6) ? 0 : (currSky + 1);
         level.getSky().setName(String.valueOf(newSky));
         level.getSky().update(assetManager);
-    }
-
-    private void toggleRain() {
-        Precipitation rain = level.getPrecipitation();
-        if(rain.isEnabled()){
-            rain.setEnabled(false);
-            System.out.println("RAIN OFF");
-        } else {
-            rain.setEnabled(true);
-            System.out.println("RAIN ON");
-        }
     }
     
     public void nextMap() {
