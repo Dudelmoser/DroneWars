@@ -154,54 +154,35 @@ public class EditorController extends DefaultController {
         // inputManager.addListener(analogListener, "...");
     }
 
-    @NiftyEventSubscriber(id = "sky_btn")
+    @NiftyEventSubscriber(pattern = ".*_btn")
     public void onClick(String id, NiftyMousePrimaryClickedEvent event){
-        setSky();
+        if(id.equals("sky_btn")) setSky();
+        if(id.equals("rain_btn")) toggleRain();
     }
     
-    @NiftyEventSubscriber(id = "water_height_slider")
-    public void onChangeWaterHeight(String id, SliderChangedEvent event){
+    @NiftyEventSubscriber(pattern = "water_.*._slider")
+    public void onChangeSingleProp(String id, SliderChangedEvent event){
         Slider s = event.getSlider();
         boolean sliderHasFocus = s.hasFocus();
         int val = (int)event.getValue();
         
-        if(sliderHasFocus){
+        if(sliderHasFocus && id.contains("reflection")){
+            setWaterReflection(val);
+        } else if(sliderHasFocus && id.contains("height")){
             setWaterHeight(val);
         }
     }
     
-    @NiftyEventSubscriber(id = "water_reflection_slider")
-    public void onChangeWaterReflection(String id, SliderChangedEvent event){
+    @NiftyEventSubscriber(pattern = ".*_slider_.")
+    public void onChangeColor(String id, SliderChangedEvent event){
         Slider s = event.getSlider();
         boolean sliderHasFocus = s.hasFocus();
         int val = (int)event.getValue();
         
-        if(sliderHasFocus){
-            setWaterReflection(val);
-        }
-    }
-    
-    @NiftyEventSubscriber(pattern = "light_slider_.")
-    public void onChangeLightColor(String id, SliderChangedEvent event){
-        Slider s = event.getSlider();
-        boolean sliderHasFocus = s.hasFocus();
-        int val = (int)event.getValue();
-        
-        if(sliderHasFocus){
-            setLightColor(s.getId(), val);
-            
-        }
-    }
-    
-    @NiftyEventSubscriber(pattern = "water_slider_.")
-    public void onChangeWaterColor(String id, SliderChangedEvent event){
-        Slider s = event.getSlider();
-        boolean sliderHasFocus = s.hasFocus();
-        int val = (int)event.getValue();
-        
-        if(sliderHasFocus){
+        if(sliderHasFocus && id.contains("water")){
             setWaterColor(s.getId(), val);
-            
+        } else if(sliderHasFocus && id.contains("light")){
+            setLightColor(s.getId(), val);
         }
     }
     
@@ -271,5 +252,16 @@ public class EditorController extends DefaultController {
         int newSky = (currSky == 6) ? 0 : (currSky + 1); // max. 6 skies in assets, starts with 0
         sky.setName(String.valueOf(newSky));
         sky.update(assetManager);
+    }
+
+    private void toggleRain() {
+        Precipitation rain = level.getPrecipitation();
+        if(rain.isEnabled()){
+            rain.setEnabled(false);
+            System.out.println("RAIN OFF");
+        } else {
+            rain.setEnabled(true);
+            System.out.println("RAIN ON");
+        }
     }
 }
