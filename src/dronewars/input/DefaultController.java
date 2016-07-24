@@ -28,6 +28,7 @@ public class DefaultController implements ScreenController {
     protected Nifty nifty;
     protected InputManager inputManager;
     protected AppStateManager stateManager;
+    protected ImageSelect selector;
     
     protected ActionListener keyListener = new ActionListener() {
         @Override
@@ -103,4 +104,14 @@ public class DefaultController implements ScreenController {
         }
         return dirs;
     }
+    
+    protected int getNextImageIndex() {
+        int curIndex = selector.getSelectedImageIndex();
+        int maxIndex = selector.getImageCount() - 1;
+        int nextIndex = curIndex + 1;
+        if (curIndex + 1 > maxIndex)
+            return 0;
+        return nextIndex;
+    }
+    
 }

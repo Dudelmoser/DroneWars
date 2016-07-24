@@ -2,6 +2,8 @@ package dronewars.main;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dronewars.serializable.Level;
+import dronewars.serializable.Warplane;
 
 /**
  *
@@ -31,4 +33,14 @@ public class EditorState extends LevelState {
     protected void remove() {
         
     }
+    
+    
+    public void setRenderedObject(String name) {
+        // setName, remove, createStatic 
+    }
+    
+    public Level getRenderedObject() {
+        return level;
+    }
+    
 }

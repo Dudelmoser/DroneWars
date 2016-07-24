@@ -5,6 +5,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ImageSelect;
+import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import dronewars.main.EditorState;
 import dronewars.main.HangarState;
@@ -23,7 +24,6 @@ public class HangarController extends DefaultController {
     private Warplane plane;
     private HangarState state;
     private NiftyJmeDisplay display;
-    private ImageSelect selector;
     
     private ActionListener actionListener = new ActionListener() {
         @Override
@@ -93,18 +93,15 @@ public class HangarController extends DefaultController {
         }
     }
     
-    private int getNextIndex() {
-        int curIndex = selector.getSelectedImageIndex();
-        int maxIndex = selector.getImageCount() - 1;
-        int nextIndex = curIndex + 1;
-        if (curIndex + 1 > maxIndex)
-            return 0;
-        return nextIndex;
+    public void loadPlane(int i) {
+        String name = planeNames[i];
+        state.setRenderedObject(name);
+//        selector.setSelectedImageIndex(getNextImageIndex());
     }
     
-    public void loadPlane() {
-        String name = planeNames[getNextIndex()];
-        state.setWarplane(name);
-        selector.setSelectedImageIndex(getNextIndex());
+    @NiftyEventSubscriber(id = "planeSelect")
+    public void onChange(final String id, ImageSelectSelectionChangedEvent event) {
+        System.out.println("SELECTED IMAGE: " + planeNames[event.getSelectedIndex()]);
+        loadPlane(event.getSelectedIndex());
     }
 }

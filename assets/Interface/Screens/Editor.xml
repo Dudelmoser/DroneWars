@@ -5,11 +5,12 @@
   <useStyles filename="Interface/Styles/radiobutton.xml" />
   <useStyles filename="Interface/Styles/slider.xml" />
   <useStyles filename="Interface/Styles/fonts.xml" />
+  <useStyles filename="Interface/Styles/imageselect.xml" />
   <useControls filename="nifty-default-controls.xml" />
   <screen id="Editor" controller="dronewars.input.EditorController">
     <layer id="layer" childLayout="absolute">
       <panel childLayout="center" backgroundColor="#303030cc" width="100%" 
-             height="20%" x="0%" y="70%">
+             height="20%" x="0%" y="80%">
         <effect>
           <onStartScreen name="fade" start="#0" end="#F" length="300" startDelay="200"/>
           <onEndScreen name="fade" start="#F" end="#0" length="300" startDelay="0"/>
@@ -69,8 +70,8 @@
                     <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
                     <control id="water_slider_B" name="horizontalSlider" min="0" max="255"/>
                   </panel>
-                  <panel id="water_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
-                  </panel>
+<!--                  <panel id="water_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
+                  </panel>-->
               </panel>
 
               <!-- LIGHT - SLIDER -->
@@ -88,8 +89,8 @@
                     <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
                     <control id="light_slider_B" name="horizontalSlider" min="0" max="255"/>
                   </panel>
-                  <panel id="light_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
-                  </panel>
+<!--                  <panel id="light_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
+                  </panel>-->
               </panel>
               
               <panel childLayout="vertical" marginRight="80">  

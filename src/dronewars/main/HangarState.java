@@ -93,13 +93,13 @@ public class HangarState extends AbstractAppState {
         plane.updateRotors(1, 1);
     }
     
-    public void setWarplane(String name) {
+    public void setRenderedObject(String name) {
         plane.setName(name);
         plane.remove();
         plane.createStatic(node, app.getAssetManager());
     }
     
-    public Warplane getWarplane() {
+    public Warplane getRenderedObject() {
         return plane;
     }
 }

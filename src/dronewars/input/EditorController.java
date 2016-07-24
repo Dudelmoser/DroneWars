@@ -7,6 +7,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ImageSelect;
+import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
@@ -19,6 +20,7 @@ import dronewars.serializable.Level;
 import dronewars.serializable.Precipitation;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Water;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,8 +87,8 @@ public class EditorController extends DefaultController {
     }
 
     private void initPics() {
-        ImageSelect selector = nifty.getCurrentScreen()
-                .findNiftyControl("mapSelect", ImageSelect.class);
+        selector = nifty.getCurrentScreen()
+            .findNiftyControl("mapSelect", ImageSelect.class);
         mapNames = fillImageSelector(selector, "Maps", "preview.jpg", display);
     }
     
@@ -98,10 +100,9 @@ public class EditorController extends DefaultController {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-            //System.out.println(this.getClass().toString() + ": key pressed. [" + name + " ]");
             switch(name) {
                 case "BACK": // KEY_ESCAPE
-                    nifty.gotoScreen("Exit");
+                    nifty.gotoScreen("MainMenu");
                     break;
                 case "ACTION_2":  // KEY_LSHIFT
                     shift = keyPressed ? true : false;
@@ -225,10 +226,10 @@ public class EditorController extends DefaultController {
     }
 
     private void setColorPreview(String id, ColorRGBA sunColor) {
-        String previewId = id.substring(0, id.length()-1);
-        Element preview = nifty.getCurrentScreen().findElementByName(previewId + "preview");
-        Color c = new Color(sunColor.r, sunColor.g, sunColor.b, sunColor.a);
-        preview.getRenderer(PanelRenderer.class).setBackgroundColor(c);
+//        String previewId = id.substring(0, id.length()-1);
+//        Element preview = nifty.getCurrentScreen().findElementByName(previewId + "preview");
+//        Color c = new Color(sunColor.r, sunColor.g, sunColor.b, sunColor.a);
+//        preview.getRenderer(PanelRenderer.class).setBackgroundColor(c);
     }
 
     private void setSky() {
@@ -248,4 +249,17 @@ public class EditorController extends DefaultController {
             System.out.println("RAIN ON");
         }
     }
+    
+    public void loadMap(int i) {
+        String name = mapNames[i];
+        state.setRenderedObject(name);
+//        selector.setSelectedImageIndex(getNextImageIndex());
+    }
+    
+    @NiftyEventSubscriber(id = "mapSelect")
+    public void onChange(final String id, ImageSelectSelectionChangedEvent event) {
+        System.out.println("SELECTED IMAGE: " + mapNames[event.getSelectedIndex()]);
+        loadMap(event.getSelectedIndex());
+    }
+    
 }
