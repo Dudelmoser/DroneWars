@@ -250,10 +250,7 @@ public class EditorController extends DefaultController {
     }
     
     public void loadLevel(String filename){
-        // TODO
-        // state.cleanup << vollstÃ¤ndig?
-        // loadJson from filename: level = JsonFactory.load(PATH + Level.class);
-        // state.initialize
+        
     }
     
     public void save() {

@@ -37,7 +37,24 @@
                   <control name="label" text="SKY OPTIONS" color="#E3DBC9" marginTop="10" marginRight="10" align="center"/>
                   <control id="Sky_Button" name="button" label="Change Sky" visibleToMouse="true"/>
               </panel>
+              
+              <!-- TERRAIN OPTIONS-->
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="TERRAIN OPTIONS" color="#E3DBC9" marginRight="10"/>
+                  <panel childLayout="horizontal" align="right">
+                    <control name="label" text="Size" color="#E3DBC9" marginRight="10"/>
+                    <control id="Terrain_Scale_Y" name="horizontalSlider" 
+                             initial="0.5" min="0" max="1" stepSize="0.1"/>
+                  </panel>
+                  <panel childLayout="horizontal" align="right">
+                    <control name="label" text="Size" color="#E3DBC9" marginRight="10"/>
+                    <control id="Terrain_Scale_XZ" name="horizontalSlider" 
+                             initial="1" min="1" max="2" stepSize="0.1"/>
+                  </panel>
+                  <control id="Terrain_Button" name="button" label="Refresh" visibleToMouse="true"/>
+              </panel>
 
+              <!-- WATER OPTIONS -->
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal" align="right">

@@ -51,6 +51,7 @@ public class Terrain {
     private Gradient spawnGradient;
     
     private transient TerrainQuad terrain;
+    private transient BufferedImage spawnImage;
     private transient Node parent;
     private transient ColorRGBA sunColor;
     private transient BulletAppState bullet;
@@ -102,7 +103,6 @@ public class Terrain {
         if (bullet != null)
             bullet.getPhysicsSpace().add(terrain);
         
-        BufferedImage spawnImage;
         String spawnPath = getAbsolutePath("spawn.png");        
         try {
             spawnImage = ImageFactory.load(spawnPath);
@@ -202,6 +202,22 @@ public class Terrain {
         create(parent, bullet, sunColor, assetManager);
     }
     
+    private void reloadVegetation() {
+        vegetation.remove();
+        if (vegetation == null)
+            vegetation = new Vegetation();
+        vegetation.create(spawnImage, terrain, bullet, parent, assetManager);
+    }
+
+    public Vector3f getScaleVector() {
+        return scale;
+    }
+
+    public void setScaleVector(Vector3f scale) {
+        this.scale = scale;
+        terrain.setLocalScale(scale);
+        reloadVegetation();
+    }
     public String getName() {
         return name;
     }
@@ -216,15 +232,6 @@ public class Terrain {
     
     public Gradient getSpawnGradient() {
         return alphaGradient;
-    }
-
-    public Vector3f getScale() {
-        return scale;
-    }
-
-    public void setHeightScale(Vector3f scale) {
-        this.scale = scale;
-        terrain.setLocalScale(scale);
     }
 
     public int getSize() {
