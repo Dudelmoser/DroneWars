@@ -26,16 +26,10 @@ public class Vegetation {
     
     public Vegetation() {}
         
-    public void destroy() {
+    public void remove() {
         node.removeFromParent();
         node = null;
         rng = null;
-    }
-    
-    public void update(BufferedImage spawnmap, TerrainQuad terrain, 
-            BulletAppState bullet, Node parent, AssetManager assetManager) {
-        destroy();
-        create(spawnmap, terrain, bullet, parent, assetManager);
     }
     
     public void create(BufferedImage spawnMap, TerrainQuad terrain, 

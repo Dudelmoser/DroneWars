@@ -31,17 +31,27 @@ public class Level {
         app.getStateManager().attach(bullet);
         bullet.getPhysicsSpace().setGravity(gravity);
         
+        if (sky == null)
+            sky =  new Sky();
         sky.createSkybox(scene, app.getAssetManager());
         sky.createSun(app.getRootNode());
         sky.createAmbient(app.getRootNode());
                 
+        if (horizon == null)
+            horizon = new Horizon();
         horizon.create(app.getRootNode(), app.getAssetManager());
         
+        if (terrain == null)
+            terrain = new Terrain();
         terrain.create(scene, bullet, sky.getSunColor(), app.getAssetManager());
         
+        if (water == null)
+            water = new Water();
         water.create(scene, sky.getSunDirection(), app.getCamera(), 
                 app.getAudioRenderer(), app.getAssetManager());
         
+        if (precipitation == null)
+            precipitation = new Precipitation();
         precipitation.create(app.getRootNode(), terrain.getSize(), app.getAssetManager());
     }
     
