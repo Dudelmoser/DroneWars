@@ -7,10 +7,15 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.DropDown;
+import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
+import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.controls.TextField;
+import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import static dronewars.input.DefaultController.logger;
 import dronewars.main.EditorState;
@@ -18,8 +23,11 @@ import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
 import dronewars.serializable.Precipitation;
+import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +39,9 @@ public class EditorController extends DefaultController {
     private Level level;
     private String[] mapNames;
     private ImageSelect mapSelect;
+    private Label mapPresetName;
+    private TextField levelName;
+    private DropDown levelSelect;
     private EditorState state;
     private NiftyJmeDisplay display;
     private AssetManager assetManager;
@@ -44,7 +55,8 @@ public class EditorController extends DefaultController {
     public void onStartScreen() {
         initFields();
         initSliders();
-        initPics();
+        initMapPreset();
+        initLevelControls();
         addInputListeners();
         inputManager.setCursorVisible(true);
     }
@@ -77,10 +89,22 @@ public class EditorController extends DefaultController {
         setColorSlider("light_slider_", level.getSky().getSunColor());
     }
 
-    private void initPics() {
+    private void initMapPreset() {
         mapSelect = nifty.getCurrentScreen()
             .findNiftyControl("mapSelect", ImageSelect.class);
         mapNames = fillImageSelector(mapSelect, "Maps", "preview.jpg", display);
+        
+        mapPresetName = nifty.getCurrentScreen()
+            .findNiftyControl("mapPresetName", Label.class);
+        mapPresetName.setText(mapNames[mapSelect.getSelectedImageIndex()]);
+    }
+
+    private void initLevelControls() {
+        levelName =  nifty.getCurrentScreen()
+            .findNiftyControl("Level_Name", TextField.class);
+        levelSelect =  nifty.getCurrentScreen()
+            .findNiftyControl("Level_Select", DropDown.class);
+        updateLevelSelect();
     }
     
     private AnalogListener analogListener = new AnalogListener() {
@@ -132,9 +156,14 @@ public class EditorController extends DefaultController {
         String name = id.replace("_Button", "");
         switch(name) {
             case "Sky":
+                setSky();
                 break;
             case "Rain":
                 level.getPrecipitation().toggle();
+                break;
+            case "Level_Save":
+                save();
+                break;
         }
     }
     
@@ -164,6 +193,11 @@ public class EditorController extends DefaultController {
             logger.log(java.util.logging.Level.SEVERE, "Slider reflection exception!", ex);
         }
     }
+    
+    @NiftyEventSubscriber(pattern = "Level_Select")
+    public void onLevelSelect(String id, DropDownSelectionChangedEvent event){
+        levelName.setText((CharSequence) levelSelect.getSelection());
+    }
 
     private void setSky() {
         int currSky = Integer.parseInt(level.getSky().getName());
@@ -172,18 +206,41 @@ public class EditorController extends DefaultController {
         level.getSky().update(assetManager);
     }
     
-    public void nextMap() {
+    public void nextMap(int i) {
 //        String name = mapNames[i];
 //        state.setRenderedObject(name);
 //        mapSelect.setSelectedImageIndex(getNextImageIndex());
+        
+        mapPresetName.setText(mapNames[mapSelect.getSelectedImageIndex()]);
     }
     
     @NiftyEventSubscriber(id = "mapSelect")
     public void onChange(final String id, ImageSelectSelectionChangedEvent event) {
-//        nextMap(event.getSelectedIndex());
+        nextMap(event.getSelectedIndex());
     }
     
     public void save() {
-        JsonFactory.save("Levels/", this);
+        String input = levelName.getText();
+        if(input.equals("") || input == null) input = "unnamed.json";
+        
+        String fileName = input.endsWith(".json") ? input : input + ".json";
+        
+        JsonFactory.save("assets/Levels/" + fileName, level);
+        updateLevelSelect();
+    }
+
+    private ArrayList<String> getSavedLevels() {
+        String path = Paths.get(System.getProperty("user.dir")).toString() + "/assets/Levels";
+        ArrayList<String> levels;
+        levels = new ArrayList(Arrays.asList(new File(path).list()));
+        return levels;
+    }
+
+    private void updateLevelSelect() {
+        ArrayList<String> levels = getSavedLevels();
+        if(levelSelect.getItems().size() != 0){
+            levelSelect.clear();
+        }
+        levelSelect.addAllItems(levels);
     }
 }
