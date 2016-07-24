@@ -203,15 +203,17 @@ public class EditorController extends DefaultController {
             } else {
                 Method setter = obj.getClass().getMethod("set" + parts[1], float.class);
                 setter.invoke(obj, event.getValue());
+                if(id.equals("Water_Level_Slider")){
+//                    TODO:
+//                    level.getTerrain().getVegetation().create();
+//                    level.getTerrain().getVegetation().spawnSpecies();
+//                    -- or --
+//                    define a button to trigger vegetation respawn
+                }
             }
         } catch (Exception ex) {
             logger.log(java.util.logging.Level.SEVERE, "Slider reflection exception!", ex);
         }
-    }
-    
-    @NiftyEventSubscriber(pattern = "Level_Select")
-    public void onLevelSelect(String id, DropDownSelectionChangedEvent event){
-        levelName.setText((CharSequence) ((String)levelSelect.getSelection()).replace(".json", ""));
     }
 
     private void setSky() {
@@ -221,13 +223,30 @@ public class EditorController extends DefaultController {
         level.getSky().update(assetManager);
     }
     
-    public void nextMap(int i) {
-        mapPresetName.setText(mapNames[mapSelect.getSelectedImageIndex()]);
-    }
-    
     @NiftyEventSubscriber(id = "mapSelect")
     public void onChange(final String id, ImageSelectSelectionChangedEvent event) {
-        nextMap(event.getSelectedIndex());
+        mapPresetName.setText(mapNames[event.getSelectedIndex()]);
+        loadHighmap(mapNames[event.getSelectedIndex()]);
+    }
+
+    private void loadHighmap(String mapName) {
+        // TODO
+        // define PATH + "/" + mapName + "/height.png"
+        // LEVEL > TERRAIN > CREATE()? aktuell ist hier map immer "DEFAULT" , setMap()?
+        // oder LEVEL CREATE?
+    }
+    
+    @NiftyEventSubscriber(pattern = "Level_Select")
+    public void onLevelSelect(String id, DropDownSelectionChangedEvent event){
+        levelName.setText((CharSequence) ((String) event.getSelection()).replace(".json", ""));
+        loadLevel((String) event.getSelection());
+    }
+    
+    public void loadLevel(String filename){
+        // TODO
+        // state.cleanup << vollständig?
+        // loadJson from filename: level = JsonFactory.load(PATH + Level.class);
+        // state.initialize
     }
     
     public void save() {
