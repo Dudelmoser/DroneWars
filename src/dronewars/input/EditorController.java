@@ -28,8 +28,10 @@ import dronewars.serializable.Water;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -195,7 +197,6 @@ public class EditorController extends DefaultController {
                 color.getClass().getDeclaredField(parts[2].toLowerCase()).setFloat(color, event.getValue() / 255f);
                 Method rgbSetter = obj.getClass().getMethod("set" + parts[1], ColorRGBA.class);
                 rgbSetter.invoke(obj, color);
-                System.out.println("set" + parts[1] + "_" + color.r + "_" + color.g + "_" + color.b);
             } else if (id.contains("Vector") || id.contains("Direction")) {
                 Method rgbGetter = obj.getClass().getMethod("get" + parts[1]);
                 Vector3f vec = ((Vector3f) rgbGetter.invoke(obj)).clone();
@@ -234,7 +235,9 @@ public class EditorController extends DefaultController {
     
     public void save() {
         String input = levelName.getText();
-        if(input.equals("") || input == null) input = "unnamed.json";
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+        
+        if(input.equals("") || input == null) input = timeStamp + ".json";
         
         String fileName = input.endsWith(".json") ? input : input + ".json";
         
