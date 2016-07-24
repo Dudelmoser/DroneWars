@@ -105,7 +105,7 @@ public class DefaultController implements ScreenController {
             if(f.exists() && !f.isDirectory()) {
                 imgPath = relPath;
             } else {
-                imgPath = folder + "/" + image;
+                imgPath = folder + "/preview.jpg";
             }
             RenderImageJme rImg = new RenderImageJme(imgPath, true, display);
             NiftyImage nImg = new NiftyImage(nifty.getRenderEngine(), rImg);

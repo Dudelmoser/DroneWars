@@ -24,7 +24,7 @@
               <panel childLayout="vertical" marginRight="80">  
                   <panel childLayout="vertical">
                         <control name="label" text="MAP PRESET" color="#E3DBC9" marginRight="10" align="center"/>
-                        <control id="mapSelect" name="imageSelect" height="70%" width="240px"
+                        <control id="mapSelect" name="imageSelect" height="140" width="140"
                                   imageWidth="100%" align="center"/>
                         <control id="mapPresetName" name="label" text="preset_name" color="#E3DBC9" marginRight="10" align="center"/>
                    </panel>
@@ -134,7 +134,7 @@
                     <control name="label" text="Load" color="#E3DBC9" marginRight="10"/>
                     <control id="Level_Select" name="dropDown" width="180px"/>
                     <control name="label" text="Name" color="#E3DBC9" marginRight="10"/>
-                    <control id="Level_Name" name="textfield" width="180px"/>
+                    <control id="Level_Name" name="textfield" width="180px" marginBottom="10"/>
                     <control id="Level_Save_Button" label="Save this Level" name="button" width="180px" visibleToMouse="true"/>
                   </panel>
               </panel>

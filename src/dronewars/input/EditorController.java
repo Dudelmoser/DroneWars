@@ -12,17 +12,14 @@ import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.Label;
-import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import static dronewars.input.DefaultController.logger;
 import dronewars.main.EditorState;
 import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
-import dronewars.serializable.Precipitation;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Water;
 import java.io.File;
@@ -109,7 +106,7 @@ public class EditorController extends DefaultController {
     private void initMapPreset() {
         mapSelect = nifty.getCurrentScreen()
             .findNiftyControl("mapSelect", ImageSelect.class);
-        mapNames = fillImageSelector(mapSelect, "Maps", "preview.jpg", display);
+        mapNames = fillImageSelector(mapSelect, "Maps", "height.png", display);
         
         mapPresetName = nifty.getCurrentScreen()
             .findNiftyControl("mapPresetName", Label.class);
@@ -214,7 +211,7 @@ public class EditorController extends DefaultController {
     
     @NiftyEventSubscriber(pattern = "Level_Select")
     public void onLevelSelect(String id, DropDownSelectionChangedEvent event){
-        levelName.setText((CharSequence) levelSelect.getSelection());
+        levelName.setText((CharSequence) ((String)levelSelect.getSelection()).replace(".json", ""));
     }
 
     private void setSky() {
