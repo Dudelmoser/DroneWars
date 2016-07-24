@@ -50,7 +50,7 @@ public abstract class LevelState extends AbstractAppState {
         settings = new Settings();
         settings.setProfile(2);
         settings.apply(app.getAssetManager(), app.getViewPort(), app.getCamera(),
-                       level.getTerrain().getTerrainQuad(), level.getSky().getSun(), 
+                       level.getTerrain().getTerrainQuad(), level.getSky().getSunLight(), 
                        level.getWater().getWaterFilter(), app.getAudioRenderer());
         init();
     }

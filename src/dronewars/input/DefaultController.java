@@ -17,6 +17,7 @@ import dronewars.main.StereoApplication;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,7 +29,8 @@ public class DefaultController implements ScreenController {
     protected Nifty nifty;
     protected InputManager inputManager;
     protected AppStateManager stateManager;
-    protected ImageSelect selector;
+    
+    protected static final Logger logger = Logger.getLogger("DefaultController");
     
     protected ActionListener keyListener = new ActionListener() {
         @Override
@@ -105,7 +107,7 @@ public class DefaultController implements ScreenController {
         return dirs;
     }
     
-    protected int getNextImageIndex() {
+    protected int getNextImageIndex(ImageSelect selector) {
         int curIndex = selector.getSelectedImageIndex();
         int maxIndex = selector.getImageCount() - 1;
         int nextIndex = curIndex + 1;

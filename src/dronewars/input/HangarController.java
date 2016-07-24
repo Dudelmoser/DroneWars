@@ -24,6 +24,7 @@ public class HangarController extends DefaultController {
     private Warplane plane;
     private HangarState state;
     private NiftyJmeDisplay display;
+    private ImageSelect planeSelect;
     
     private ActionListener actionListener = new ActionListener() {
         @Override
@@ -57,10 +58,10 @@ public class HangarController extends DefaultController {
         setRgbSlider("color", plane.getColor());
         setRgbSlider("laser", plane.getLaserColor());
         
-        selector = nifty.getCurrentScreen().findNiftyControl("planeSelect", ImageSelect.class);
-        planeNames = fillImageSelector(selector, 
+        planeSelect = nifty.getCurrentScreen().findNiftyControl("planeSelect", ImageSelect.class);
+        planeNames = fillImageSelector(planeSelect, 
                 plane.getClass().getSimpleName() + "s", "preview.jpg", display);
-        selector.setSelectedImageIndex(Integer.parseInt(plane.getName()));
+        planeSelect.setSelectedImageIndex(Integer.parseInt(plane.getName()));
     }
 
     @Override
@@ -93,15 +94,14 @@ public class HangarController extends DefaultController {
         }
     }
     
-    public void loadPlane(int i) {
-        String name = planeNames[i];
-        state.setRenderedObject(name);
-//        selector.setSelectedImageIndex(getNextImageIndex());
+    public void nextPlane() {
+        planeSelect.setSelectedImageIndex(getNextImageIndex(planeSelect));
     }
     
     @NiftyEventSubscriber(id = "planeSelect")
     public void onChange(final String id, ImageSelectSelectionChangedEvent event) {
-        System.out.println("SELECTED IMAGE: " + planeNames[event.getSelectedIndex()]);
-        loadPlane(event.getSelectedIndex());
+        System.out.println(event.getSelectedIndex());
+        String name = planeNames[event.getSelectedIndex()];
+        state.setRenderedObject(name);
     }
 }

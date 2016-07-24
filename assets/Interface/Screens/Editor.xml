@@ -46,8 +46,16 @@
               <panel childLayout="vertical" marginRight="80">  
                   <control name="label" text="WATER OPTIONS" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal" align="right">
-                    <control name="label" text="Height" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_height_slider" name="horizontalSlider" min="0" max="255"/>
+                    <control name="label" text="Level" color="#E3DBC9" marginRight="10"/>
+                    <control id="Water_Level_Slider" name="horizontalSlider" min="0" max="48"/>
+                  </panel>
+                  <panel childLayout="horizontal" align="right">
+                    <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
+                    <control id="water_reflection_slider" name="horizontalSlider" min="0" max="255"/>
+                  </panel>
+                  <panel childLayout="horizontal" align="right">
+                    <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
+                    <control id="wave_amplitude" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal" align="right">
                     <control name="label" text="Reflection" color="#E3DBC9" marginRight="10"/>
@@ -60,37 +68,66 @@
                   <control name="label" text="WATER COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
                     <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_slider_R" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Water_Color_R" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_slider_G" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Water_Color_G" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                    <control id="water_slider_B" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Water_Color_B" name="horizontalSlider" min="0" max="255"/>
                   </panel>
-<!--                  <panel id="water_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
-                  </panel>-->
               </panel>
 
               <!-- LIGHT - SLIDER -->
               <panel childLayout="vertical" marginRight="80">  
-                  <control name="label" text="LIGHT COLOR" color="#E3DBC9" marginRight="10"/>
+                  <control name="label" text="SUN COLOR" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="horizontal">
                     <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
-                    <control id="light_slider_R" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Sky_SunColor_R" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
-                    <control id="light_slider_G" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Sky_SunColor_G" name="horizontalSlider" min="0" max="255"/>
                   </panel>
                   <panel childLayout="horizontal">
                     <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
-                    <control id="light_slider_B" name="horizontalSlider" min="0" max="255"/>
+                    <control id="Sky_SunColor_B" name="horizontalSlider" min="0" max="255"/>
                   </panel>
-<!--                  <panel id="light_slider_preview" childLayout="center" width="64" height="64" backgroundColor="202020ff">
-                  </panel>-->
+              </panel>
+              
+              
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="AMBIENT COLOR" color="#E3DBC9" marginRight="10"/>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="R" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_AmbientColor_R" name="horizontalSlider" min="0" max="255"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="G" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_AmbientColor_G" name="horizontalSlider" min="0" max="255"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="B" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_AmbientColor_B" name="horizontalSlider" min="0" max="255"/>
+                  </panel>
+              </panel>
+              
+              <panel childLayout="vertical" marginRight="80">  
+                  <control name="label" text="SUN DIRECTION" color="#E3DBC9" marginRight="10"/>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="X" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_SunDirection_X" name="horizontalSlider" min="0" max="10"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="Y" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_SunDirection_Y" name="horizontalSlider" min="0" max="10"/>
+                  </panel>
+                  <panel childLayout="horizontal">
+                    <control name="label" text="Z" color="#E3DBC9" marginRight="10"/>
+                    <control id="Sky_SunDirection_Z" name="horizontalSlider" min="0" max="10"/>
+                  </panel>
               </panel>
               
               <panel childLayout="vertical" marginRight="80">  

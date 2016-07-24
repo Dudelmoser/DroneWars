@@ -19,7 +19,7 @@ public class Sky {
     
     private ColorRGBA sunColor = ColorRGBA.White;
     private ColorRGBA ambientColor = ColorRGBA.White;
-    private Vector3f sunVector = new Vector3f(-0.7f, -0.2f, 0.7f);
+    private Vector3f sunDirection = new Vector3f(-0.7f, -0.2f, 0.7f);
     
     private transient Spatial sky;
     private transient AmbientLight ambient;
@@ -60,7 +60,7 @@ public class Sky {
     
     public void createSun(Node node) {
         sun = new DirectionalLight();
-        sun.setDirection(sunVector);
+        sun.setDirection(sunDirection);
         sun.setColor(sunColor.mult(sunColor.a));
         node.addLight(sun);
     }
@@ -71,42 +71,44 @@ public class Sky {
         node.addLight(ambient);
     }
     
-    public DirectionalLight getSun() {
+    public DirectionalLight getSunLight() {
         return sun;
     }
     
-    public AmbientLight getAmbient() {
+    public AmbientLight getAmbientLight() {
         return ambient;
+    }
+    
+    public Spatial getSpatial() {
+        return sky;
     }
     
     public ColorRGBA getSunColor() {
         return sunColor;
     }
     
-    public ColorRGBA getFogColor() {
+    public void setSunColor(ColorRGBA color) {
+        sunColor.r = color.r;
+        sunColor.g = color.g;
+        sunColor.b = color.b;
+        sunColor.a = color.a;
+    }
+    
+    public ColorRGBA getAmbientColor() {
         return ambientColor;
     }
-    
-    public Vector3f getSunVector() {
-        return sunVector;
+        
+    public void setAmbientColor(ColorRGBA color) {
+        ambientColor = color;
+        ambient.setColor(color);
     }
     
-    // CONSISTENT Color/ColorRGBA usage
-    // plus update/set behaviour
-    
-    public void setSunColor(ColorRGBA color) {
-        sun.getColor().r = color.r * color.a;
-        sun.getColor().g = color.g * color.a;
-        sun.getColor().b = color.b * color.a;
+    public Vector3f getSunDirection() {
+        return sunDirection;
     }
     
-    public void setFogColor(ColorRGBA color) {
-        ambient.getColor().r = color.r * color.a;
-        ambient.getColor().g = color.g * color.a;
-        ambient.getColor().b = color.b * color.a;
-    }
-    
-    public Spatial getSpatial() {
-        return sky;
+    public void setSunDirection(Vector3f vec) {
+        sunDirection = vec;
+        sun.setDirection(vec);
     }
 }

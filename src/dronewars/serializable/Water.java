@@ -18,15 +18,15 @@ import com.jme3.water.WaterFilter;
 public class Water {
     private boolean enabled = true;
     
-    private ColorRGBA waterColor = new ColorRGBA(0.1f, 0.2f, 0.3f, 0.1f);
-    private Vector3f colorExtinction = new Vector3f(127, 127, 127);
+    private ColorRGBA color = new ColorRGBA(0.1f, 0.2f, 0.3f, 0.1f);
+    private Vector3f filter = new Vector3f(127, 127, 127);
     
+    private float clarity = 50;
     private float reflectivity = 0.5f;
-    private float underwaterSight = 50;
     private float causticIntensity = 0.5f;
     private float waveAmplitude = 1f;
     
-    private float waterLevel = 23.5f;
+    private float level = 23.5f;
     private float levelVariance = 0.5f;
     private float tideDuration = 1;
     
@@ -58,14 +58,14 @@ public class Water {
     
     public void createFilter(Node scene, Vector3f sun, AssetManager assetManager) {
         water = new WaterFilter(scene, sun);
-        water.setWaterColor(waterColor); // seabed color
-        water.setDeepWaterColor(waterColor); // water color
-        water.setColorExtinction(colorExtinction.add(Vector3f.UNIT_XYZ)); // water tint
-        water.setWaterTransparency(waterColor.a); // water alpha
-        water.setUnderWaterFogDistance(underwaterSight); // underwater sight
+        water.setWaterColor(color); // seabed color
+        water.setDeepWaterColor(color); // water color
+        water.setColorExtinction(filter.add(Vector3f.UNIT_XYZ)); // water tint
+        water.setWaterTransparency(color.a); // water alpha
+        water.setUnderWaterFogDistance(clarity); // underwater sight
         water.setRefractionConstant(reflectivity);
         water.setMaxAmplitude(waveAmplitude);
-        water.setWaterHeight(waterLevel);
+        water.setWaterHeight(level);
         
         Texture2D tex = (Texture2D) assetManager.loadTexture(foamTexture);
         water.setFoamTexture(tex);
@@ -89,7 +89,7 @@ public class Water {
     
     public void update(float tpf) {
         waterHeight = (float) Math.sin(time / tideDuration) * levelVariance;
-        water.setWaterHeight(waterLevel + waterHeight);
+        water.setWaterHeight(level + waterHeight);
         if (water.isUnderWater() && !underWater) {
             waves.setDryFilter(underWaterFilter);
             underWater = true;
@@ -108,187 +108,47 @@ public class Water {
     public AudioNode getAudioNode() {
         return waves;
     }
-
-    /**
-     * @return the foamTexture
-     */
-    public String getFoamTexture() {
-        return foamTexture;
-    }
-
-    /**
-     * @param foamTexture the foamTexture to set
-     */
-    public void setFoamTexture(String foamTexture) {
-        this.foamTexture = foamTexture;
-    }
-
-    /**
-     * @return the waveSound
-     */
-    public String getWaveSound() {
-        return waveSound;
-    }
-
-    /**
-     * @param waveSound the waveSound to set
-     */
-    public void setWaveSound(String waveSound) {
-        this.waveSound = waveSound;
-    }
-
-    /**
-     * @return the waterColor
-     */
+    
     public ColorRGBA getColor() {
-        return waterColor;
+        return color;
     }
-
-    /**
-     * @param waterColor the waterColor to set
-     */
-    public void setColor(ColorRGBA waterColor) {
-        this.waterColor = waterColor;
+    
+    public void setColor(ColorRGBA color) {
+        this.color = color;
     }
-
-    /**
-     * @return the waterNuance
-     */
-    public Vector3f getWaterNuance() {
-        return colorExtinction;
+    
+    public float getLevel() {
+        return level;
     }
-
-    /**
-     * @param waterNuance the waterNuance to set
-     */
-    public void setWaterNuance(Vector3f waterNuance) {
-        this.colorExtinction = waterNuance;
+    
+    public void setLevel(float level) {
+        this.level = level;
+        water.setWaterHeight(level);
     }
-
-    /**
-     * @return the waterClarity
-     */
-    public float getWaterClarity() {
-        return underwaterSight;
-    }
-
-    /**
-     * @param waterClarity the waterClarity to set
-     */
-    public void setWaterClarity(float waterClarity) {
-        this.underwaterSight = waterClarity;
-    }
-
-    /**
-     * @return the foamIntensity
-     */
-    public float getFoamIntensity() {
-        return foamIntensity;
-    }
-
-    /**
-     * @param foamIntensity the foamIntensity to set
-     */
-    public void setFoamIntensity(float foamIntensity) {
-        this.foamIntensity = foamIntensity;
-    }
-
-    /**
-     * @return the foamHardness
-     */
-    public float getFoamHardness() {
-        return foamHardness;
-    }
-
-    /**
-     * @param foamHardness the foamHardness to set
-     */
-    public void setFoamHardness(float foamHardness) {
-        this.foamHardness = foamHardness;
-    }
-
-    /**
-     * @return the reflectivity
-     */
+    
     public float getReflectivity() {
         return reflectivity;
     }
-
-    /**
-     * @param reflectivity the reflectivity to set
-     */
+    
     public void setReflectivity(float reflectivity) {
         this.reflectivity = reflectivity;
         water.setRefractionConstant(reflectivity);
     }
-
-    /**
-     * @return the causticIntensity
-     */
-    public float getCausticIntensity() {
-        return causticIntensity;
-    }
-
-    /**
-     * @param causticIntensity the causticIntensity to set
-     */
-    public void setCausticIntensity(float causticIntensity) {
-        this.causticIntensity = causticIntensity;
-    }
-
-    /**
-     * @return the waveAmplitude
-     */
+    
     public float getWaveAmplitude() {
         return waveAmplitude;
     }
-
-    /**
-     * @param waveAmplitude the waveAmplitude to set
-     */
+    
     public void setWaveAmplitude(float waveAmplitude) {
         this.waveAmplitude = waveAmplitude;
+        water.setMaxAmplitude(waveAmplitude);
     }
-
-    /**
-     * @return the waterLevel
-     */
-    public float getWaterLevel() {
-        return waterLevel;
-    }
-
-    /**
-     * @param waterLevel the waterLevel to set
-     */
-    public void setWaterLevel(float waterLevel) {
-        this.waterLevel = waterLevel;
-    }
-
-    /**
-     * @return the levelVariance
-     */
+    
     public float getLevelVariance() {
         return levelVariance;
     }
-
-    /**
-     * @param levelVariance the levelVariance to set
-     */
+    
     public void setLevelVariance(float levelVariance) {
         this.levelVariance = levelVariance;
-    }
-
-    /**
-     * @return the tideDuration
-     */
-    public float getTideDuration() {
-        return tideDuration;
-    }
-
-    /**
-     * @param tideDuration the tideDuration to set
-     */
-    public void setTideDuration(float tideDuration) {
-        this.tideDuration = tideDuration;
     }
 }

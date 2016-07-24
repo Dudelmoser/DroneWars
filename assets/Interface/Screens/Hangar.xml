@@ -40,7 +40,7 @@
             <panel childLayout="horizontal">
               <control id="planeSelect" name="imageSelect" height="128px" width="256px"
                        imageWidth="100%">
-                <interact onClick="loadPlane()"/>
+                <interact onClick="nextPlane()"/>
               </control>
             </panel>
           </panel>

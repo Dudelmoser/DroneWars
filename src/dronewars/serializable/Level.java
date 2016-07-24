@@ -44,7 +44,7 @@ public class Level {
         terrain.create(scene, bullet, sky.getSunColor(), app.getAssetManager());
         
         water = new Water();
-        water.create(scene, sky.getSunVector(), app.getCamera(), 
+        water.create(scene, sky.getSunDirection(), app.getCamera(), 
                 app.getAudioRenderer(), app.getAssetManager());
         
         precipitation = new Precipitation();
