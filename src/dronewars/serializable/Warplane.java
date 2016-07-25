@@ -64,9 +64,13 @@ public class Warplane {
     }
     
     public String serialize() {
+//        return type + ";" + uuid + ";" + name + ";" + System.currentTimeMillis() 
+//                + ";" + Serializer.fromVector(spatial.getLocalTranslation())
+//                + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
         return type + ";" + uuid + ";" + name + ";" + System.currentTimeMillis() 
-                + ";" + Serializer.fromVector(spatial.getLocalTranslation())
-                + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
+                + ";" + Serializer.fromVector(control.getPhysicsLocation())
+                + ";" + Serializer.fromQuaternion(control.getPhysicsRotation());
+//                + ";" + Serializer.from);
     }
        
     public void update(float tpf) {
