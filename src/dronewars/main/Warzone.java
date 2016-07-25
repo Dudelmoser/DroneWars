@@ -7,6 +7,7 @@ package dronewars.main;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.system.Timer;
@@ -106,6 +107,10 @@ public class Warzone implements UdpBroadcastHandler {
                         enemies.put(parts[1], plane);
                     }
                     break;
+                case "SHOT":
+                    addShot(Deserializer.toVector(parts[1]),
+                            Deserializer.toQuaternion(parts[2]),
+                            false);
             }
         }
         
@@ -133,8 +138,13 @@ public class Warzone implements UdpBroadcastHandler {
         return level;
     }
         
-    public void addShot() {
-        Shot shot = new Shot(node, player.getSpatial(), timer, assetManager);
+    public void addShot(Vector3f position, Quaternion rotation, boolean active) {
+        Shot shot;
+        if (active) {
+            shot = new Shot(position, rotation, enemies, node, timer, assetManager);
+        } else {
+            shot = new Shot(position, rotation, null, node, timer, assetManager);
+        }
         effects.add(shot);
     }
     

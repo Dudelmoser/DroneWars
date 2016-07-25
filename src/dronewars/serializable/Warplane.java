@@ -76,7 +76,8 @@ public class Warplane {
             updateRotors(control.getMainRotorSpeed(), control.getYawRotorSpeed());
         } else {
             updateLaser();
-            updateRotors(vel[0].length(), 0);
+            if (vel[0] != null)
+                updateRotors(vel[0].length(), 0);
         }
     }
     

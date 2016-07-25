@@ -7,6 +7,7 @@ package dronewars.main;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
+import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
@@ -20,6 +21,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Quad;
 import com.jme3.system.Timer;
 import com.jme3.texture.Texture;
+import dronewars.serializable.Warplane;
+import java.util.Map;
 
 /**
  *
@@ -37,32 +40,41 @@ public class Shot extends Effect {
     private Node bulletTrail;
     private AudioNode sound;
         
-    public Shot(Node parent, Spatial emitter, Timer timer, AssetManager assetManager) {
+    public Shot(Vector3f position, Quaternion rotation, Map<String, Warplane> enemies,
+            Node parent, Timer timer, AssetManager assetManager) {
         super(0.7f, timer);
         this.parent = parent;
         this.bulletTrail = new Node("BulletTrail");
         
         Geometry trail1 = getTrail(assetManager, timer);
-        trail1.setLocalTranslation(emitter.getLocalTranslation());
-        trail1.setLocalRotation(emitter.getLocalRotation());
+        trail1.setLocalTranslation(position);
+        trail1.setLocalRotation(rotation);
         trail1.setLocalRotation(trail1.getLocalRotation().mult(PITCH90));
-        trail1.move(emitter.getLocalRotation().getRotationColumn(0).normalize().mult(-width / 2));
+        trail1.move(rotation.getRotationColumn(0).normalize().mult(-width / 2));
         bulletTrail.attachChild(trail1);
 
         Spatial trail2 = trail1.deepClone();
         Quaternion rot2 = trail2.getLocalRotation().mult(YAW90);
         trail2.setLocalRotation(rot2);
-        trail2.move(emitter.getLocalRotation().getRotationColumn(1).normalize().mult(width / 2));
-        trail2.move(emitter.getLocalRotation().getRotationColumn(0).normalize().mult(width / 2));
+        trail2.move(rotation.getRotationColumn(1).normalize().mult(width / 2));
+        trail2.move(rotation.getRotationColumn(0).normalize().mult(width / 2));
         bulletTrail.attachChild(trail2);
         
         parent.attachChild(bulletTrail);
         
         sound = new AudioNode(assetManager, "Sounds/shot.wav", false);
         sound.setPositional(true);
-        sound.setLocalTranslation(emitter.getLocalTranslation());
+        sound.setLocalTranslation(position);
         parent.attachChild(sound);
         sound.play();
+        
+        if (enemies == null)
+            return;
+        for (Warplane enemy : enemies.values()) {
+            CollisionResults results = new CollisionResults();
+            enemy.getSpatial().collideWith(bulletTrail.getWorldBound(), results);
+            System.out.println(results.getClosestCollision());
+        }
     }
     
     private Geometry getTrail(AssetManager assetManager, Timer timer) {

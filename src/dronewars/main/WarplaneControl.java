@@ -43,7 +43,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     public void fireShot() {
         long now = System.currentTimeMillis();
         if (now - lastShot > shotCooldown) {
-            warzone.addShot();
+            warzone.addShot(spatial.getLocalTranslation(), spatial.getLocalRotation(), true);
             lastShot = now;
         }
     }
