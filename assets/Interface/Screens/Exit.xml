@@ -22,19 +22,7 @@
           <control name="label" color="#E3DBC9" text="Continue" align="center" valign="center"/>
         </panel>
         
-        <panel height="250" width="250" align="center" valign="center" 
-               backgroundColor="#303039" childLayout="center" visibleToMouse="true"
-               marginLeft="100" marginRight="100">
-          <interact onClick="to(Settings)"/>
-          <effect>
-            <onStartScreen name="fade" start="#0" end="#F" length="100" startDelay="100"/>
-            <onEndScreen name="fade" start="#F" end="#0" length="100" startDelay="100"/>
-            <onHover name="fade" start="#F" end="#D"/>
-          </effect>
-          <control name="label" color="#E3DBC9" text="Settings" align="center" valign="center"/>
-        </panel>
-        
-        <panel height="250" width="250" left="100" valign="center" 
+        <panel id="2" height="250" width="250" left="100" valign="center" 
                backgroundColor="#303039" childLayout="center" visibleToMouse="true"
                marginLeft="100" marginRight="100">
           <interact onClick="exit()"/>

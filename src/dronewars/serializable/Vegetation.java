@@ -36,17 +36,6 @@ public class Vegetation {
             BulletAppState bullet, Node parent, AssetManager assetManager) {
         this.bullet = bullet;
         
-        Model fern = new Model("Fern");
-        fern.setScale(0.5f);
-        Species ferns = new Species(fern, 0); 
-        ferns.setDensity(5);
-        species.add(ferns);
-        
-        Model tree = new Model("Tree");
-        Species trees = new Species(tree, 2);
-        trees.setDensity(5);
-        species.add(trees);
-        
         node = new Node("Vegetation");
         rng = new Random(seed);
         

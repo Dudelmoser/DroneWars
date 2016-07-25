@@ -51,7 +51,26 @@ public class EditorController extends DefaultController {
     private EditorState state;
     private NiftyJmeDisplay display;
     private AssetManager assetManager;
-    private Screen screen;
+        
+    private AnalogListener analogListener = new AnalogListener() {
+        @Override
+        public void onAnalog(String name, float value, float tpf) {
+        
+        }
+    };
+    
+    private ActionListener actionListener = new ActionListener() {
+        @Override
+        public void onAction(String name, boolean keyPressed, float tpf) {
+            if (keyPressed)
+                return;
+            switch(name) {
+                case "BACK": // KEY_ESCAPE
+                    nifty.gotoScreen("Exit");
+                    break;
+            }
+        }
+    };
     
     public EditorController(StereoApplication app, NiftyJmeDisplay display) {
         super(app);
@@ -64,7 +83,7 @@ public class EditorController extends DefaultController {
         initSliders();
         initMapPreset();
         initLevelAndSkyControls();
-        addInputListeners();
+        inputManager.addListener(actionListener, "BACK");
         inputManager.setCursorVisible(true);
     }
     
@@ -72,7 +91,6 @@ public class EditorController extends DefaultController {
     public void onEndScreen() {
         state.setEnabled(false);
         inputManager.removeListener(actionListener);
-        inputManager.removeListener(analogListener);
         JsonFactory.save(level);
     }
 
@@ -129,50 +147,6 @@ public class EditorController extends DefaultController {
         int i = skySelect.getItems().indexOf(state.getLevel().getSky().getName());
         skySelect.selectItemByIndex(i);
     }
-    
-    private AnalogListener analogListener = new AnalogListener() {
-        @Override
-        public void onAnalog(String name, float value, float tpf) {}
-    };
-    
-    private ActionListener actionListener = new ActionListener() {
-        @Override
-        public void onAction(String name, boolean keyPressed, float tpf) {
-            switch(name) {
-                case "BACK": // KEY_ESCAPE
-                    nifty.gotoScreen("Exit");
-                    break;
-                case "OPTION_1":
-                    break;
-                case "OPTION_2":
-                    break;
-                case "OPTION_3":
-                    break;
-                case "OPTION_4":
-                    break;
-                case "R_UP":
-                    break;
-                case "R_DOWN":
-                    break;
-            }
-        }
-    };
-    
-    private void addInputListeners() {
-        inputManager.addListener(actionListener,
-                "BACK",
-                "ACTION_2", //SHIFT
-                "OPTION_1", // 1
-                "OPTION_2", // 2
-                "OPTION_3", // 3
-                "OPTION_4", // 4
-                "R_UP",
-                "R_LEFT",
-                "R_RIGHT",
-                "R_DOWN"
-        );
-        // inputManager.addListener(analogListener, "...");
-    }
 
     @NiftyEventSubscriber(pattern = ".*_Button")
     public void onClick(String id, NiftyMousePrimaryClickedEvent event){
@@ -189,7 +163,6 @@ public class EditorController extends DefaultController {
                 save();
                 break;
         }
-
     }
     
     @NiftyEventSubscriber(pattern = ".*_Slider")

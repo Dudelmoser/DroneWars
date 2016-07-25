@@ -134,8 +134,8 @@ public class DroneWars extends StereoApplication {
                 buttons.get(4).assignButton("ACTION_4");
                 
                 buttons.get(0).assignButton("OPTION_1");
-                buttons.get(1).assignButton("OPTION_2");
-                buttons.get(2).assignButton("OPTION_3");
+                buttons.get(1).assignButton("OPTION_3");
+                buttons.get(2).assignButton("OPTION_2");
                 buttons.get(3).assignButton("OPTION_4");
                 
                 buttons.get(6).assignButton("BACK");

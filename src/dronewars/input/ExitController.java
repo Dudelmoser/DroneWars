@@ -28,7 +28,7 @@ public class ExitController extends DefaultController {
     
     @Override
     public void onStartScreen() {
-        inputManager.addListener(keyListener, "1", "2", "3");
+        inputManager.addListener(keyListener, "OPTION_1", "OPTION_2");
         inputManager.addListener(actionListener, "BACK");
     }
     

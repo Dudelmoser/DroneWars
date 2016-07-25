@@ -21,18 +21,13 @@ import dronewars.serializable.Settings;
  */
 public class SettingsController extends DefaultController {
 
-    private static final String fileName = "settings.json";
     private Settings settings;
     
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean isPressed, float tpf) {
-            if (!isPressed) {
-                switch (name) {
-                    case "BACK":
-                        nifty.gotoScreen("MainMenu");
-                }
-            }
+            if (name.equals("BACK") && !isPressed)
+                nifty.gotoScreen("MainMenu");
         }
     };
     
@@ -42,21 +37,13 @@ public class SettingsController extends DefaultController {
     
     @Override
     public void onStartScreen() {
-        Class[] stateClasses = {PlayerState.class, EditorState.class, SpectatorState.class};
-        for (Class c : stateClasses) {
-            AppState state = stateManager.getState(c);
-            if (state != null) {
-                settings = ((LevelState) state).getSettings();
-                break;
-            }
-        }
-        if (settings == null) {
-            settings = JsonFactory.load(fileName, Settings.class);
-        }
+        inputManager.addListener(actionListener, "BACK");
+        settings = JsonFactory.load(Settings.class);
     }
         
     @Override
     public void onEndScreen() {
-        JsonFactory.save(fileName, settings);
+        JsonFactory.save(settings);
+        inputManager.removeListener(actionListener);
     }
 }
