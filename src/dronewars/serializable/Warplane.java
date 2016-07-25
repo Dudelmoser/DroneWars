@@ -80,7 +80,7 @@ public class Warplane {
             updateLaser();
             updateRotors(control.getMainRotorSpeed(), control.getYawRotorSpeed());
         } else {
-            spatial.move(vel);
+            spatial.move(vel.multLocal(tpf));
 //            interpolate();
             updateLaser();
             updateRotors(vel.length(), 0);
@@ -96,7 +96,7 @@ public class Warplane {
             tOld = tNew;
             spatial.setLocalTranslation(Deserializer.toVector(parts[4]));
             spatial.setLocalRotation(Deserializer.toQuaternion(parts[5]));
-            vel.set(Deserializer.toVector(parts[4]));
+            vel.set(Deserializer.toVector(parts[6]));
         }
 //        long tNew = Long.parseLong(parts[3]);
 //        if (tNew > tSend[0]) {
