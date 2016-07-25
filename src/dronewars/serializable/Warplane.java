@@ -3,6 +3,7 @@ package dronewars.serializable;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -158,8 +159,8 @@ public class Warplane {
         bullet.getPhysicsSpace().add(spatial);
     }
         
-    public void createPassive(String[] serialized, Node parent, AssetManager assetManager) {
-        this.parent = parent;
+    public void createPassive(String[] serialized, Warzone zone, AssetManager assetManager) {
+        this.parent = zone.getNode();
         this.assetManager = assetManager;
         uuid = serialized[1];
         name = serialized[2];
@@ -167,6 +168,12 @@ public class Warplane {
         createSpatial();
         createLaser();
         assignParts();
+        
+        CollisionShape shape = CollisionShapeFactory.createBoxShape(spatial);
+        RigidBodyControl ctrl = new RigidBodyControl(shape);
+        spatial.addControl(ctrl);
+        zone.getBullet().getPhysicsSpace().add(spatial);
+        ctrl.setKinematic(true);
         
         update(serialized);
     }

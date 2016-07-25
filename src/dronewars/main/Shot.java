@@ -46,10 +46,10 @@ public class Shot extends Effect {
         Vector3f direction = getTarget(collide, position, rotation, zone);
         
         if (collide) {
-        Quaternion quat = new Quaternion();
-            quat.lookAt(direction, Vector3f.UNIT_Y);
-        zone.getSocket().send("SHOT;" + Serializer.fromVector(position) + ";"
-                                      + Serializer.fromQuaternion(quat));
+            Quaternion quat = new Quaternion();
+                quat.lookAt(direction, Vector3f.UNIT_Y);
+            zone.getSocket().send("SHOT;" + Serializer.fromVector(position) + ";"
+                                          + Serializer.fromQuaternion(quat));
         }
         
         Geometry trail1 = getTrail(assetManager, timer);
@@ -86,11 +86,14 @@ public class Shot extends Effect {
         
         float closestAngle = FastMath.PI;
         Vector3f targetDir = null;
+        float distance = length + 1;
         Warplane target = null;
         
         for (Warplane enemy : zone.getEnemies().values()) {
             targetDir = enemy.getSpatial().getLocalTranslation()
-                    .subtract(position).normalize();
+                        .subtract(position);
+            distance = targetDir.length();
+            targetDir.normalizeLocal();
             float angle = forward.angleBetween(targetDir);
             if (angle < maxAngle && angle < closestAngle) {
                 target = enemy;
@@ -98,7 +101,9 @@ public class Shot extends Effect {
         }
         
         if (target != null) {
-            zone.getSocket().send("HIT;" + target.getUuid());
+            double chance = (length - distance) / length;
+            if (Math.random() >= chance)
+                zone.getSocket().send("HIT;" + target.getUuid());
         } else {
             targetDir = forward;
         }

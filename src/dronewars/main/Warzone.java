@@ -103,7 +103,7 @@ public class Warzone implements UdpBroadcastHandler {
                         enemies.get(parts[1]).update(parts);
                     } else {
                         Warplane plane = new Warplane();
-                        plane.createPassive(parts, node, assetManager);
+                        plane.createPassive(parts, this, assetManager);
                         enemies.put(parts[1], plane);
                     }
                     break;
@@ -149,6 +149,10 @@ public class Warzone implements UdpBroadcastHandler {
     
     public UdpBroadcastSocket getSocket() {
         return udp;
+    }
+    
+    public BulletAppState getBullet() {
+        return bullet;
     }
         
     public void addShot(Vector3f position, Quaternion rotation, boolean active) {

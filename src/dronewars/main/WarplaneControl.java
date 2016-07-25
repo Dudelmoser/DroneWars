@@ -64,8 +64,8 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     }
     
     public void refresh(float tpf) {
-        
-        if (respawnIn <= respawnDelay) {
+        respawnIn -= tpf;        
+        if (respawnIn < respawnDelay) {
             if (respawnIn < -respawnDelay) {
                 respawnIn = Long.MAX_VALUE;
             } else if (respawnIn < 0 && respawnIn > -respawnDelay) {
@@ -74,9 +74,10 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
         } else if (getPhysicsLocation().y < minWaterLevel) {
             respawnIn = respawnDelay;
             warzone.addExplosion(spatial.getLocalTranslation());
+        } else {
+            applyForces(tpf);
         }
         respawnIn -= tpf;
-        applyForces(tpf);
     }
 
     public void respawn() {
