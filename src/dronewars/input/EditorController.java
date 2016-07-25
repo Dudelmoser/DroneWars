@@ -66,7 +66,7 @@ public class EditorController extends DefaultController {
                 return;
             switch(name) {
                 case "BACK": // KEY_ESCAPE
-                    nifty.gotoScreen("Exit");
+                    nifty.gotoScreen("MainMenu");
                     break;
             }
         }
@@ -89,9 +89,9 @@ public class EditorController extends DefaultController {
     
     @Override
     public void onEndScreen() {
-        state.setEnabled(false);
-        inputManager.removeListener(actionListener);
         JsonFactory.save(level);
+        stateManager.detach(state);
+        inputManager.removeListener(actionListener);
     }
 
    private void initFields() {
@@ -155,10 +155,6 @@ public class EditorController extends DefaultController {
             case "Rain":
                 level.getPrecipitation().toggle();
                 break;
-            case "Terrain":
-                float y = screen.findNiftyControl("Terrain_Scale_Y", Slider.class).getValue();
-                float xz = screen.findNiftyControl("Terrain_Scale_XZ", Slider.class).getValue();
-                level.getTerrain().setScaleVector(new Vector3f(xz, y, xz));
             case "Level_Save":
                 save();
                 break;

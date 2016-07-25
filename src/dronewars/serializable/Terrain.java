@@ -7,7 +7,6 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainQuad;
@@ -28,7 +27,7 @@ import java.util.logging.Logger;
 public class Terrain {
 
     private String name = "Default";
-    private Vector3f scale = Vector3f.UNIT_XYZ;
+    private float height = 0.5f;
     private int smoothing = 3;
     private boolean wet = true;
     
@@ -90,7 +89,7 @@ public class Terrain {
                 heightMap.getScaledHeightMap()));
         terrain.setMaterial(getTerrainMaterial(sunColor, assetManager));
         terrain.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        terrain.setLocalScale(scale);
+        terrain.setLocalScale(1, height, 1);
         
         // avoids flickering when overlapping the horizon floor
         terrain.move(0, -0.1f, 0);
@@ -99,7 +98,6 @@ public class Terrain {
         CollisionShape terrainBox =  CollisionShapeFactory.createMeshShape(terrain);
         RigidBodyControl terrainControl = new RigidBodyControl(terrainBox, 0);
         getTerrainQuad().addControl(terrainControl);
-        
         if (bullet != null)
             bullet.getPhysicsSpace().add(terrain);
         
@@ -194,7 +192,6 @@ public class Terrain {
     
     public void remove() {
         vegetation.remove();
-        parent.updateGeometricState();
         terrain.removeFromParent();
     }
     
@@ -210,13 +207,9 @@ public class Terrain {
         vegetation.create(spawnImage, terrain, bullet, parent, assetManager);
     }
 
-    public Vector3f getScaleVector() {
-        return scale;
-    }
-
-    public void setScaleVector(Vector3f scale) {
-        this.scale = scale;
-        terrain.setLocalScale(scale);
+    public void setHeight(float height) {
+        this.height = height;
+        terrain.setLocalScale(1, height, 1);
         reloadVegetation();
     }
     public String getName() {
