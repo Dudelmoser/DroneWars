@@ -45,10 +45,12 @@ public class Shot extends Effect {
         
         Vector3f direction = getTarget(collide, position, rotation, zone);
         
+        if (collide) {
         Quaternion quat = new Quaternion();
             quat.lookAt(direction, Vector3f.UNIT_Y);
         zone.getSocket().send("SHOT;" + Serializer.fromVector(position) + ";"
                                       + Serializer.fromQuaternion(quat));
+        }
         
         Geometry trail1 = getTrail(assetManager, timer);
         trail1.setLocalTranslation(position);
