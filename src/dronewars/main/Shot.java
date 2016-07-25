@@ -7,7 +7,6 @@ package dronewars.main;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
@@ -22,7 +21,6 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.system.Timer;
 import com.jme3.texture.Texture;
 import dronewars.serializable.Warplane;
-import java.util.Map;
 
 /**
  *
@@ -32,9 +30,10 @@ public class Shot extends Effect {
 
     private final float width = 0.1f;
     private final float length = 1024;
+    private final float maxAngle = (float) Math.toRadians(20);
     
-    private static final Quaternion PITCH90 = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
-    private static final Quaternion YAW90 = new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
+    private static final Quaternion ROLL90 = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
+    private static final Quaternion YAW90 = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y);
     
     private Node bulletTrail;
     private AudioNode sound;
@@ -44,16 +43,21 @@ public class Shot extends Effect {
         super(0.7f, timer);
         this.bulletTrail = new Node("BulletTrail");
         
+        Vector3f direction = getTarget(position, rotation, zone);
+        
         Geometry trail1 = getTrail(assetManager, timer);
         trail1.setLocalTranslation(position);
-        trail1.setLocalRotation(rotation);
-        trail1.setLocalRotation(trail1.getLocalRotation().mult(PITCH90));
+        Quaternion rot1 = new Quaternion();
+        rot1.lookAt(direction.negate(), Vector3f.UNIT_Z);
+        trail1.setLocalRotation(rot1);
+        trail1.setLocalRotation(trail1.getLocalRotation().mult(ROLL90));
         trail1.move(rotation.getRotationColumn(0).normalize().mult(-width / 2));
         bulletTrail.attachChild(trail1);
 
         Spatial trail2 = trail1.deepClone();
-        Quaternion rot2 = trail2.getLocalRotation().mult(YAW90);
-        trail2.setLocalRotation(rot2);
+        Quaternion rot2 = new Quaternion();
+        rot2.lookAt(direction.negate(), Vector3f.UNIT_X);
+        trail2.setLocalRotation(trail2.getLocalRotation().mult(YAW90));
         trail2.move(rotation.getRotationColumn(1).normalize().mult(width / 2));
         trail2.move(rotation.getRotationColumn(0).normalize().mult(width / 2));
         bulletTrail.attachChild(trail2);
@@ -66,15 +70,31 @@ public class Shot extends Effect {
         bulletTrail.attachChild(sound);
         sound.play();
     }
-    
-    public void checkCollision(Warzone zone) {
+            
+    private Vector3f getTarget(Vector3f position, Quaternion rotation, 
+            Warzone zone) {
+        Vector3f forward = rotation.mult(Vector3f.UNIT_Z).negate().normalize();
+        
+        float closestAngle = FastMath.PI;
+        Vector3f targetDir = null;
+        Warplane target = null;
+        
         for (Warplane enemy : zone.getEnemies().values()) {
-            CollisionResults results = new CollisionResults();
-            enemy.getSpatial().collideWith(bulletTrail.getWorldBound(), results);
-            if (results.size() > 0) {
-                zone.getSocket().send("HIT;" + enemy.getUuid());
+            targetDir = enemy.getSpatial().getLocalTranslation()
+                    .subtract(position).normalize();
+            float angle = forward.angleBetween(targetDir);
+            if (angle < maxAngle && angle < closestAngle) {
+                target = enemy;
             }
         }
+        
+        if (target != null) {
+            zone.getSocket().send("HIT;" + target.getUuid());
+            return targetDir;
+        } else {
+            return forward;
+        }
+        
     }
     
     private Geometry getTrail(AssetManager assetManager, Timer timer) {
