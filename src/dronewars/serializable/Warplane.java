@@ -101,7 +101,9 @@ public class Warplane {
                         
             if (pos[1] != null) {
                 vel[1] = vel[0];
-                vel[0] = pos[0].subtract(pos[1]).divide((tSend[0] - tSend[1]) / 1000f);
+                Vector3f newVel = pos[0].subtract(pos[1]).divide((tSend[0] - tSend[1]) / 1000f);
+                if (newVel.length() <= vel[0].length() * 1.1f)
+                    vel[0] = newVel;
             }
         }
     }
