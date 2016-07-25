@@ -30,8 +30,8 @@ public class AirplaneControl extends RigidBodyControl {
     private float pitch;
     private float roll;
     private float yaw;
-    private float yawRotorSpeed;
-    private float mainRotorSpeed;
+    private float yawRate;
+    private float thrust;
     
     public AirplaneControl(Warplane airplane) {
         super(airplane.getCollisionShape());
@@ -100,8 +100,8 @@ public class AirplaneControl extends RigidBodyControl {
     }
        
     private void setRotorSpeed(float tpf) {
-        mainRotorSpeed += (Math.abs(throttle) - mainRotorSpeed) * tpf;
-        yawRotorSpeed += (Math.abs(yaw) - yawRotorSpeed) * tpf;
+        thrust += (Math.abs(throttle) - thrust) * tpf;
+        yawRate += (Math.abs(yaw) - yawRate) * tpf;
     }
     
     private float getForwardVelocity() {
@@ -109,12 +109,12 @@ public class AirplaneControl extends RigidBodyControl {
         return rz.mult(getLinearVelocity().dot(rz) / rz.lengthSquared()).length();
     }
             
-    public float getMainRotorSpeed() {
-        return mainRotorSpeed;
+    public float getThrust() {
+        return thrust;
     }
     
-    public float getYawRotorSpeed() {
-        return yawRotorSpeed;
+    public float getYawRate() {
+        return yawRate;
     }
     
     public void setPower(float power) {

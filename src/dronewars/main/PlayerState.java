@@ -1,41 +1,66 @@
 package dronewars.main;
 
+import com.google.gson.GsonBuilder;
 import com.jme3.input.ChaseCamera;
+import dronewars.serializable.Level;
 
 /**
  *
  * @author Jan David Kleiß
  */
-public class PlayerState extends LevelState {
+public class PlayerState extends GameState {
    
     private static final float camElevation = 10; // in degrees
     private static final float camDistance = 10;
     private static final float camSensitivity = 2;
     
-    private Warzone warzone;
     private ChaseCamera chaseCam;
     
     private boolean stereo = true;
     
     @Override
-    public void init() {
-        warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
-                level, app.getAssetManager());
-        warzone.addPlayer();
-        
-        initCamera();
-    }
+    public void onInitialize() {}
     
     @Override
-    public void update(float tpf) {
-        if (isEnabled()) {
-            if (level.getWater() != null)
-                level.getWater().update(tpf);
-            if (warzone != null)
-                warzone.update(tpf);
-            app.getListener().setLocation(warzone.getPlayer().getSpatial().getLocalTranslation());
-            app.getListener().setRotation(warzone.getPlayer().getSpatial().getLocalRotation());
+    public void onUpdate(float tpf) {
+        if (warzone == null) {
+            if (queueTime > 0) {
+                queueTime -= tpf;
+            } else {
+                level = JsonFactory.load(Level.class);
+                startGame();
+            }
+        } else {
+            if (sendTime <= 0) {
+                udp.send(levelJson);
+                sendTime = LEVEL_SEND_INTERVAL;
+            } else {
+                sendTime -= tpf;
+            }
         }
+    }
+
+    @Override
+    protected void onCleanup() {}
+
+    @Override
+    public void onMessage(String host, int port, String line) {
+        if (line.charAt(0) == '{') {
+            level = new GsonBuilder().create().fromJson(line, Level.class);
+            startGame();
+        }
+    }
+    
+    public void startGame() {    
+        level.create(app, bullet);
+        levelJson = new GsonBuilder().create().toJson(level);
+        
+        warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
+            level, app.getAssetManager());
+        warzone.addPlayer();
+        
+        applySettings();
+        initCamera();
     }
      
     public void initCamera() {        
@@ -51,12 +76,9 @@ public class PlayerState extends LevelState {
         chaseCam.setTrailingSensitivity(camSensitivity);
     }
     
-    @Override
-    protected void remove() {
-        app.getRootNode().detachAllChildren();
-    }
-    
     public WarplaneControl getCombatControl() {
-        return warzone.getPlayer().getControl();
+        if (warzone != null && warzone.getPlayer() != null)
+            return warzone.getPlayer().getControl();
+        return null;
     }
 }

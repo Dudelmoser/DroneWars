@@ -12,11 +12,9 @@ import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.Label;
-import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
-import de.lessvoid.nifty.screen.Screen;
 import static dronewars.input.DefaultController.logger;
 import dronewars.main.EditorState;
 import dronewars.main.JsonFactory;
@@ -50,7 +48,6 @@ public class EditorController extends DefaultController {
     private DropDown skySelect;
     private EditorState state;
     private NiftyJmeDisplay display;
-    private AssetManager assetManager;
         
     private AnalogListener analogListener = new AnalogListener() {
         @Override
@@ -100,7 +97,6 @@ public class EditorController extends DefaultController {
             state.setEnabled(true);
         }
         level = state.getLevel();
-        assetManager = level.getApp().getAssetManager();
         screen = nifty.getCurrentScreen();
     }
     
@@ -190,7 +186,7 @@ public class EditorController extends DefaultController {
 
     private void setSky(String skyName) {
         level.getSky().setName(skyName);
-        level.getSky().update(assetManager);
+        level.getSky().update(level.getApp().getAssetManager());
     }
     
     @NiftyEventSubscriber(id = "mapSelect")

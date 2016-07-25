@@ -14,10 +14,9 @@ import java.util.logging.Logger;
 
 public class UdpBroadcastSocket {
     
-    private final int bufferSize = 1024;
     private final int uuidLength = 12;
-    
     private int port;
+    private int bufferSize;
     private boolean closed;
     private String uuid;
 
@@ -26,9 +25,10 @@ public class UdpBroadcastSocket {
     private static final Logger logger = Logger.getLogger(
             UdpBroadcastSocket.class.getName());
 
-    public UdpBroadcastSocket(UdpBroadcastHandler handler, int port) {
+    public UdpBroadcastSocket(UdpBroadcastHandler handler, int port, int bufferSize) {
         this.port = port;
         this.handler = handler;
+        this.bufferSize = bufferSize;
         String time = String.valueOf(System.currentTimeMillis());
         uuid = time.substring(time.length() - uuidLength);
         open();

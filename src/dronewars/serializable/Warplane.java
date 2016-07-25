@@ -8,12 +8,9 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
@@ -51,6 +48,11 @@ public class Warplane {
     private transient HashSet<Spatial> xRotors = new HashSet();
     private transient HashSet<Spatial> yRotors = new HashSet();
     private transient HashSet<Spatial> zRotors = new HashSet();
+    
+    private transient long lastTimeSent;
+    private transient float thrust;
+    private transient float yawRate;
+    private transient Vector3f velocity = new Vector3f(0, 0, 0);
         
     public Warplane() {}
     
@@ -59,10 +61,29 @@ public class Warplane {
     }
     
     public String serialize() {
-        return type + ";" + uuid + ";" + name + ";" + System.currentTimeMillis() 
-                + ";" + Serializer.fromVector(control.getPhysicsLocation())
-                + ";" + Serializer.fromQuaternion(control.getPhysicsRotation())
-                + ";" + Serializer.fromVector(control.getLinearVelocity());
+        return type + ";" 
+                + uuid + ";" 
+                + name + ";" 
+                + System.currentTimeMillis() + ";"
+                + Serializer.fromVector(control.getPhysicsLocation()) + ";"
+                + Serializer.fromQuaternion(control.getPhysicsRotation()) + ";"
+                + Serializer.fromVector(control.getLinearVelocity()) + ";"
+                + control.getThrust() + ";"
+                + control.getYawRate() + ";"
+                + Serializer.fromColor(color) + ";"
+                + Serializer.fromColor(laserColor);
+    }
+    
+    public void deserialize(String[] parts) {
+        long timeSent = Long.parseLong(parts[3]);
+        if (timeSent > lastTimeSent) {
+            lastTimeSent = timeSent;
+            spatial.setLocalTranslation(Deserializer.toVector(parts[4]));
+            spatial.setLocalRotation(Deserializer.toQuaternion(parts[5]));
+            velocity.set(Deserializer.toVector(parts[6]));
+            thrust = Float.parseFloat(parts[7]);
+            yawRate = Float.parseFloat(parts[8]);
+        }
     }
        
     public void update(float tpf) {
@@ -70,24 +91,11 @@ public class Warplane {
             spatial.updateLogicalState(tpf);
             control.refresh(tpf);
             updateLaser();
-            updateRotors(control.getMainRotorSpeed(), control.getYawRotorSpeed());
+            updateRotors(control.getThrust(), control.getYawRate());
         } else {
-//            spatial.move(vel.multLocal(tpf));
+            spatial.move(velocity.multLocal(tpf));
             updateLaser();
-            updateRotors(vel.length(), 0);
-        }
-    }
-    
-    private long tOld;
-    private Vector3f vel = new Vector3f(0, 0, 0);
-    
-    public void update(String[] parts) {
-        long tNew = Long.parseLong(parts[3]);
-        if (tNew > tOld) {
-            tOld = tNew;
-            spatial.setLocalTranslation(Deserializer.toVector(parts[4]));
-            spatial.setLocalRotation(Deserializer.toQuaternion(parts[5]));
-            vel.set(Deserializer.toVector(parts[6]));
+            updateRotors(velocity.length(), 0);
         }
     }
     
@@ -118,6 +126,14 @@ public class Warplane {
             return yRotors.size() / rotorCount;   
         }
     }
+        
+    public void createStatic(Node parent, AssetManager assetManager) {
+        this.parent = parent;
+        this.assetManager = assetManager;
+        createSpatial();
+        createLaser();
+        assignParts();
+    }
     
     public final void createActive(Warzone zone, BulletAppState bullet, AssetManager assetManager) {
         this.parent = zone.getNode();
@@ -134,11 +150,13 @@ public class Warplane {
         bullet.getPhysicsSpace().add(spatial);
     }
         
-    public void createPassive(String[] serialized, Warzone zone, AssetManager assetManager) {
+    public void createPassive(String[] parts, Warzone zone, AssetManager assetManager) {
         this.parent = zone.getNode();
         this.assetManager = assetManager;
-        uuid = serialized[1];
-        name = serialized[2];
+        uuid = parts[1];
+        name = parts[2];
+        color = Deserializer.toColor(parts[9]);
+        laserColor = Deserializer.toColor(parts[10]);
         
         createSpatial();
         createLaser();
@@ -146,26 +164,11 @@ public class Warplane {
         
         CollisionShape shape = CollisionShapeFactory.createBoxShape(spatial);
         RigidBodyControl ctrl = new RigidBodyControl(shape);
+        ctrl.setKinematic(true);
         spatial.addControl(ctrl);
         zone.getBullet().getPhysicsSpace().add(spatial);
-        ctrl.setKinematic(true);
         
-        update(serialized);
-    }
-    
-    public void createStatic(Node parent, AssetManager assetManager) {
-        this.parent = parent;
-        this.assetManager = assetManager;
-        createSpatial();
-        createLaser();
-        assignParts();
-    }
-    
-    public void remove() {
-        if (spatial == null)
-            return;
-        parent.detachChild(spatial);
-        parent.detachChild(laser);
+        deserialize(parts);
     }
     
     private void createSpatial() {
@@ -208,17 +211,11 @@ public class Warplane {
         }
     }
     
-    private void setTextureScale(Spatial spatial, float scale) {
-        if (spatial instanceof Node) {
-            Node findingnode = (Node) spatial;
-            for (int i = 0; i < findingnode.getQuantity(); i++) {
-                Spatial child = findingnode.getChild(i);
-                setTextureScale(child, scale);
-            }
-        } else if (spatial instanceof Geometry) {
-            Mesh mesh = ((Geometry) spatial).getMesh();
-            mesh.scaleTextureCoordinates(new Vector2f(scale, scale));
-        }
+    public void remove() {
+        if (spatial == null)
+            return;
+        parent.detachChild(spatial);
+        parent.detachChild(laser);
     }
     
     public String getUuid() {

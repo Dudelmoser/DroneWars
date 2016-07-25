@@ -1,46 +1,52 @@
 package dronewars.main;
 
+import com.google.gson.GsonBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import dronewars.serializable.Level;
 
 /**
  *
  * @author Jan David Kleiß
  */
-public class SpectatorState extends LevelState {
+public class SpectatorState extends GameState {
     
     private Vector3f specPosition = new Vector3f(-100, 50, 140);
     private float[] specAngles = new float[]{0, 2.56f, 0};
     
-    private Warzone warzone;
+    private boolean failed;
     
     @Override
-    protected void init() {
-        
-        warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
-                level, app.getAssetManager());
-        
+    protected void onInitialize() {
         app.getFlyByCamera().setEnabled(true);
         app.getFlyByCamera().setMoveSpeed(100);
         app.getCamera().setLocation(specPosition);
         app.getCamera().setRotation(new Quaternion().fromAngles(specAngles));
     }
-    
+
     @Override
-    public void update(float tpf) {
-        if (isEnabled()) {
-            if (level.getWater() != null)
-                level.getWater().update(tpf);
-            if (warzone != null) {
-                warzone.update(tpf);
+    protected void onUpdate(float tpf) {
+        if (warzone == null) {
+            queueTime -= tpf;
+            if (queueTime < 0) {
+                failed = true;
             }
-            app.getListener().setLocation(app.getCamera().getLocation());
-            app.getListener().setRotation(app.getCamera().getRotation());
+        }
+    }
+
+    @Override
+    protected void onCleanup() {}
+
+    @Override
+    public void onMessage(String host, int port, String line) {
+        if (line.charAt(0) == '{') {
+            level = new GsonBuilder().create().fromJson(line, Level.class);
+            warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
+                level, app.getAssetManager());
         }
     }
     
-    @Override
-    protected void remove() {
-        
+    public boolean hasFailed() {
+        return failed;
     }
 }

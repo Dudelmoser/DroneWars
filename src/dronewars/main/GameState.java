@@ -18,6 +18,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import dronewars.network.UdpBroadcastHandler;
+import dronewars.network.UdpBroadcastSocket;
 import dronewars.serializable.Level;
 import dronewars.serializable.Settings;
 
@@ -25,37 +27,53 @@ import dronewars.serializable.Settings;
  *
  * @author Jan David Kleiß
  */
-public abstract class LevelState extends AbstractAppState {
+public abstract class GameState extends AbstractAppState implements UdpBroadcastHandler {
     
-    private static final Vector3f gravity = new Vector3f(0, -30, 0);
+    protected static final int PORT = 54320;
+    protected static final int LEVEL_SEND_INTERVAL = 1;
+    protected static final Vector3f GRAVITY = new Vector3f(0, -30, 0);
     
     protected StereoApplication app;
     protected BulletAppState bullet;
     protected Level level;
     protected Settings settings;
-            
+    protected UdpBroadcastSocket udp;
+    protected Warzone warzone;
+    
+    protected float queueTime = LEVEL_SEND_INTERVAL * 2;
+    protected float sendTime = 0;
+    protected String levelJson;
+    
     @Override
     public void initialize(AppStateManager stateManager, Application application) {
         app = (StereoApplication) application;
         app.setDisplayFps(false);
         app.setDisplayStatView(false);
+        initBullet();
+        udp = new UdpBroadcastSocket(this, PORT, 4096);
         
-        bullet = new BulletAppState();
-        app.getStateManager().attach(bullet);
-        bullet.getPhysicsSpace().setGravity(gravity);
-        
-        level = JsonFactory.load(Level.class);
-        level.create(app, bullet);
-        
-        settings = new Settings();
-        settings.setProfile(2);
-        settings.apply(app.getAssetManager(), app.getViewPort(), app.getCamera(),
-                       level.getTerrain().getTerrainQuad(), level.getSky().getSunLight(), 
-                       level.getWater().getWaterFilter(), app.getAudioRenderer());
-        init();
+        onInitialize();
     }
-        
-    protected abstract void init();
+    
+    @Override
+    public void update(float tpf) {
+        if (isEnabled()) {            
+            if (warzone != null) {
+                warzone.update(tpf);
+                
+                if (warzone.getPlayer() != null) {
+                    app.getListener().setLocation(warzone.getPlayer().getSpatial().getLocalTranslation());
+                    app.getListener().setRotation(warzone.getPlayer().getSpatial().getLocalRotation());
+                }
+            }
+            
+            if (level != null && level.getWater() != null && level.getWater().getWaterFilter() != null) {
+                level.getWater().update(tpf);
+            }
+        }
+
+        onUpdate(tpf);
+    }
     
     @Override
     public void cleanup() {
@@ -67,15 +85,37 @@ public abstract class LevelState extends AbstractAppState {
         }
         
         app.getViewPort().removeProcessor(app.getViewPort().getProcessors().get(0));
-        
+                
         level.getWater().getAudioNode().stop();
         app.getStateManager().detach(bullet);
+        
+        onCleanup();
     }
     
-    protected abstract void remove();
+    protected void initBullet() {
+        bullet = new BulletAppState();
+        app.getStateManager().attach(bullet);
+        bullet.getPhysicsSpace().setGravity(GRAVITY);
+    }
     
+    protected void applySettings() {
+        settings = JsonFactory.load(Settings.class);
+        settings.setProfile(2);
+        settings.apply(app.getAssetManager(), app.getViewPort(), app.getCamera(),
+                       level.getTerrain().getTerrainQuad(), level.getSky().getSunLight(), 
+                       level.getWater().getWaterFilter(), app.getAudioRenderer());
+    }
+       
+    protected abstract void onInitialize();
+    protected abstract void onUpdate(float tpf);
+    protected abstract void onCleanup();
+           
     public Level getLevel() {
         return level;
+    }
+    
+    public Warzone getWarzone() {
+        return warzone;
     }
     
     public Settings getSettings() {

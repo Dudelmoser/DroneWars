@@ -30,10 +30,8 @@ import java.util.Stack;
  * @author Jan David Kleiß
  */
 public class Warzone implements UdpBroadcastHandler {
-    
+       
     private static final int PORT = 54321;
-    private static final int SIZE = 1024;
-    private static final int RADIUS = 768;
     private Stack<String> buffer;
     
     private UdpBroadcastSocket udp;
@@ -55,7 +53,7 @@ public class Warzone implements UdpBroadcastHandler {
         this.bullet = bullet;
         this.assetManager = assetManager;
         
-        udp = new UdpBroadcastSocket(this, PORT);
+        this.udp = new UdpBroadcastSocket(this, PORT, 1024);
         
         node = new Node("Airspace");
         parent.attachChild(node);
@@ -71,6 +69,7 @@ public class Warzone implements UdpBroadcastHandler {
         udp.send("");
         
         if (player != null) {
+            
             Iterator<Missile> iterator = missiles.iterator();
             while(iterator.hasNext()) {
                 Missile missile = iterator.next();
@@ -100,7 +99,7 @@ public class Warzone implements UdpBroadcastHandler {
             switch(parts[0]) {
                 case "PLANE":
                     if (enemies.containsKey(parts[1])) {
-                        enemies.get(parts[1]).update(parts);
+                        enemies.get(parts[1]).deserialize(parts);
                     } else {
                         Warplane plane = new Warplane();
                         plane.createPassive(parts, this, assetManager);
@@ -187,10 +186,10 @@ public class Warzone implements UdpBroadcastHandler {
     }
 
     public float getSize() {
-        return SIZE;
+        return level.getTerrain().getSize();
     }
     
     public float getRadius() {
-        return RADIUS;
+        return level.getTerrain().getSize() * 0.75f;
     }
 }
