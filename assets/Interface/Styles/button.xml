@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles>
+  <!-- +++++++++++++++++++++++++++++++++++++ -->
+  <!-- style for the button background panel -->
+  <!-- +++++++++++++++++++++++++++++++++++++ -->
+  <style id="nifty-button#panel">
+    <attributes backgroundImage="Interface/Styles/button.png" imageMode="resize:21,94,21,15,21,94,21,1,21,94,21,15" width="136px" height="31px" childLayout="center" visibleToMouse="true" />
+     <effect>
+      <onHover name="imageOverlay" filename="Interface/Styles/button-hover.png" imageMode="resize:21,94,21,15,21,94,21,1,21,94,21,15" post="true" />
+    </effect>
+  </style>
+
+  <!-- +++++++++++++++++++++++++++++++++++++ -->
+  <!-- style for the button text -->
+  <!-- +++++++++++++++++++++++++++++++++++++ -->
+  <style id="nifty-button#text" base="button-font">
+    <attributes align="center" valign="center" textHAlign="center" textVAlign="center" visibleToMouse="false" color="#E3DBC9" />
+  </style>
+</nifty-styles>

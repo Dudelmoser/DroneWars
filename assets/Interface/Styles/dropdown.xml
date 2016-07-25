@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles>
+
+  <!-- main panel: this is the actual control space -->
+  <style id="nifty-drop-down#panel" base="base-font">
+    <attributes childLayout="horizontal" height="27px" focusable="true" />
+    <effect>
+    </effect>
+  </style>
+
+  <!-- panel for the left side, parent of the drop down text -->
+  <style id="nifty-drop-down#panel-text">
+    <attributes childLayout="center" width="*" padding="3px,7px,3px,7px" backgroundImage="Interface/Styles/button.png" imageMode="resize:21,94,21,15,21,94,21,1,21,94,21,15" />
+    <effect>
+      <onClick name="focus" targetElement="#parent#icon" />
+      <onClick name="focus" targetElement="#parent#text" />
+      <onFocus name="imageOverlayPulsate" post="false" filename="Interface/Styles/button.png" imageMode="resize:15,6,15,12,15,6,15,3,15,6,15,12" />
+      <onActive name="imageOverlay" post="false" period="1100" filename="Interface/Styles/button.png" imageMode="resize:15,6,15,12,15,6,15,3,15,6,15,12" />
+    </effect>
+  </style>
+  
+   <!-- the actual icon -->
+  <style id="nifty-drop-down#icon">
+    <attributes filename="Interface/Styles/slider.png" x="0px" y="0px" width="23px" height="23px"
+                    imageMode="sprite:23,23,1" />
+  </style>
+
+  <!-- the actual text -->
+  <style id="nifty-drop-down#text" base="base-font">
+    <attributes color="#E3DBC9" textHAlign="left" textVAlign="center" align="left" valign="center" width="*" />
+  </style>
+
+  <!-- pannel for the right side, parent of the icon -->
+  <style id="nifty-drop-down#panel-icon">
+    <attributes childLayout="overlay" width="27px" height="27px" backgroundImage="Interface/Styles/button.png" imageMode="resize:21,94,21,15,21,94,21,1,21,94,21,15" />
+    <effect>
+      <onClick name="focus" targetElement="#parent#text" />
+    </effect>
+  </style>
+
+
+  <!-- the panel for the drop down list -->
+  <style id="nifty-drop-down#list-panel">
+    <attributes childLayout="vertical" padding="7px,9px,7px,9px" backgroundImage="Interface/Styles/button.png" imageMode="resize:21,94,21,15,21,94,21,1,21,94,21,15"/>
+    <effect>
+      <onStartScreen name="clip" length="150" inherit="true" post="false" />
+      <onStartScreen name="move" length="150" timeType="exp" factor="2.5" mode="fromOffset" offsetY="-100" inherit="true" onStartEffect="fixOffset()"/>
+      <onEndScreen name="clip" length="150" inherit="true" post="false" />
+      <onEndScreen name="move" length="150" timeType="exp" factor="2.5" mode="toOffset" offsetY="-100" onStartEffect="fixOffset()" inherit="true"/>
+    </effect>
+  </style>
+
+  <!-- a single item -->
+  <style id="nifty-drop-down#text-item" base="base-font">
+    <attributes color="#E3DBC9" selectionColor="#E3DBC9" visibleToMouse="false" align="left" valign="center" textHAlign="left" textVAlign="center" width="100%" height="27px"/>
+    <effect>
+      <onHover name="focus" />
+      <onFocus name="colorBar" color="#E3DBC9" post="false" />
+    </effect>
+  </style>
+</nifty-styles>

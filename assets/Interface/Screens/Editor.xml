@@ -6,6 +6,8 @@
   <useStyles filename="Interface/Styles/slider.xml" />
   <useStyles filename="Interface/Styles/fonts.xml" />
   <useStyles filename="Interface/Styles/imageselect.xml" />
+  <useStyles filename="Interface/Styles/button.xml" />
+  <useStyles filename="Interface/Styles/dropdown.xml" />
   <useControls filename="nifty-default-controls.xml" />
   <screen id="Editor" controller="dronewars.input.EditorController">
     <layer id="layer" childLayout="absolute">
@@ -34,7 +36,7 @@
               <!-- SKY - Options -->
               <panel childLayout="vertical" marginRight="80" marginTop="20" align="center">  
                 <control name="label" text="SKY OPTIONS" color="#E3DBC9"  marginRight="10" />
-                <control id="Sky_Select" name="dropDown" width="180px"/>
+                <control id="Sky_Select" name="dropDown" width="180px" backgroundImage="Interface/Styles/button.png"/>
               </panel>
               <!-- TERRAIN OPTIONS-->
               <panel childLayout="vertical" marginRight="80" marginTop="20" align="center">  
@@ -153,9 +155,9 @@
                   <control name="label" text="LEVEL OPTIONS" color="#E3DBC9" marginRight="10"/>
                   <panel childLayout="vertical">
                     <control name="label" text="Load" color="#E3DBC9" marginRight="10"/>
-                    <control id="Level_Select" name="dropDown" width="180px"/>
+                    <control id="Level_Select" name="dropDown" width="180px" backgroundImage="Interface/Styles/button.png"/>
                     <control name="label" text="Name" color="#E3DBC9" marginRight="10" marginTop="20" />
-                    <control id="Level_Name" name="textfield" width="180px" marginBottom="10"/>
+                    <control id="Level_Name" name="textfield" width="180px" marginBottom="10" backgroundColor="#3A3434"/>
                     <control id="Level_Save_Button" label="Save this Level" name="button" width="180px" visibleToMouse="true"/>
                   </panel>
               </panel>

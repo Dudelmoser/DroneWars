@@ -10,7 +10,7 @@
         <effect>
             <onActive name="border" color="#E3DBC9" post="true"/>
             <onActive name="textColor" color="#E3DBC9" post="true"/>
-            <onFocus name="colorBar" color="#800f" post="true"/>
+            <onFocus name="colorBar" color="#303039" post="true"/>
             <onFocus name="textColor" color="#E3DBC9" post="true"/>
         </effect>
     </style>
