@@ -45,9 +45,9 @@ public class UdpBroadcastSocket {
                         try {
                             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                             socket.receive(packet);
-                            if (packet.getLength() > 0 && packet.getData().length > 0) {
+                            if (packet.getLength() > 0) {
                                 String data = new String(packet.getData(), 0, packet.getLength());
-                                if (!data.substring(0, uuidLength).equals(uuid)) {
+                                if (!data.substring(0, uuidLength).equals(uuid) && data.length() > uuidLength) {
                                     handler.onMessage(packet.getAddress().getHostAddress(), packet.getPort(), data.substring(uuidLength));
                                 }
                             }

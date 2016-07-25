@@ -107,10 +107,9 @@ public class Warzone implements UdpBroadcastHandler {
                     }
                     break;
                 case "SHOT":
-                    System.out.println("shot received");
                     addShot(Deserializer.toVector(parts[1]),
-                            Deserializer.toQuaternion(parts[2]),
-                            false);
+                            Deserializer.toVector(parts[2]),
+                            Deserializer.toQuaternion(parts[3]));
                     break;
                 case "HIT":
                     if (parts[1].equals(player.getUuid()))
@@ -154,8 +153,8 @@ public class Warzone implements UdpBroadcastHandler {
         return bullet;
     }
         
-    public void addShot(Vector3f position, Quaternion rotation, boolean active) {
-        Shot shot = new Shot(active, position, rotation, this, timer, assetManager);
+    public void addShot(Vector3f direction, Vector3f position, Quaternion rotation) {
+        Shot shot = new Shot(direction, position, rotation, this, timer, assetManager);
         effects.add(shot);
     }
     
