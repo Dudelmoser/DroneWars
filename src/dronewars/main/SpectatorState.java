@@ -1,9 +1,7 @@
 package dronewars.main;
 
-import com.google.gson.GsonBuilder;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import dronewars.serializable.Level;
 
 /**
  *
@@ -32,9 +30,7 @@ public class SpectatorState extends GameState {
                 failed = true;
             }
             if (levelJson != null) {
-                level = new GsonBuilder().create().fromJson(levelJson, Level.class);
-                warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
-                    level, app.getAssetManager());
+                initLevel();
             }
         }
     }

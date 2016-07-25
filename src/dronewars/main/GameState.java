@@ -5,6 +5,7 @@
 
 package dronewars.main;
 
+import com.google.gson.GsonBuilder;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -40,9 +41,9 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
     protected UdpBroadcastSocket udp;
     protected Warzone warzone;
     
-    protected float queueTime = LEVEL_SEND_INTERVAL * 2;
+    protected float queueTime = LEVEL_SEND_INTERVAL * 5;
     protected float sendTime = 0;
-    protected String levelJson;
+    protected String levelJson = null;
     
     @Override
     public void initialize(AppStateManager stateManager, Application application) {
@@ -50,13 +51,14 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
         app.setDisplayFps(false);
         app.setDisplayStatView(false);
         initBullet();
-        udp = new UdpBroadcastSocket(this, PORT, 4096);
+        udp = new UdpBroadcastSocket(this, PORT, 2048);
         
         onInitialize();
     }
     
     @Override
     public void update(float tpf) {
+        udp.send("");
         if (isEnabled()) {            
             if (warzone != null) {
                 warzone.update(tpf);
@@ -89,7 +91,18 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
         level.getWater().getAudioNode().stop();
         app.getStateManager().detach(bullet);
         
+        udp.close();
+        
         onCleanup();
+    }
+    
+    protected void initLevel() {
+        level.create(app, bullet);
+        levelJson = new GsonBuilder().create().toJson(level);
+        
+        warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
+            level, app.getAssetManager());
+        applySettings();
     }
     
     protected void initBullet() {

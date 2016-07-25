@@ -45,21 +45,16 @@ public class PlayerState extends GameState {
 
     @Override
     public void onMessage(String host, int port, String line) {
-        if (line.charAt(0) == '{') {
+        if (line.charAt(0) == '{' && levelJson == null) {
+            System.out.println(line);
+            level = new GsonBuilder().create().fromJson(line, Level.class);
             levelJson = line;
-            level = new GsonBuilder().create().fromJson(levelJson, Level.class);
         }
     }
     
     public void startGame() {
-        level.create(app, bullet);
-        levelJson = new GsonBuilder().create().toJson(level);
-        
-        warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
-            level, app.getAssetManager());
+        initLevel();
         warzone.addPlayer();
-        
-        applySettings();
         initCamera();
     }
      
