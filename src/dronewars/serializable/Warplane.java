@@ -41,11 +41,6 @@ public class Warplane {
     private transient final float maxStep = 100;
     
     private transient String uuid;
-    private transient long[] tRec = new long[2];
-//    private transient long[] tSend = new long[2];
-//    private transient Vector3f[] pos = new Vector3f[2];
-//    private transient Vector3f[] vel = new Vector3f[2];
-    private transient Quaternion[] rot = new Quaternion[2];
     // rotational velocity extrapolation missing
     
     private transient AssetManager assetManager;
@@ -64,9 +59,6 @@ public class Warplane {
     }
     
     public String serialize() {
-//        return type + ";" + uuid + ";" + name + ";" + System.currentTimeMillis() 
-//                + ";" + Serializer.fromVector(spatial.getLocalTranslation())
-//                + ";" + Serializer.fromQuaternion(spatial.getLocalRotation());
         return type + ";" + uuid + ";" + name + ";" + System.currentTimeMillis() 
                 + ";" + Serializer.fromVector(control.getPhysicsLocation())
                 + ";" + Serializer.fromQuaternion(control.getPhysicsRotation())
@@ -80,8 +72,7 @@ public class Warplane {
             updateLaser();
             updateRotors(control.getMainRotorSpeed(), control.getYawRotorSpeed());
         } else {
-            spatial.move(vel.multLocal(tpf));
-//            interpolate();
+//            spatial.move(vel.multLocal(tpf));
             updateLaser();
             updateRotors(vel.length(), 0);
         }
@@ -98,37 +89,7 @@ public class Warplane {
             spatial.setLocalRotation(Deserializer.toQuaternion(parts[5]));
             vel.set(Deserializer.toVector(parts[6]));
         }
-//        long tNew = Long.parseLong(parts[3]);
-//        if (tNew > tSend[0]) {
-//            tSend[1] = tSend[0];
-//            tSend[0] = tNew;
-//            tRec[1] = tRec[0];
-//            tRec[0] = System.currentTimeMillis();
-//            pos[1] = pos[0];
-//            pos[0] = Deserializer.toVector(parts[4]);
-//            rot[1] = rot[0];
-//            rot[0] = Deserializer.toQuaternion(parts[5]);
-//                        
-//            if (pos[1] != null) {
-//                vel[1] = vel[0];
-//                vel[0] = pos[0].subtract(pos[1]).divide((tSend[0] - tSend[1]) / 1000f);
-//            }
-//        }
     }
-    
-//    private void interpolate() {
-//        if (pos[0] == null || pos[1] == null || vel[0].length() > maxStep)
-//            return;
-//        
-//        float fac = (System.currentTimeMillis() - tRec[0]) / (float) (tSend[0] - tSend[1]);
-//        if (fac > 1) {
-//            spatial.setLocalTranslation(pos[0].add(vel[0].mult(fac - 1)));
-//            spatial.setLocalRotation(new Quaternion().slerp(rot[0], rot[1], fac));
-//        } else {
-//            spatial.setLocalTranslation(pos[1].interpolate(pos[0], fac));
-//            spatial.setLocalRotation(new Quaternion().slerp(rot[0], rot[1], fac));
-//        }
-//    }
     
     public void updateLaser() {
         laser.setLocalTranslation(spatial.getLocalTranslation());
