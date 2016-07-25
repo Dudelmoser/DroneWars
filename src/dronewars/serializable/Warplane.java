@@ -83,7 +83,6 @@ public class Warplane {
     }
     
     public void update(String[] parts) {
-        if (pos[0] != null)System.out.println(pos[0]);
         long tNew = Long.parseLong(parts[3]);
         if (tNew > tSend[0]) {
             tSend[1] = tSend[0];

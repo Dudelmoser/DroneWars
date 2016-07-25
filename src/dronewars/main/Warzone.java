@@ -138,13 +138,21 @@ public class Warzone implements UdpBroadcastHandler {
     public Level getLevel() {
         return level;
     }
+    
+    public Map<String,Warplane> getEnemies() {
+        return enemies;
+    }
+    
+    public UdpBroadcastSocket getSocket() {
+        return udp;
+    }
         
     public void addShot(Vector3f position, Quaternion rotation, boolean active) {
         Shot shot;
         if (active) {
-            shot = new Shot(position, rotation, enemies, node, timer, assetManager);
+            shot = new Shot(position, rotation, this, timer, assetManager);
         } else {
-            shot = new Shot(position, rotation, null, node, timer, assetManager);
+            shot = new Shot(position, rotation, this, timer, assetManager);
         }
         effects.add(shot);
     }

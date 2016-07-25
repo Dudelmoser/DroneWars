@@ -36,14 +36,12 @@ public class Shot extends Effect {
     private static final Quaternion PITCH90 = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
     private static final Quaternion YAW90 = new Quaternion().fromAngleAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
     
-    private Node parent;
     private Node bulletTrail;
     private AudioNode sound;
         
-    public Shot(Vector3f position, Quaternion rotation, Map<String, Warplane> enemies,
-            Node parent, Timer timer, AssetManager assetManager) {
+    public Shot(Vector3f position, Quaternion rotation, Warzone zone,
+            Timer timer, AssetManager assetManager) {
         super(0.7f, timer);
-        this.parent = parent;
         this.bulletTrail = new Node("BulletTrail");
         
         Geometry trail1 = getTrail(assetManager, timer);
@@ -60,20 +58,22 @@ public class Shot extends Effect {
         trail2.move(rotation.getRotationColumn(0).normalize().mult(width / 2));
         bulletTrail.attachChild(trail2);
         
-        parent.attachChild(bulletTrail);
+        zone.getNode().attachChild(bulletTrail);
         
         sound = new AudioNode(assetManager, "Sounds/shot.wav", false);
         sound.setPositional(true);
         sound.setLocalTranslation(position);
-        parent.attachChild(sound);
+        bulletTrail.attachChild(sound);
         sound.play();
-        
-        if (enemies == null)
-            return;
-        for (Warplane enemy : enemies.values()) {
+    }
+    
+    public void checkCollision(Warzone zone) {
+        for (Warplane enemy : zone.getEnemies().values()) {
             CollisionResults results = new CollisionResults();
             enemy.getSpatial().collideWith(bulletTrail.getWorldBound(), results);
-            System.out.println(results.getClosestCollision());
+            if (results.size() > 0) {
+                zone.getSocket().send("HIT;" + enemy.getUuid());
+            }
         }
     }
     
@@ -106,8 +106,8 @@ public class Shot extends Effect {
     @Override
     public void remove() {
         System.out.println("shot removed");
-        parent.detachChild(sound);
-        parent.detachChild(bulletTrail);
+        sound.removeFromParent();
+        bulletTrail.removeFromParent();
     }
     
     @Override
