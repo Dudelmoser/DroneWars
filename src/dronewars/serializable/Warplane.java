@@ -75,6 +75,7 @@ public class Warplane {
             updateLaser();
             updateRotors(control.getMainRotorSpeed(), control.getYawRotorSpeed());
         } else {
+            interpolate();
             updateLaser();
             if (vel[0] != null)
                 updateRotors(vel[0].length(), 0);
@@ -82,6 +83,7 @@ public class Warplane {
     }
     
     public void update(String[] parts) {
+        if (pos[0] != null)System.out.println(pos[0]);
         long tNew = Long.parseLong(parts[3]);
         if (tNew > tSend[0]) {
             tSend[1] = tSend[0];
@@ -100,7 +102,7 @@ public class Warplane {
         }
     }
     
-    public void interpolate() {
+    private void interpolate() {
         if (pos[0] == null || pos[1] == null || vel[0].length() > maxStep)
             return;
         

@@ -111,6 +111,7 @@ public class Warzone implements UdpBroadcastHandler {
                     addShot(Deserializer.toVector(parts[1]),
                             Deserializer.toQuaternion(parts[2]),
                             false);
+                    break;
             }
         }
         

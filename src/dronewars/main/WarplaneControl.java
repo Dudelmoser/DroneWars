@@ -10,7 +10,6 @@ import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dronewars.serializable.Warplane;
-import dronewars.serializable.Water;
 
 /**
  *
