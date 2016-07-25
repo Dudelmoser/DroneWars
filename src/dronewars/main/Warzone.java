@@ -112,6 +112,9 @@ public class Warzone implements UdpBroadcastHandler {
                             Deserializer.toQuaternion(parts[2]),
                             false);
                     break;
+                case "HIT":
+                    if (parts[1].equals(player.getUuid()))
+                        addExplosion(player.getSpatial().getLocalTranslation());
             }
         }
         
@@ -148,12 +151,7 @@ public class Warzone implements UdpBroadcastHandler {
     }
         
     public void addShot(Vector3f position, Quaternion rotation, boolean active) {
-        Shot shot;
-        if (active) {
-            shot = new Shot(position, rotation, this, timer, assetManager);
-        } else {
-            shot = new Shot(position, rotation, this, timer, assetManager);
-        }
+        Shot shot = new Shot(active, position, rotation, this, timer, assetManager);
         effects.add(shot);
     }
     

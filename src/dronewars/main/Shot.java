@@ -38,12 +38,17 @@ public class Shot extends Effect {
     private Node bulletTrail;
     private AudioNode sound;
         
-    public Shot(Vector3f position, Quaternion rotation, Warzone zone,
+    public Shot(boolean collide, Vector3f position, Quaternion rotation, Warzone zone,
             Timer timer, AssetManager assetManager) {
         super(0.7f, timer);
         this.bulletTrail = new Node("BulletTrail");
         
-        Vector3f direction = getTarget(position, rotation, zone);
+        Vector3f direction = getTarget(collide, position, rotation, zone);
+        
+        Quaternion quat = new Quaternion();
+            quat.lookAt(direction, Vector3f.UNIT_Y);
+        zone.getSocket().send("SHOT;" + Serializer.fromVector(position) + ";"
+                                      + Serializer.fromQuaternion(quat));
         
         Geometry trail1 = getTrail(assetManager, timer);
         trail1.setLocalTranslation(position);
@@ -71,9 +76,11 @@ public class Shot extends Effect {
         sound.play();
     }
             
-    private Vector3f getTarget(Vector3f position, Quaternion rotation, 
+    private Vector3f getTarget(boolean collide, Vector3f position, Quaternion rotation, 
             Warzone zone) {
         Vector3f forward = rotation.mult(Vector3f.UNIT_Z).negate().normalize();
+        if (!collide)
+            return forward;
         
         float closestAngle = FastMath.PI;
         Vector3f targetDir = null;
@@ -90,11 +97,10 @@ public class Shot extends Effect {
         
         if (target != null) {
             zone.getSocket().send("HIT;" + target.getUuid());
-            return targetDir;
         } else {
-            return forward;
+            targetDir = forward;
         }
-        
+        return targetDir;
     }
     
     private Geometry getTrail(AssetManager assetManager, Timer timer) {
