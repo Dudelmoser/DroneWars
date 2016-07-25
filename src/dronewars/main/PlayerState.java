@@ -2,6 +2,8 @@ package dronewars.main;
 
 import com.google.gson.GsonBuilder;
 import com.jme3.input.ChaseCamera;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import dronewars.serializable.Level;
 
 /**
@@ -13,6 +15,7 @@ public class PlayerState extends GameState {
     private static final float camElevation = 10; // in degrees
     private static final float camDistance = 10;
     private static final float camSensitivity = 2;
+    private static final boolean trail = false;
     
     private ChaseCamera chaseCam;
     
@@ -38,6 +41,16 @@ public class PlayerState extends GameState {
                 sendTime -= tpf;
             }
         }
+        
+        if (warzone != null && warzone.getPlayer() != null) {
+            if (!trail) {
+                Spatial player = warzone.getPlayer().getSpatial();            
+                Vector3f upwards = player.getLocalRotation().mult(Vector3f.UNIT_Y).normalize().mult(2);
+                Vector3f backwards = player.getLocalRotation().mult(Vector3f.UNIT_Z).normalize().mult(10);
+                app.getCamera().setLocation(player.getLocalTranslation().add(backwards).add(upwards));
+                app.getCamera().lookAt(player.getLocalTranslation(), upwards);
+            }
+        }
     }
 
     @Override
@@ -60,15 +73,17 @@ public class PlayerState extends GameState {
      
     public void initCamera() {        
         app.getFlyByCamera().setEnabled(false);
-        chaseCam = new ChaseCamera(app.getCamera(), 
-                warzone.getPlayer().getSpatial(), app.getInputManager());
-        chaseCam.setDefaultVerticalRotation((float)Math.toRadians(camElevation));
-        chaseCam.setDefaultHorizontalRotation(0);
-        chaseCam.setDefaultDistance(camDistance);
-        chaseCam.setEnabled(true);
-        chaseCam.setSmoothMotion(true);
-        chaseCam.setTrailingEnabled(true);
-        chaseCam.setTrailingSensitivity(camSensitivity);
+        if (trail) {
+            chaseCam = new ChaseCamera(app.getCamera(), 
+                    warzone.getPlayer().getSpatial(), app.getInputManager());
+            chaseCam.setDefaultVerticalRotation((float)Math.toRadians(camElevation));
+            chaseCam.setDefaultHorizontalRotation(0);
+            chaseCam.setDefaultDistance(camDistance);
+            chaseCam.setEnabled(true);
+            chaseCam.setSmoothMotion(true);
+            chaseCam.setTrailingEnabled(true);
+            chaseCam.setTrailingSensitivity(camSensitivity);
+        }
     }
     
     public WarplaneControl getCombatControl() {

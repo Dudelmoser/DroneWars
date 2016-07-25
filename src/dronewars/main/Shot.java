@@ -44,7 +44,7 @@ public class Shot extends Effect {
         this.bulletTrail = new Node("Shot");
         
         if (direction == null) {
-            direction = getDirection(position, rotation, zone, false);
+            direction = getDirection(position, rotation, zone);
             zone.getSocket().send("SHOT;" + Serializer.fromVector(direction) + ";"
                                           + Serializer.fromVector(position) + ";"
                                           + Serializer.fromQuaternion(rotation));
@@ -77,10 +77,8 @@ public class Shot extends Effect {
     }
             
     private Vector3f getDirection(Vector3f position, Quaternion rotation, 
-            Warzone zone, boolean response) {
+            Warzone zone) {
         Vector3f forward = rotation.mult(Vector3f.UNIT_Z).negate().normalize();
-        if (!response)
-            return forward;
         
         float closestAngle = FastMath.PI;
         Vector3f targetDir = null;
