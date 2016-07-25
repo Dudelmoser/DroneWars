@@ -31,6 +31,11 @@ public class SpectatorState extends GameState {
             if (queueTime < 0) {
                 failed = true;
             }
+            if (levelJson != null) {
+                level = new GsonBuilder().create().fromJson(levelJson, Level.class);
+                warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
+                    level, app.getAssetManager());
+            }
         }
     }
 
@@ -40,9 +45,7 @@ public class SpectatorState extends GameState {
     @Override
     public void onMessage(String host, int port, String line) {
         if (line.charAt(0) == '{') {
-            level = new GsonBuilder().create().fromJson(line, Level.class);
-            warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
-                level, app.getAssetManager());
+            levelJson = line;
         }
     }
     

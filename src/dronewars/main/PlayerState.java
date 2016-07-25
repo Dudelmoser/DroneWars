@@ -16,8 +16,6 @@ public class PlayerState extends GameState {
     
     private ChaseCamera chaseCam;
     
-    private boolean stereo = true;
-    
     @Override
     public void onInitialize() {}
     
@@ -28,8 +26,10 @@ public class PlayerState extends GameState {
                 queueTime -= tpf;
             } else {
                 level = JsonFactory.load(Level.class);
-                startGame();
+                levelJson = new GsonBuilder().create().toJson(level);
             }
+            if (levelJson != null)
+                startGame();
         } else {
             if (sendTime <= 0) {
                 udp.send(levelJson);
@@ -46,12 +46,12 @@ public class PlayerState extends GameState {
     @Override
     public void onMessage(String host, int port, String line) {
         if (line.charAt(0) == '{') {
-            level = new GsonBuilder().create().fromJson(line, Level.class);
-            startGame();
+            levelJson = line;
+            level = new GsonBuilder().create().fromJson(levelJson, Level.class);
         }
     }
     
-    public void startGame() {    
+    public void startGame() {
         level.create(app, bullet);
         levelJson = new GsonBuilder().create().toJson(level);
         
