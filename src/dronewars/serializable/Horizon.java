@@ -1,6 +1,10 @@
 package dronewars.serializable;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -35,7 +39,7 @@ public class Horizon {
 
     public Horizon() {}
         
-    public void create(Node node, AssetManager assetManager) {
+    public void create(Node node, BulletAppState bullet, AssetManager assetManager) {
         Texture tex = assetManager.loadTexture("Horizons/" + name + ".png");
         AbstractHeightMap heightmap = new ImageBasedHeightMap(tex.getImage());
         heightmap.load();
@@ -69,6 +73,12 @@ public class Horizon {
             mat.getAdditionalRenderState().setWireframe(wire);
         
         node.attachChild(horizon);
+        
+        CollisionShape shape =  CollisionShapeFactory.createMeshShape(horizon);
+        RigidBodyControl control = new RigidBodyControl(shape, 0);
+        horizon.addControl(control);
+        if (bullet != null)
+            bullet.getPhysicsSpace().add(horizon);
     }
     
     public void setFogColor(ColorRGBA fogColor) {

@@ -128,6 +128,10 @@ public class Warzone implements UdpBroadcastHandler {
     public Node getNode() {
         return node;
     }
+    
+    public Level getLevel() {
+        return level;
+    }
         
     public void addShot() {
         Shot shot = new Shot(node, player.getSpatial(), timer, assetManager);

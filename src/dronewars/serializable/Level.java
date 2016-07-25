@@ -39,7 +39,7 @@ public class Level {
                 
         if (horizon == null)
             horizon = new Horizon();
-        horizon.create(app.getRootNode(), app.getAssetManager());
+        horizon.create(app.getRootNode(), bullet, app.getAssetManager());
         
         if (terrain == null)
             terrain = new Terrain();

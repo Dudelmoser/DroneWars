@@ -10,6 +10,7 @@ import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import dronewars.serializable.Warplane;
+import dronewars.serializable.Water;
 
 /**
  *
@@ -21,20 +22,22 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     private final int shotCooldown = 100;
     private final int missileCooldown = 2000;
     private final int flaresCooldown = 4000;
-    private final int respawnDelay = 2000;
-    private final float respawnTreshold = 2;
+    private final float respawnDelay = 3;
         
     private long lastShot;
     private long lastMissile;
     private long lastFlares;
-    private boolean broken = false;
-    private long crashTime = Long.MAX_VALUE;
+    
+    private float respawnIn = Float.MAX_VALUE;
     
     private Warzone warzone;
+    private float minWaterLevel;
         
     public WarplaneControl(Warplane airplane, Warzone warzone) {
         super(airplane);
         this.warzone = warzone;
+        this.minWaterLevel = warzone.getLevel().getWater().getLevel() 
+                - warzone.getLevel().getWater().getLevelVariance();
     }
         
     public void fireShot() {
@@ -62,44 +65,51 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     }
     
     public void refresh(float tpf) {
-        if (broken) {
-            long tPassed = System.currentTimeMillis() - crashTime;
-            if (tPassed > respawnDelay) {
+        
+        if (respawnIn <= respawnDelay) {
+            if (respawnIn < -respawnDelay) {
+                respawnIn = Long.MAX_VALUE;
+            } else if (respawnIn < 0 && respawnIn > -respawnDelay) {
                 respawn();
-            } else {
-                return;
             }
+        } else if (getPhysicsLocation().y < minWaterLevel) {
+            respawnIn = respawnDelay;
+            warzone.addExplosion(spatial.getLocalTranslation());
         }
+        respawnIn -= tpf;
         applyForces(tpf);
     }
 
     public void respawn() {
+        respawnIn -= respawnDelay;
         setLinearVelocity(Vector3f.ZERO);
         setAngularVelocity(Vector3f.ZERO);
         Vector3f spawn = getSpawnOnCircle(warzone.getRadius(), SPAWN_HEIGHT);
-        System.out.println(spawn);
         setPhysicsLocation(spawn);
         Quaternion toCenter = new Quaternion();
         toCenter.lookAt(spawn, Vector3f.UNIT_Y);
         setPhysicsRotation(toCenter);
-        
-        crashTime = Long.MAX_VALUE;
-        broken = false;
     }
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-        if (!broken) {
-            broken = true;
+        if (respawnIn > respawnDelay) {
+            respawnIn = respawnDelay;
             warzone.addExplosion(spatial.getLocalTranslation());
-        } else if (crashTime == Long.MAX_VALUE 
-                    && getAngularVelocity().length() < respawnTreshold) {
-                crashTime = System.currentTimeMillis();
         }
     }
     
     public void hover() {
         setKinematic(!isKinematic());
+    }
+    
+    private Vector3f getSpawnOnCircle(float radius, float height) {
+        Vector3f rnd = new Vector3f(0, height, 0);
+        float rndX = (float) (Math.random() * radius);
+        float rndZ = (float) Math.sqrt(Math.abs(rndX*rndX - radius*radius));
+        rnd.x = Math.random() > 0.5 ? rndX : -rndX;
+        rnd.z = Math.random() > 0.5 ? rndZ : -rndZ;
+        return rnd;
     }
         
     private Vector3f getSpawnOnSquare(float width, float height) {
@@ -111,15 +121,6 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
             rnd.x += Math.random() > 0.5 ? width : -width;
             rnd.z += (float)Math.random() * width;
         }
-        return rnd;
-    }
-    
-    private Vector3f getSpawnOnCircle(float radius, float height) {
-        Vector3f rnd = new Vector3f(0, height, 0);
-        float rndX = (float) (Math.random() * radius);
-        float rndZ = (float) Math.sqrt(Math.abs(rndX*rndX - radius*radius));
-        rnd.x = Math.random() > 0.5 ? rndX : -rndX;
-        rnd.z = Math.random() > 0.5 ? rndZ : -rndZ;
         return rnd;
     }
 }

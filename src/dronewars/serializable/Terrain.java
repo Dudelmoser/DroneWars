@@ -85,8 +85,8 @@ public class Terrain {
             }
         }
         
-        setTerrain(new TerrainQuad("Terrain", patchSize + 1, heightMap.getSize() + 1, 
-                heightMap.getScaledHeightMap()));
+        terrain = new TerrainQuad("Terrain", patchSize + 1, heightMap.getSize() + 1, 
+                heightMap.getScaledHeightMap());
         terrain.setMaterial(getTerrainMaterial(sunColor, assetManager));
         terrain.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         terrain.setLocalScale(1, height, 1);
@@ -97,7 +97,7 @@ public class Terrain {
         
         CollisionShape terrainBox =  CollisionShapeFactory.createMeshShape(terrain);
         RigidBodyControl terrainControl = new RigidBodyControl(terrainBox, 0);
-        getTerrainQuad().addControl(terrainControl);
+        terrain.addControl(terrainControl);
         if (bullet != null)
             bullet.getPhysicsSpace().add(terrain);
         
