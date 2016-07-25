@@ -18,7 +18,6 @@ import dronewars.input.EditorController;
 import dronewars.input.EditorLoadingController;
 import dronewars.input.ExitController;
 import dronewars.input.MainMenuController;
-import dronewars.input.ModesController;
 import dronewars.input.PlayerController;
 import dronewars.input.PlayerLoadingController;
 import dronewars.input.SettingsController;
@@ -84,7 +83,6 @@ public class DroneWars extends StereoApplication {
         nifty.registerScreenController(
                   new StartController(this)
                 , new MainMenuController(this)
-                , new ModesController(this)
                 , new ExitController(this)
                 , new HangarController(this, display)
                 , new PlayerLoadingController(this)
@@ -98,7 +96,7 @@ public class DroneWars extends StereoApplication {
         
         String[] screens = {"Hangar", "Editor", "EditorLoading", "Exit", "MainMenu",
                             "Player", "PlayerLoading", "Settings", "Spectator",
-                            "SpectatorLoading", "Start", "Modes"};
+                            "SpectatorLoading", "Start"};
         for (String screen : screens) {
             nifty.addXml("Interface/Screens/" + screen + ".xml");
         }

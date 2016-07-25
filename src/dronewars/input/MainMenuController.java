@@ -12,8 +12,13 @@ public class MainMenuController extends DefaultController {
     private ActionListener actionListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-            if (name.equals("BACK"))
-                nifty.gotoScreen("Start");
+            switch(name) {
+                case "BACK":
+                    nifty.gotoScreen("Start");
+                    break;
+                case "START":
+                    nifty.gotoScreen("PlayerLoading");
+            }
         }
     };
     
@@ -24,7 +29,7 @@ public class MainMenuController extends DefaultController {
     @Override
     public void onStartScreen() {
         inputManager.addListener(keyListener, "OPTION_1", "OPTION_2", "OPTION_3", "OPTION_4");
-        inputManager.addListener(actionListener, "BACK");
+        inputManager.addListener(actionListener, "BACK", "START");
     }
     
     @Override

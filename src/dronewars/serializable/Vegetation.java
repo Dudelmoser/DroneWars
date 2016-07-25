@@ -24,16 +24,17 @@ public class Vegetation {
     private transient Node node;
     private transient Random rng;
     
+    private transient BulletAppState bullet;
+    
     public Vegetation() {}
         
     public void remove() {
         node.removeFromParent();
-        node = null;
-        rng = null;
     }
     
     public void create(BufferedImage spawnMap, TerrainQuad terrain, 
             BulletAppState bullet, Node parent, AssetManager assetManager) {
+        this.bullet = bullet;
         
         Model fern = new Model("Fern");
         fern.setScale(0.5f);

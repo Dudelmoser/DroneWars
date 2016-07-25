@@ -10,7 +10,7 @@
     <layer id="background" childLayout="center" backgroundColor="#E3DBC9AA">
       <panel id="centered" childLayout="horizontal">
           
-        <panel height="250" width="250" align="center" valign="center" 
+        <panel id="1" height="250" width="250" align="center" valign="center" 
                backgroundColor="#303039" childLayout="center" visibleToMouse="true"
                marginLeft="100" marginRight="100" >
           <interact onClick="back()"/>

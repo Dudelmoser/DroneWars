@@ -37,6 +37,7 @@ public class HangarState extends AbstractAppState {
     @Override
     public void cleanup() {
         node.removeFromParent();
+        app.getCamera().setFrustumNear(1);
         app.getViewPort().removeProcessor(filters);
     }
     
