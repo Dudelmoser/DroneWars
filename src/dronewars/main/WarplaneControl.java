@@ -92,6 +92,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     }
 
     public void respawn() {
+        crashed = false;
         respawnIn -= respawnDelay;
         setLinearVelocity(Vector3f.ZERO);
         setAngularVelocity(Vector3f.ZERO);

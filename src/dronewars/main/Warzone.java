@@ -131,6 +131,10 @@ public class Warzone implements UdpBroadcastHandler {
                     System.out.println("Explosion received!");
                     addExplosion(Deserializer.toVector(parts[1]), false);
                     break;
+                case "FLARES":
+                    System.out.println("Flares received!");
+                    addFlares(Deserializer.toVector(parts[1]), false);
+                    break;
             }
         }
     }
@@ -181,7 +185,7 @@ public class Warzone implements UdpBroadcastHandler {
         Flares flares = new Flares(player.getSpatial().getLocalTranslation(), 
                 node, timer, assetManager);
         if (active)
-            udp.send("FLARE;" + Serializer.fromVector(position));
+            udp.send("FLARES;" + Serializer.fromVector(position));
         effects.add(flares);
     }
     
