@@ -21,6 +21,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     private final int shotCooldown = 100;
     private final int missileCooldown = 2000;
     private final int flaresCooldown = 4000;
+    private final float flaresDuration = 1;
     private final float respawnDelay = 3;
         
     private long lastShot;
@@ -28,6 +29,8 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     private long lastFlares;
     
     private float respawnIn = Float.MAX_VALUE;
+    private float immuneFor;
+    private boolean crashed;
     
     private Warzone warzone;
     private float minWaterLevel;
@@ -50,7 +53,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     public void fireMissile() {
         long now = System.currentTimeMillis();
         if (now - lastMissile > missileCooldown) {
-            warzone.addMissile();
+            warzone.addMissile(spatial.getLocalTranslation(), spatial.getLocalRotation());
             lastMissile = now;
         }
     }
@@ -58,13 +61,15 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     public void useFlares() {
         long now = System.currentTimeMillis();
         if (now - lastFlares > flaresCooldown) {
-            warzone.addFlares();
+            warzone.addFlares(spatial.getLocalTranslation(), true);
             lastFlares = now;
+            immuneFor = flaresDuration;
         }
     }
     
     public void refresh(float tpf) {
-        respawnIn -= tpf;        
+        immuneFor -= tpf;
+        respawnIn -= tpf;
         if (respawnIn < respawnDelay) {
             if (respawnIn < -respawnDelay) {
                 respawnIn = Long.MAX_VALUE;
@@ -73,11 +78,16 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
             }
         } else if (getPhysicsLocation().y < minWaterLevel) {
             respawnIn = respawnDelay;
-            warzone.addExplosion(spatial.getLocalTranslation());
+            warzone.addExplosion(spatial.getLocalTranslation(), false);
         } else {
-            applyForces(tpf);
+            if (!crashed)
+                applyForces(tpf);
         }
         respawnIn -= tpf;
+    }
+    
+    public void crash() {
+        crashed = true;
     }
 
     public void respawn() {
@@ -95,12 +105,19 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     public void collision(PhysicsCollisionEvent event) {
         if (respawnIn > respawnDelay) {
             respawnIn = respawnDelay;
-            warzone.addExplosion(spatial.getLocalTranslation());
+            warzone.addExplosion(spatial.getLocalTranslation(), true);
         }
     }
     
     public void hover() {
         setKinematic(!isKinematic());
+    }
+    
+    public boolean isImmune() {
+        if (immuneFor > 0) {
+            return true;
+        }
+        return false;
     }
     
     private Vector3f getSpawnOnCircle(float radius, float height) {

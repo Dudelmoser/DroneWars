@@ -35,7 +35,6 @@ public class Warplane {
     
     private transient final float laserLength = 100;
     private transient final float laserWidth = 0.004f;
-    private transient final float maxStep = 100;
     
     private transient String uuid;
     // rotational velocity extrapolation missing
@@ -95,7 +94,7 @@ public class Warplane {
         } else {
             spatial.move(velocity.multLocal(tpf));
             updateLaser();
-            updateRotors(velocity.length(), 0);
+            updateRotors(thrust, yawRate);
         }
     }
     

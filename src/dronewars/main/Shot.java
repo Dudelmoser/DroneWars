@@ -30,7 +30,7 @@ public class Shot extends Effect {
 
     private final float width = 0.1f;
     private final float length = 1024;
-    private final float maxAngle = (float) Math.toRadians(20);
+    private final float maxAngle = (float) Math.toRadians(5);
     
     private static final Quaternion ROLL90 = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X);
     private static final Quaternion YAW90 = new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_Y);

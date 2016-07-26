@@ -12,17 +12,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.system.Timer;
 import dronewars.serializable.Warplane;
-import java.util.HashSet;
 import dronewars.network.UdpBroadcastSocket;
 import dronewars.network.UdpBroadcastHandler;
 import dronewars.serializable.Level;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -38,8 +34,8 @@ public class Warzone implements UdpBroadcastHandler {
     private Node node;
     private Warplane player;
     private Map<String, Warplane> enemies;
+    private Map<String, Missile> missiles;
     private List<Effect> effects;
-    private Set<Missile> missiles;
     
     private Level level;
     private Timer timer;
@@ -55,45 +51,39 @@ public class Warzone implements UdpBroadcastHandler {
         
         this.udp = new UdpBroadcastSocket(this, PORT, 1024);
         
-        node = new Node("Airspace");
+        node = new Node("Warzone");
         parent.attachChild(node);
         
         buffer = new Stack<>();
         enemies = new HashMap<>();
+        missiles = new HashMap<>();
         effects = new ArrayList<>();
-        missiles = Collections.synchronizedSet(new HashSet<Missile>());
     }
     
-    public void update(float tpf) {        
+    public void update(float tpf) {
         // prevents some sort of timeout bug for the spectator
         udp.send("");
-        
+                
         if (player != null) {
-            
-            Iterator<Missile> iterator = missiles.iterator();
-            while(iterator.hasNext()) {
-                Missile missile = iterator.next();
-                if (missile.hasExpired()) {
-                    missile.remove();
-                    addExplosion(missile.getPosition());
-                    iterator.remove();
-                } else if (missile.isActive()) {
-                    missile.update(tpf);
-                }
-            }
-
-            for (int i = 0; i < effects.size(); i++) {
-                if (effects.get(i).hasExpired()) {
-                    effects.remove(i);
-                } else {
-                    effects.get(i).update(tpf);
-                }
-            }
             player.update(tpf);
-//            if (player.getSpatial())
             udp.send(player.serialize());
         }
         
+        for (Warplane enemy : enemies.values()) {
+            enemy.update(tpf);
+        }
+        for (Missile missile : missiles.values()) {
+            missile.update(tpf, udp);
+        }
+        
+        for (Effect effect : effects) {
+            effect.update(tpf);
+        }
+        
+        handleNetworkBuffer();
+    }
+    
+    private void handleNetworkBuffer() {
         while(!buffer.empty()) {
             String[] parts = buffer.pop().split(";");
             switch(parts[0]) {
@@ -106,19 +96,32 @@ public class Warzone implements UdpBroadcastHandler {
                         enemies.put(parts[1], plane);
                     }
                     break;
+                case "MISSILE":
+                    if (missiles.containsKey(parts[1])) {
+                        missiles.get(parts[1]).deserialize(parts);
+                    } else {
+                        Missile missile = new Missile(parts, node, 
+                                level.getTerrain().getTerrainQuad(), assetManager);
+                        missiles.put(parts[1], missile);
+                    }
                 case "SHOT":
                     addShot(Deserializer.toVector(parts[1]),
                             Deserializer.toVector(parts[2]),
                             Deserializer.toQuaternion(parts[3]));
                     break;
+                case "ATTACK":
+                    if (!player.getControl().isImmune()) {
+                        player.getControl().crash();
+                        addExplosion(player.getControl().getPhysicsLocation(), true);
+                    }
+                    break;
                 case "HIT":
                     if (parts[1].equals(player.getUuid()))
-                        addExplosion(player.getSpatial().getLocalTranslation());
+                        addExplosion(player.getSpatial().getLocalTranslation(), false);
+                    break;
+                case "BOOM":
+                    addExplosion(Deserializer.toVector(parts[1]), false);
             }
-        }
-        
-        for (Warplane enemy : enemies.values()) {
-            enemy.update(tpf);
         }
     }
     
@@ -158,30 +161,30 @@ public class Warzone implements UdpBroadcastHandler {
         effects.add(shot);
     }
     
-    public void addMissile() {
-        Missile missile = new Missile(player, enemies, this, node, 
-                level.getTerrain().getTerrainQuad(), assetManager);
-        missiles.add(missile);
+    public void addMissile(Vector3f position, Quaternion rotation) {
+        Missile missile = new Missile(player, enemies, this,
+                node, level.getTerrain().getTerrainQuad(), assetManager);
+        missiles.put(missile.getUuid(), missile);
     }
 
-    public void addFlares() {
+    public void addFlares(Vector3f position, boolean active) {
         Flares flares = new Flares(player.getSpatial().getLocalTranslation(), 
                 node, timer, assetManager);
+        if (active)
+            udp.send("FLARE;" + Serializer.fromVector(position));
         effects.add(flares);
     }
     
-    public void addExplosion(Vector3f position) {
+    public void addExplosion(Vector3f position, boolean active) {
         Explosion explosion = new Explosion(node, 10, position, timer, assetManager);
+        if (active)
+            udp.send("BOOM;" + Serializer.fromVector(position));
         effects.add(explosion);
     }
     
     public void destroy() {
         bullet.getPhysicsSpace().remove(player);
-    }
-
-    @Override
-    public void onMessage(String host, int port, String line) {
-        buffer.add(line);
+        node.removeFromParent();
     }
 
     public float getSize() {
@@ -190,5 +193,10 @@ public class Warzone implements UdpBroadcastHandler {
     
     public float getRadius() {
         return level.getTerrain().getSize() * 0.75f;
+    }
+
+    @Override
+    public void onMessage(String host, int port, String line) {
+        buffer.add(line);
     }
 }
