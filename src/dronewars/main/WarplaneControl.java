@@ -105,9 +105,11 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-        if (respawnIn > respawnDelay) {
-            respawnIn = respawnDelay;
-            warzone.addExplosion(spatial.getLocalTranslation(), true);
+        if (event.getNodeA().equals(spatial) || event.getNodeB().equals(spatial)) {
+            if (respawnIn > respawnDelay) {
+                respawnIn = respawnDelay;
+                warzone.addExplosion(getPhysicsLocation(), true);
+            }
         }
     }
     

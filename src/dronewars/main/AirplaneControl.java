@@ -18,7 +18,7 @@ public class AirplaneControl extends RigidBodyControl {
     
     private final float agility = 5;
     private final float gravity = 30;
-    private final float climbSpeed = 10;
+    private final float climbSpeed = 15;
     private final float powerToSpeed = 1.5f;
     private float liftToSpeed = 0.5f;
     
@@ -43,7 +43,6 @@ public class AirplaneControl extends RigidBodyControl {
         power = liftPower + thrustPower;
         maxSpeed = power * powerToSpeed;
         liftToSpeed *= 1 - liftThrustRatio;
-        System.out.println(spatial.getWorldBound().getVolume());
     }
     
     public void applyForces(float tpf) {
@@ -135,5 +134,9 @@ public class AirplaneControl extends RigidBodyControl {
     
     public void setYaw(float yaw) {
         this.yaw = yaw;
+    }
+    
+    public float getThrottle() {
+        return throttle;
     }
 }

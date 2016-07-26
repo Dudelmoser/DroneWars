@@ -131,12 +131,14 @@ public class PlayerController extends DefaultController {
                         warplane.useFlares();
                         break;
                     case "OPTION_1":
+                        state.toggleTrail();
                         break;
                     case "OPTION_2":
                         break;
                     case "OPTION_3":
                         break;
                     case "OPTION_4":
+                        warplane.respawn();
                         break;
                     case "BACK":
                         nifty.gotoScreen("Exit");

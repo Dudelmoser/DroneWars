@@ -15,7 +15,8 @@ public class PlayerState extends GameState {
     private static final float camElevation = 10; // in degrees
     private static final float camDistance = 10;
     private static final float camSensitivity = 2;
-    private static final boolean trail = false;
+    
+    private static boolean trail = false;
     
     private ChaseCamera chaseCam;
     
@@ -73,22 +74,26 @@ public class PlayerState extends GameState {
      
     public void initCamera() {        
         app.getFlyByCamera().setEnabled(false);
-        if (trail) {
-            chaseCam = new ChaseCamera(app.getCamera(), 
-                    warzone.getPlayer().getSpatial(), app.getInputManager());
-            chaseCam.setDefaultVerticalRotation((float)Math.toRadians(camElevation));
-            chaseCam.setDefaultHorizontalRotation(0);
-            chaseCam.setDefaultDistance(camDistance);
-            chaseCam.setEnabled(true);
-            chaseCam.setSmoothMotion(true);
-            chaseCam.setTrailingEnabled(true);
-            chaseCam.setTrailingSensitivity(camSensitivity);
-        }
+        chaseCam = new ChaseCamera(app.getCamera(), 
+                warzone.getPlayer().getSpatial(), app.getInputManager());
+        chaseCam.setDefaultVerticalRotation((float)Math.toRadians(camElevation));
+        chaseCam.setDefaultHorizontalRotation(0);
+        chaseCam.setDefaultDistance(camDistance);
+        chaseCam.setSmoothMotion(true);
+        chaseCam.setTrailingEnabled(true);
+        chaseCam.setTrailingSensitivity(camSensitivity);
+        
+        chaseCam.setEnabled(trail);
     }
     
     public WarplaneControl getCombatControl() {
         if (warzone != null && warzone.getPlayer() != null)
             return warzone.getPlayer().getControl();
         return null;
+    }
+    
+    public void toggleTrail() {
+        trail = !trail;
+        chaseCam.setEnabled(trail);
     }
 }

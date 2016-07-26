@@ -1,6 +1,7 @@
 package dronewars.serializable;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -35,6 +36,7 @@ public class Warplane {
     
     private transient final float laserLength = 100;
     private transient final float laserWidth = 0.004f;
+    private transient final float rotorVolume = 5;
     
     private transient String uuid;
     // rotational velocity extrapolation missing
@@ -43,6 +45,7 @@ public class Warplane {
     private transient Node parent;
     private transient Geometry laser;
     private transient Spatial spatial;
+    private transient AudioNode sound;
     private transient WarplaneControl control;
     private transient HashSet<Spatial> xRotors = new HashSet();
     private transient HashSet<Spatial> yRotors = new HashSet();
@@ -86,11 +89,13 @@ public class Warplane {
     }
        
     public void update(float tpf) {
+        sound.setLocalTranslation(spatial.getLocalTranslation());
         if (control != null) {
             spatial.updateLogicalState(tpf);
             control.refresh(tpf);
             updateLaser();
             updateRotors(control.getThrust(), control.getYawRate());
+            sound.setVolume(control.getThrottle() * rotorVolume);
         } else {
             spatial.move(velocity.multLocal(tpf));
             updateLaser();
@@ -142,6 +147,7 @@ public class Warplane {
         createSpatial();
         createLaser();
         assignParts();
+        createSound();
         
         control = new WarplaneControl(this, zone);
         bullet.getPhysicsSpace().addCollisionListener(control);
@@ -160,6 +166,7 @@ public class Warplane {
         createSpatial();
         createLaser();
         assignParts();
+        createSound();
         
         CollisionShape shape = CollisionShapeFactory.createBoxShape(spatial);
         RigidBodyControl ctrl = new RigidBodyControl(shape);
@@ -168,6 +175,16 @@ public class Warplane {
         zone.getBullet().getPhysicsSpace().add(spatial);
         
         deserialize(parts);
+    }
+    
+    private void createSound() {
+        sound = new AudioNode(assetManager, "Sounds/rotor.wav", false);
+        sound.setLooping(true);
+        sound.setPositional(true);
+        sound.setReverbEnabled(false);
+        sound.setVolume(rotorVolume);
+        sound.setRefDistance(5);
+        sound.play();
     }
     
     private void createSpatial() {
@@ -215,6 +232,7 @@ public class Warplane {
             return;
         parent.detachChild(spatial);
         parent.detachChild(laser);
+        parent.detachChild(sound);
     }
     
     public String getUuid() {
