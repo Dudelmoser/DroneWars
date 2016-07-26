@@ -228,11 +228,12 @@ public class Warplane {
     }
     
     public void remove() {
-        if (spatial == null)
-            return;
-        parent.detachChild(spatial);
-        parent.detachChild(laser);
-        parent.detachChild(sound);
+        if (spatial != null) {
+            parent.detachChild(spatial);
+            parent.detachChild(laser);
+        }
+        if (sound != null)
+            parent.detachChild(sound);
     }
     
     public String getUuid() {

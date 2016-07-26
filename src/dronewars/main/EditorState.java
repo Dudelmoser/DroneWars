@@ -23,9 +23,6 @@ public class EditorState extends GameState {
     protected void onInitialize() {
         level = JsonFactory.load(Level.class);
         level.create(app, bullet);
-        warzone = new Warzone(app.getRootNode(), app.getTimer(), bullet,
-            level, app.getAssetManager());
-        warzone.addPlayer();
         
         applySettings();
         initCamera();
