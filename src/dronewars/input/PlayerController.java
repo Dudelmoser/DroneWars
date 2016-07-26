@@ -175,10 +175,13 @@ public class PlayerController extends DefaultController {
                 "ACTION_3", "ACTION_4",
                 "OPTION_1", "OPTION_2", "OPTION_3", "OPTION_4",
                 "BACK", "START", "TOGGLE_STICKS");
+        if (state.getCombatControl() != null)
+            state.getCombatControl().hover();
     }
     
     @Override
     public void onEndScreen() {
+        state.getCombatControl().hover();
         inputManager.setCursorVisible(true);
         state.setEnabled(false);
         
