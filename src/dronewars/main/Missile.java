@@ -26,7 +26,7 @@ public class Missile {
     private static final String modelPath = "Models/Rocket/model.blend";
     private static final String soundPath = "Sounds/missile.wav";
     private static final float velocity = 120;
-    private static final float maxAngle = (float)Math.toRadians(45);
+    private static final float maxAngle = (float)Math.toRadians(30);
     private static final float refDistance = 20;
     private static Spatial model;
     

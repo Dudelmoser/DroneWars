@@ -21,7 +21,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     private final int shotCooldown = 100;
     private final int missileCooldown = 2000;
     private final int flaresCooldown = 4000;
-    private final float flaresDuration = 1;
+    private final float flaresDuration = 2;
     private final float respawnDelay = 3;
         
     private long lastShot;
