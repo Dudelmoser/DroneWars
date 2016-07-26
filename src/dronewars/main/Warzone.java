@@ -104,7 +104,9 @@ public class Warzone implements UdpBroadcastHandler {
                                 level.getTerrain().getTerrainQuad(), assetManager);
                         missiles.put(parts[1], missile);
                     }
+                    break;
                 case "SHOT":
+                    System.out.println("shot  " + parts[1]);
                     addShot(Deserializer.toVector(parts[1]),
                             Deserializer.toVector(parts[2]),
                             Deserializer.toQuaternion(parts[3]));
