@@ -45,13 +45,14 @@ public class Missile {
     public Missile(Warplane player, Map<String,Warplane> enemies, Warzone zone, 
             Node parent, TerrainQuad terrain, AssetManager assetManager) {
         this.zone = zone;
+        this.enemies = enemies;
         
         init(parent, terrain, assetManager);      
         missile.setLocalTranslation(player.getSpatial().getLocalTranslation());
         missile.setLocalRotation(player.getSpatial().getLocalRotation());
         
         initUuid();
-        assignTarget(enemies);
+        assignTarget();
     }
     
     public Missile(String parts[], Node parent, TerrainQuad terrain, 
@@ -85,11 +86,11 @@ public class Missile {
                 + (int) (System.currentTimeMillis() & 0x00000000FFFFFFFFL));
     }
     
-    private void assignTarget(Map<String,Warplane> targets) {
+    private void assignTarget() {
         Vector3f forward = missile.getLocalRotation().mult(Vector3f.UNIT_Z)
                 .mult(-1).normalize();
         target = null;
-        for (Warplane tgt : targets.values()) {
+        for (Warplane tgt : enemies.values()) {
             Vector3f tgtDir = tgt.getSpatial().getLocalTranslation()
                     .subtract(missile.getLocalTranslation()).normalize();
             if (forward.angleBetween(tgtDir) < maxAngle) {
@@ -138,7 +139,7 @@ public class Missile {
         }
         
         for (Entry<String,Warplane> enemy : enemies.entrySet()) {
-            results.clear();
+            results = new CollisionResults();
             missile.collideWith(enemy.getValue().getSpatial().getWorldBound(), results);
             if (results.size() > 0) {
                 udp.send("ATTACK;" + enemy.getKey());
