@@ -77,9 +77,8 @@ public class EditorController extends DefaultController {
     @Override
     public void onStartScreen() {
         initFields();
-        initSliders();
-        initMapPreset();
-        initLevelAndSkyControls();
+        setSlidersToValue();
+        setSelectsToValue();
         inputManager.addListener(actionListener, "BACK");
         inputManager.setCursorVisible(true);
     }
@@ -98,9 +97,21 @@ public class EditorController extends DefaultController {
         }
         level = state.getLevel();
         screen = nifty.getCurrentScreen();
+        
+        skySelect = screen.findNiftyControl("Sky_Select", DropDown.class);
+        mapSelect = screen.findNiftyControl("mapSelect", ImageSelect.class);
+        mapPresetName = screen.findNiftyControl("mapPresetName", Label.class);
+        levelName =  screen.findNiftyControl("Level_Name", TextField.class);
+        levelSelect =  screen.findNiftyControl("Level_Select", DropDown.class);
+        
+        mapNames = fillImageSelector(mapSelect, "Maps", "height.png", display);
+        mapPresetName.setText(mapNames[mapSelect.getSelectedImageIndex()]);
+        
+        initSkySelect();
+        updateLevelSelect();
     }
     
-    private void initSliders() {
+    private void setSlidersToValue() {
         HashMap<String, Object> options = new HashMap();
         
         Water water = level.getWater();
@@ -123,25 +134,13 @@ public class EditorController extends DefaultController {
         }
     }
 
-    private void initMapPreset() {
-        mapSelect = screen.findNiftyControl("mapSelect", ImageSelect.class);
-        mapNames = fillImageSelector(mapSelect, "Maps", "height.png", display);
-        int i = java.util.Arrays.asList(mapNames).indexOf(state.getLevel().getTerrain().getName());
-        mapSelect.setSelectedImageIndex(i);
+    private void setSelectsToValue() {
+        int iSky = skySelect.getItems().indexOf(state.getLevel().getSky().getName());
+        skySelect.selectItemByIndex(iSky);
         
-        mapPresetName = screen.findNiftyControl("mapPresetName", Label.class);
-        mapPresetName.setText(mapNames[mapSelect.getSelectedImageIndex()]);
-    }
-
-    private void initLevelAndSkyControls() {
-        levelName =  screen.findNiftyControl("Level_Name", TextField.class);
-        levelSelect =  screen.findNiftyControl("Level_Select", DropDown.class);
-        updateLevelSelect();
-        
-        skySelect = screen.findNiftyControl("Sky_Select", DropDown.class);
-        updateSkySelect();
-        int i = skySelect.getItems().indexOf(state.getLevel().getSky().getName());
-        skySelect.selectItemByIndex(i);
+        int iMap = java.util.Arrays.asList(mapNames).indexOf(state.getLevel().getTerrain().getName());
+        mapSelect.setSelectedImageIndex(iMap);
+        mapPresetName.setText(state.getLevel().getTerrain().getName());
     }
 
     @NiftyEventSubscriber(pattern = ".*_Button")
@@ -163,21 +162,24 @@ public class EditorController extends DefaultController {
         try {
             Method objGetter = level.getClass().getMethod("get" + parts[0]);
             Object obj = objGetter.invoke(level);
-            if (id.contains("Color")) {
-                Method rgbGetter = obj.getClass().getMethod("get" + parts[1]);
-                ColorRGBA color = ((ColorRGBA) rgbGetter.invoke(obj)).clone();
-                color.getClass().getDeclaredField(parts[2].toLowerCase()).setFloat(color, event.getValue() / 255f);
-                Method rgbSetter = obj.getClass().getMethod("set" + parts[1], ColorRGBA.class);
-                rgbSetter.invoke(obj, color);
-            } else if (id.contains("Vector") || id.contains("Direction")) {
-                Method rgbGetter = obj.getClass().getMethod("get" + parts[1]);
-                Vector3f vec = ((Vector3f) rgbGetter.invoke(obj)).clone();
-                vec.getClass().getDeclaredField(parts[2].toLowerCase()).setFloat(vec, event.getValue());
-                Method rgbSetter = obj.getClass().getMethod("set" + parts[1], Vector3f.class);
-                rgbSetter.invoke(obj, vec);
-            } else {
-                Method setter = obj.getClass().getMethod("set" + parts[1], float.class);
-                setter.invoke(obj, event.getValue());
+            boolean hasFocus = event.getSlider().hasFocus();
+            if(hasFocus){
+                if (id.contains("Color")) {
+                    Method rgbGetter = obj.getClass().getMethod("get" + parts[1]);
+                    ColorRGBA color = ((ColorRGBA) rgbGetter.invoke(obj)).clone();
+                    color.getClass().getDeclaredField(parts[2].toLowerCase()).setFloat(color, event.getValue() / 255f);
+                    Method rgbSetter = obj.getClass().getMethod("set" + parts[1], ColorRGBA.class);
+                    rgbSetter.invoke(obj, color);
+                } else if (id.contains("Vector") || id.contains("Direction")) {
+                    Method rgbGetter = obj.getClass().getMethod("get" + parts[1]);
+                    Vector3f vec = ((Vector3f) rgbGetter.invoke(obj)).clone();
+                    vec.getClass().getDeclaredField(parts[2].toLowerCase()).setFloat(vec, event.getValue());
+                    Method rgbSetter = obj.getClass().getMethod("set" + parts[1], Vector3f.class);
+                    rgbSetter.invoke(obj, vec);
+                } else {
+                    Method setter = obj.getClass().getMethod("set" + parts[1], float.class);
+                    setter.invoke(obj, event.getValue());
+                }
             }
         } catch (Exception ex) {
             logger.log(java.util.logging.Level.SEVERE, "Slider reflection exception!", ex);
@@ -191,31 +193,51 @@ public class EditorController extends DefaultController {
     
     @NiftyEventSubscriber(id = "mapSelect")
     public void onChange(final String id, ImageSelectSelectionChangedEvent event) {
-        mapPresetName.setText(mapNames[event.getSelectedIndex()]);
-        loadHighmap(mapNames[event.getSelectedIndex()]);
+        boolean hasFocus = event.getImageSelect().hasFocus();
+        if(hasFocus){
+            mapPresetName.setText(mapNames[event.getSelectedIndex()]);
+            loadHighmap(mapNames[event.getSelectedIndex()]);
+        }
     }
 
     private void loadHighmap(String mapName) {
         Terrain terrain = state.getLevel().getTerrain();
         terrain.setName(mapName);
-        terrain.reload();
-        state.update(1);
-        
+        terrain.reload();     
     }
     
     @NiftyEventSubscriber(pattern = ".*_Select")
     public void onSelect(String id, DropDownSelectionChangedEvent event){
-        if(id.contains("Level")){
-            levelName.setText((CharSequence) ((String) event.getSelection()).replace(".json", ""));
-            loadLevel((String) event.getSelection());
-        } else if(id.contains("Sky")){
-            setSky((String) event.getSelection());
+        boolean hasFocus = event.getDropDown().hasFocus();
+        if(hasFocus){
+            if(id.contains("Level")){
+                levelName.setText((CharSequence) ((String) event.getSelection()).replace(".json", ""));
+                loadLevel((String) event.getSelection());
+            } else if(id.contains("Sky")){
+                setSky((String) event.getSelection());
+            }
         }
     }
     
-    public void loadLevel(String filename){
-        
+    public void loadLevel(String levelName){
+        Level newLevel = JsonFactory.load("assets/Levels/" + levelName, Level.class);
+        newLevel.create(state.getApp(), state.getBullet());
+        updateStateManager(newLevel);
+        setSlidersToValue();
+        setSelectsToValue();
+        loadHighmap(level.getTerrain().getName());
     }
+    
+    protected void updateStateManager(Level newLevel){
+        //state.getApp().getRootNode().detachAllChildren();
+        stateManager.detach(state);
+        
+        this.level = newLevel;
+        state = new EditorState();
+        state.setLevel(level);
+        
+        stateManager.attach(state);
+    };
     
     public void save() {
         String input = levelName.getText();
@@ -249,17 +271,15 @@ public class EditorController extends DefaultController {
 
     private void updateLevelSelect() {
         ArrayList<String> levels = getSavedLevels();
-        if(levelSelect.getItems().size() != 0){
-            levelSelect.clear();
+        if(!levelSelect.getItems().isEmpty()){
+            levelSelect.removeAllItems(levelSelect.getItems());
         }
         levelSelect.addAllItems(levels);
     }
 
-    private void updateSkySelect() {
+    private void initSkySelect() {
         String[] skies = getSavedSkies();
-        if(!skySelect.getItems().isEmpty()){
-            skySelect.clear();
-        }
         skySelect.addAllItems(new ArrayList(Arrays.asList(skies)));
     }
+
 }

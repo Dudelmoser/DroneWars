@@ -127,6 +127,10 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
         return level;
     }
     
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+    
     public Warzone getWarzone() {
         return warzone;
     }
@@ -161,5 +165,13 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
     
     public AudioRenderer getAudioRenderer() {
         return app.getAudioRenderer();
+    }
+    
+    public StereoApplication getApp(){
+        return this.app;
+    }
+    
+    public BulletAppState getBullet(){
+        return this.bullet;
     }
 }
