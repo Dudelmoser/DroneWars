@@ -30,6 +30,7 @@ public class DefaultController implements ScreenController {
     protected Nifty nifty;
     protected InputManager inputManager;
     protected AppStateManager stateManager;
+    protected StereoApplication app;
     
     protected static final Logger logger = Logger.getLogger("DefaultController");
     
@@ -47,6 +48,7 @@ public class DefaultController implements ScreenController {
     public DefaultController(StereoApplication app) {
         this.inputManager = app.getInputManager();
         this.stateManager = app.getStateManager();
+        this.app = app;
     }
     
     public void to(String screenId) {
