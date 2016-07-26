@@ -143,8 +143,9 @@ public class Missile {
     }
     
     public String serialize() {
-        return "MISSILE;" + uuid + ";" + missile.getLocalTranslation() + ";"
-                + missile.getLocalRotation();
+        return "MISSILE;" + uuid + ";" 
+                + Serializer.fromVector(missile.getLocalTranslation()) + ";"
+                + Serializer.fromQuaternion(missile.getLocalRotation());
     }
     
     public String getUuid() {
