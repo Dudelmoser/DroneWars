@@ -19,6 +19,7 @@ import static dronewars.input.DefaultController.logger;
 import dronewars.main.EditorState;
 import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
+import dronewars.main.Warzone;
 import dronewars.serializable.Level;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Terrain;
@@ -223,20 +224,20 @@ public class EditorController extends DefaultController {
         Level newLevel = JsonFactory.load("assets/Levels/" + levelName, Level.class);
         newLevel.create(state.getApp(), state.getBullet());
         updateStateManager(newLevel);
+        loadHighmap(newLevel.getTerrain().getName());
         setSlidersToValue();
         setSelectsToValue();
-        loadHighmap(level.getTerrain().getName());
     }
     
     protected void updateStateManager(Level newLevel){
-        //state.getApp().getRootNode().detachAllChildren();
         stateManager.detach(state);
         
         this.level = newLevel;
-        state = new EditorState();
-        state.setLevel(level);
+        this.state = new EditorState();
+        this.state.setLevel(newLevel);
         
         stateManager.attach(state);
+
     };
     
     public void save() {
@@ -246,6 +247,7 @@ public class EditorController extends DefaultController {
         if(input.equals("") || input == null) input = timeStamp + ".json";
         
         String fileName = input.endsWith(".json") ? input : input + ".json";
+        fileName = fileName.replaceAll("\\s+","");
         
         JsonFactory.save("assets/Levels/" + fileName, level);
         updateLevelSelect();

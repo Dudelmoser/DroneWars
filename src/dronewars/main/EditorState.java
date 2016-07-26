@@ -52,4 +52,8 @@ public class EditorState extends GameState {
 
     @Override
     public void onMessage(String host, int port, String line) {}
+
+    public void setWarzone(Warzone warzone) {
+        this.warzone = warzone;
+    }
 }
