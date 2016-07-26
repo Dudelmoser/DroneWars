@@ -31,7 +31,6 @@ public class Explosion extends Effect {
     public Explosion(Node parent, float lifeTime, Vector3f position, Timer timer, AssetManager am) {
         super(lifeTime, timer);
         
-        System.out.println("Explosion at " + position);
         assetManager = am;
         explosion = new Node("Explosion");
         createFlame();

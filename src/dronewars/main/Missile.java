@@ -15,6 +15,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import dronewars.network.UdpBroadcastSocket;
 import dronewars.serializable.Warplane;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -35,6 +36,7 @@ public class Missile {
     private AudioNode sound;
     
     private Warzone zone;
+    private Map<String,Warplane> enemies;
     private TerrainQuad terrain;
         
     private float lifeTime = 3;
@@ -90,7 +92,6 @@ public class Missile {
         for (Warplane tgt : targets.values()) {
             Vector3f tgtDir = tgt.getSpatial().getLocalTranslation()
                     .subtract(missile.getLocalTranslation()).normalize();
-            System.out.println(forward.angleBetween(tgtDir));
             if (forward.angleBetween(tgtDir) < maxAngle) {
                 target = tgt.getSpatial();
                     break;
@@ -115,7 +116,7 @@ public class Missile {
             }
 
             sound.setLocalTranslation(missile.getLocalTranslation());
-            checkForCollision();
+            checkForCollision(udp);
             udp.send(serialize());
         }
                                     
@@ -127,13 +128,22 @@ public class Missile {
         }
     } 
     
-    private void checkForCollision() {
+    private void checkForCollision(UdpBroadcastSocket udp) {
         CollisionResults results = new CollisionResults();
         terrain.collideWith(missile.getWorldBound(), results);
         
         if (results.size() > 0) {
             zone.addExplosion(missile.getLocalTranslation(), true);
             remove();
+        }
+        
+        for (Entry<String,Warplane> enemy : enemies.entrySet()) {
+            results.clear();
+            missile.collideWith(enemy.getValue().getSpatial().getWorldBound(), results);
+            if (results.size() > 0) {
+                udp.send("ATTACK;" + enemy.getKey());
+                remove();
+            }
         }
     }  
     

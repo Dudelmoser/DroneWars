@@ -88,6 +88,7 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
     
     public void crash() {
         crashed = true;
+        setKinematic(false);
     }
 
     public void respawn() {
@@ -139,5 +140,9 @@ public class WarplaneControl extends AirplaneControl implements PhysicsCollision
             rnd.z += (float)Math.random() * width;
         }
         return rnd;
+    }
+    
+    public boolean isCrashed() {
+        return crashed;
     }
 }

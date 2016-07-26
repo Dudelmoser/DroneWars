@@ -91,6 +91,7 @@ public class Warzone implements UdpBroadcastHandler {
                     if (enemies.containsKey(parts[1])) {
                         enemies.get(parts[1]).deserialize(parts);
                     } else {
+                        System.out.println("Warplane received!");
                         Warplane plane = new Warplane();
                         plane.createPassive(parts, this, assetManager);
                         enemies.put(parts[1], plane);
@@ -98,31 +99,38 @@ public class Warzone implements UdpBroadcastHandler {
                     break;
                 case "MISSILE":
                     if (missiles.containsKey(parts[1])) {
+                        System.out.println("Missile update received!");
                         missiles.get(parts[1]).deserialize(parts);
                     } else {
+                        System.out.println("Missile received!");
                         Missile missile = new Missile(parts, node, 
                                 level.getTerrain().getTerrainQuad(), assetManager);
                         missiles.put(parts[1], missile);
                     }
                     break;
                 case "SHOT":
-                    System.out.println("shot  " + parts[1]);
+                    System.out.println("Shot received!");
                     addShot(Deserializer.toVector(parts[1]),
                             Deserializer.toVector(parts[2]),
                             Deserializer.toQuaternion(parts[3]));
                     break;
                 case "ATTACK":
-                    if (!player.getControl().isImmune()) {
+                    if (parts[1].equals(player.getUuid()) && !player.getControl().isImmune()) {
+                        System.out.println("Attack received!");
                         player.getControl().crash();
                         addExplosion(player.getControl().getPhysicsLocation(), true);
                     }
                     break;
                 case "HIT":
                     if (parts[1].equals(player.getUuid()))
-                        addExplosion(player.getSpatial().getLocalTranslation(), false);
+                        System.out.println("Hit received!");
+                        player.getControl().crash();
+                        addExplosion(player.getSpatial().getLocalTranslation(), true);
                     break;
-                case "BOOM":
+                case "EXPLOSION":
+                    System.out.println("Explosion received!");
                     addExplosion(Deserializer.toVector(parts[1]), false);
+                    break;
             }
         }
     }
@@ -180,7 +188,7 @@ public class Warzone implements UdpBroadcastHandler {
     public void addExplosion(Vector3f position, boolean active) {
         Explosion explosion = new Explosion(node, 10, position, timer, assetManager);
         if (active)
-            udp.send("BOOM;" + Serializer.fromVector(position));
+            udp.send("EXPLOSION;" + Serializer.fromVector(position));
         effects.add(explosion);
     }
     
