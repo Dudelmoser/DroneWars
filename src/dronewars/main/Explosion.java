@@ -28,10 +28,10 @@ public class Explosion extends Effect {
     private float time = 0;
     private int state = 0;
 
-    public Explosion(Node parent, float lifeTime, Vector3f position, Timer timer, AssetManager am) {
-        super(lifeTime, timer);
+    public Explosion(Vector3f position, Node parent, Timer timer, AssetManager assetManager) {
+        super(2, timer);
         
-        assetManager = am;
+        this.assetManager = assetManager;
         explosion = new Node("Explosion");
         createFlame();
         createFlash();
@@ -81,11 +81,9 @@ public class Explosion extends Effect {
     
     @Override
     public void remove() {
-        Node parent = explosion.getParent();
-        parent.detachChild(explosion);
-        
         sound.stop();
-        parent.detachChild(sound);
+        sound.removeFromParent();
+        explosion.removeFromParent();
     }
     
     private void createFlame(){

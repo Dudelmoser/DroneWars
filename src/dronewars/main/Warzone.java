@@ -99,7 +99,7 @@ public class Warzone implements UdpBroadcastHandler {
                     break;
                 case "MISSILE":
                     if (missiles.containsKey(parts[1])) {
-                        System.out.println("Missile update received!");
+//                        System.out.println("Missile update received!");
                         missiles.get(parts[1]).deserialize(parts);
                     } else {
                         System.out.println("Missile received!");
@@ -182,15 +182,14 @@ public class Warzone implements UdpBroadcastHandler {
     }
 
     public void addFlares(Vector3f position, boolean active) {
-        Flares flares = new Flares(player.getSpatial().getLocalTranslation(), 
-                node, timer, assetManager);
+        Flares flares = new Flares(position, node, timer, assetManager);
         if (active)
             udp.send("FLARES;" + Serializer.fromVector(position));
         effects.add(flares);
     }
     
     public void addExplosion(Vector3f position, boolean active) {
-        Explosion explosion = new Explosion(node, 10, position, timer, assetManager);
+        Explosion explosion = new Explosion(position, node, timer, assetManager);
         if (active)
             udp.send("EXPLOSION;" + Serializer.fromVector(position));
         effects.add(explosion);
