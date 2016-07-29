@@ -115,6 +115,8 @@ public class Warzone implements UdpBroadcastHandler {
                             Deserializer.toQuaternion(parts[3]));
                     break;
                 case "ATTACK":
+                    if (player == null)
+                        return;
                     if (parts[1].equals(player.getUuid()) && !player.getControl().isImmune()) {
                         System.out.println("Attack received!");
                         player.getControl().crash();
@@ -122,6 +124,8 @@ public class Warzone implements UdpBroadcastHandler {
                     }
                     break;
                 case "HIT":
+                    if (player == null)
+                        return;
                     if (parts[1].equals(player.getUuid()))
                         System.out.println("Hit received!");
                         player.getControl().crash();

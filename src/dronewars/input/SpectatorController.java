@@ -11,7 +11,7 @@ import dronewars.main.StereoApplication;
  * @author Jan David Kleiß
  */
 public class SpectatorController extends DefaultController {
-    private AppState state;
+    private SpectatorState state;
     
     private AnalogListener analogListener = new AnalogListener() {
         @Override
@@ -40,6 +40,7 @@ public class SpectatorController extends DefaultController {
         if (state == null)
             state = stateManager.getState(SpectatorState.class);
         state.setEnabled(true);
+        app.getFlyByCamera().setDragToRotate(false);
         
         inputManager.addListener(actionListener, "BACK");
         inputManager.addListener(analogListener);
@@ -47,6 +48,7 @@ public class SpectatorController extends DefaultController {
     
     @Override
     public void onEndScreen() {
+        app.getFlyByCamera().setDragToRotate(true);
         inputManager.setCursorVisible(true);
         state.setEnabled(false);
         

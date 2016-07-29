@@ -88,7 +88,13 @@ public class UdpBroadcastSocket {
 
     public void close() {
         closed = true;
+         try {
+            socket.setReuseAddress(true);
+        } catch (SocketException ex) {
+            Logger.getLogger(UdpBroadcastSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
         socket.close();
+       
     }
     
     private int getIntFromIp() {

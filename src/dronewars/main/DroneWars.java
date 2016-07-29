@@ -160,7 +160,7 @@ public class DroneWars extends StereoApplication {
         
         inputManager.addMapping("ACTION_1", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("ACTION_2", new KeyTrigger(KeyInput.KEY_LSHIFT));
-        inputManager.addMapping("ACTION_3", new KeyTrigger(KeyInput.KEY_R));
+        inputManager.addMapping("ACTION_3", new KeyTrigger(KeyInput.KEY_C));
         inputManager.addMapping("ACTION_4", new KeyTrigger(KeyInput.KEY_F));
         
         inputManager.addMapping("OPTION_1", new KeyTrigger(KeyInput.KEY_1));

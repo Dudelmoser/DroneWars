@@ -22,7 +22,7 @@
             <onEndScreen name="fade" start="#F" end="#0" length="100" startDelay="0"/>
             <onHover name="fade" start="#F" end="#D"/>
           </effect>
-          <control name="label" color="#E3DBC9" text="Continue" align="center" valign="center"/>
+          <control name="label" color="#E3DBC9" text="Continue [A]" align="center" valign="center"/>
         </panel>
         
         <panel id="2" height="250" width="250" left="100" valign="center" 
@@ -34,7 +34,7 @@
             <onEndScreen name="fade" start="#F" end="#0" length="100" startDelay="200"/>
             <onHover name="fade" start="#F" end="#D"/>
           </effect>
-          <control name="label" color="#E3DBC9" text="Exit" align="center" valign="center"/>
+          <control name="label" color="#E3DBC9" text="Exit [X]" align="center" valign="center"/>
         </panel>
         
       </panel>
