@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  *
- * @author Janus
+ * @author Jan David Kleiß
  */
 
 public class DroneWars extends StereoApplication {

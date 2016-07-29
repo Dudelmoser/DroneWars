@@ -6,7 +6,7 @@ package dronewars.network;
 
 /**
  *
- * @author Janus
+ * @author Jan David Kleiß
  */
 public interface ObjectReceiver {
     void onReady();

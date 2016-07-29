@@ -1,19 +1,15 @@
 package dronewars.input;
 
 import com.jme3.input.controls.ActionListener;
-import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
-import dronewars.main.EditorState;
 import dronewars.main.HangarState;
 import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Warplane;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 /**
  *

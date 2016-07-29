@@ -13,6 +13,12 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.system.Timer;
 
+
+/**
+ *
+ * @author Jan David Kleiß
+ */
+
 public class Explosion extends Effect {
 
     private static final int COUNT_FACTOR = 1;

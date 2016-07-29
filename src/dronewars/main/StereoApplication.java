@@ -11,6 +11,11 @@ import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture2D;
 import com.jme3.ui.Picture;
 
+/**
+ *
+ * @author Jan David Kleiß
+ */
+
 public abstract class StereoApplication extends SimpleApplication {
     boolean stereo = false;
     FrameBuffer buffer1, buffer2;

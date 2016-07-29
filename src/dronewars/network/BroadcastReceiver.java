@@ -8,7 +8,7 @@ import java.net.InetAddress;
 
 /**
  *
- * @author Janus
+ * @author Jan David Kleiß
  */
 public interface BroadcastReceiver {
     void onReceive(String message, InetAddress ip, int port);

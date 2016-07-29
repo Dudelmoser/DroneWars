@@ -5,13 +5,8 @@
 
 package dronewars.input;
 
-import com.jme3.app.state.AppState;
 import com.jme3.input.controls.ActionListener;
-import dronewars.main.EditorState;
 import dronewars.main.JsonFactory;
-import dronewars.main.GameState;
-import dronewars.main.PlayerState;
-import dronewars.main.SpectatorState;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Settings;
 

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Janus
+ * @author Jan David Kleiß
  */
 public class BroadcastSocket implements Runnable {
     

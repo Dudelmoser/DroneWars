@@ -1,6 +1,5 @@
 package dronewars.input;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import dronewars.main.WarplaneControl;

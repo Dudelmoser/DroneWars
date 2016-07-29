@@ -1,6 +1,5 @@
 package dronewars.input;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.math.ColorRGBA;
@@ -15,11 +14,9 @@ import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
-import static dronewars.input.DefaultController.logger;
 import dronewars.main.EditorState;
 import dronewars.main.JsonFactory;
 import dronewars.main.StereoApplication;
-import dronewars.main.Warzone;
 import dronewars.serializable.Level;
 import dronewars.serializable.Sky;
 import dronewars.serializable.Terrain;
@@ -37,7 +34,7 @@ import java.util.Map;
 
 /**
  *
- * @author Jan David Kleiß
+ * @author Jan David Kleiß & Max Funke
  */
 public class EditorController extends DefaultController {
     private Level level;

@@ -12,6 +12,11 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Jan David Kleiß
+ */
+
 public class UdpBroadcastSocket {
     
     private final int uuidLength = 12;
