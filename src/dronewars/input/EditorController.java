@@ -15,7 +15,7 @@ import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import dronewars.main.EditorState;
-import dronewars.main.JsonFactory;
+import dronewars.io.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Level;
 import dronewars.serializable.Sky;

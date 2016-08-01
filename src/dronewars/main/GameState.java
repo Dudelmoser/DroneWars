@@ -5,6 +5,7 @@
 
 package dronewars.main;
 
+import dronewars.io.JsonFactory;
 import com.google.gson.GsonBuilder;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
@@ -19,8 +20,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import dronewars.network.UdpBroadcastHandler;
-import dronewars.network.UdpBroadcastSocket;
+import dronewars.io.UdpBroadcastHandler;
+import dronewars.io.UdpBroadcastSocket;
 import dronewars.serializable.Level;
 import dronewars.serializable.Settings;
 
@@ -85,14 +86,11 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
         for (Light light : lights) {
             app.getRootNode().removeLight(light);
         }
-        
         app.getViewPort().removeProcessor(app.getViewPort().getProcessors().get(0));
                 
         level.getWater().getAudioNode().stop();
         app.getStateManager().detach(bullet);
-        
         udp.close();
-        
         onCleanup();
     }
     

@@ -76,12 +76,8 @@ public class DefaultController implements ScreenController {
         g.setValue(color.g * 255);
         Slider b = screen.findNiftyControl(id + "B_Slider", Slider.class);
         b.setValue(color.b * 255);
-        try {
-            Slider a = screen.findNiftyControl(id + "A_Slider", Slider.class);
-            b.setValue(color.b * 255);
-        } catch (Exception e) {
-            logger.log(Level.INFO, "{0} has no alpha channel!", id);
-        }
+//            Slider a = screen.findNiftyControl(id + "A_Slider", Slider.class);
+//            a.setValue(color.b * 255);
     }
     
     protected void setFloatSlider(String id, float value){

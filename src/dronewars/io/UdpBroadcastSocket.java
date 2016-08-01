@@ -1,4 +1,4 @@
-package dronewars.network;
+package dronewars.io;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
@@ -25,6 +26,7 @@ public class UdpBroadcastSocket {
     private boolean closed;
     private String uuid;
 
+    private Thread thread;
     private DatagramSocket socket;
     private UdpBroadcastHandler handler;
     private static final Logger logger = Logger.getLogger(
@@ -41,7 +43,7 @@ public class UdpBroadcastSocket {
     }
 
     private void listen() {
-        new Thread() {
+        thread = new Thread() {
             @Override
             public void run() {
                 byte[] buffer = new byte[bufferSize];
@@ -57,19 +59,22 @@ public class UdpBroadcastSocket {
                                 }
                             }
                         } catch (Exception ex) {
-                            logger.log(Level.SEVERE, null, ex);
+                            logger.log(Level.INFO, null, ex);
                         }
                     }
                 }
             }
-        }.start();
+        };
+        thread.start();
     }
 
     private void open() {
         try {
-            socket = new DatagramSocket(port, InetAddress.getByName("0.0.0.0"));
+            socket = new DatagramSocket(null);
+            socket.setReuseAddress(true);
             socket.setBroadcast(true);
-        } catch (UnknownHostException | SocketException ex) {
+            socket.bind(new InetSocketAddress("0.0.0.0", port));
+        } catch (SocketException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
     }
@@ -88,13 +93,10 @@ public class UdpBroadcastSocket {
 
     public void close() {
         closed = true;
-         try {
-            socket.setReuseAddress(true);
-        } catch (SocketException ex) {
-            Logger.getLogger(UdpBroadcastSocket.class.getName()).log(Level.SEVERE, null, ex);
+        thread.stop();
+        if (socket != null) {
+            socket.close();
         }
-        socket.close();
-       
     }
     
     private int getIntFromIp() {

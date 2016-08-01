@@ -5,6 +5,8 @@
 
 package dronewars.main;
 
+import dronewars.io.Serializer;
+import dronewars.io.Deserializer;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.collision.CollisionResults;
@@ -12,7 +14,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import dronewars.network.UdpBroadcastSocket;
+import dronewars.io.UdpBroadcastSocket;
 import dronewars.serializable.Warplane;
 import java.util.Map;
 import java.util.Map.Entry;

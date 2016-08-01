@@ -5,6 +5,7 @@
 
 package dronewars.main;
 
+import dronewars.io.Serializer;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.material.Material;

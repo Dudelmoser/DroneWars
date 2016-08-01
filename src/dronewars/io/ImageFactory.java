@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package dronewars.main;
+package dronewars.io;
 
 import dronewars.serializable.Gradient;
 import com.jhlabs.image.GaussianFilter;

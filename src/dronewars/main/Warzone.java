@@ -5,6 +5,9 @@
 
 package dronewars.main;
 
+import dronewars.io.JsonFactory;
+import dronewars.io.Serializer;
+import dronewars.io.Deserializer;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.math.Quaternion;
@@ -12,8 +15,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.system.Timer;
 import dronewars.serializable.Warplane;
-import dronewars.network.UdpBroadcastSocket;
-import dronewars.network.UdpBroadcastHandler;
+import dronewars.io.UdpBroadcastSocket;
+import dronewars.io.UdpBroadcastHandler;
 import dronewars.serializable.Level;
 import java.util.ArrayList;
 import java.util.HashMap;

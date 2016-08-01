@@ -6,7 +6,7 @@
 package dronewars.input;
 
 import com.jme3.input.controls.ActionListener;
-import dronewars.main.JsonFactory;
+import dronewars.io.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Settings;
 

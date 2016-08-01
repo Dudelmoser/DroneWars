@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package dronewars.network;
+package dronewars.archive;
 
+import dronewars.archive.ObjectSocket;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramPacket;

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package dronewars.main;
+package dronewars.io;
 
 import com.google.gson.GsonBuilder;
 import java.io.FileNotFoundException;

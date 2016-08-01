@@ -14,7 +14,7 @@ import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
-import dronewars.main.ImageFactory;
+import dronewars.io.ImageFactory;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;

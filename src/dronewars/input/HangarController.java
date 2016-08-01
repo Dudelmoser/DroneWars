@@ -7,7 +7,7 @@ import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import dronewars.main.HangarState;
-import dronewars.main.JsonFactory;
+import dronewars.io.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Warplane;
 

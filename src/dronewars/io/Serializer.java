@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package dronewars.main;
+package dronewars.io;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
