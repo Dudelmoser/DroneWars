@@ -27,10 +27,6 @@ public class Vegetation {
     private transient BulletAppState bullet;
     
     public Vegetation() {}
-        
-    public void remove() {
-        node.removeFromParent();
-    }
     
     public void create(BufferedImage spawnMap, TerrainQuad terrain, 
             BulletAppState bullet, Node parent, AssetManager assetManager) {
@@ -45,6 +41,12 @@ public class Vegetation {
             }
         }
         parent.attachChild(node);
+    }
+        
+    public void remove() {
+        if (bullet != null)
+            bullet.getPhysicsSpace().removeAll(node);
+        node.removeFromParent();
     }
     
     public ArrayList<Species> getSpecies() {

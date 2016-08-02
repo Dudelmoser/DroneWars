@@ -89,10 +89,9 @@ public class EditorController extends DefaultController {
     }
 
    private void initFields() {
-        if (state == null){
-            state = stateManager.getState(EditorState.class);
-            state.setEnabled(true);
-        }
+        state = stateManager.getState(EditorState.class);
+        state.setEnabled(true);
+        
         level = state.getLevel();
         screen = nifty.getCurrentScreen();
         
@@ -194,11 +193,11 @@ public class EditorController extends DefaultController {
         boolean hasFocus = event.getImageSelect().hasFocus();
         if(hasFocus){
             mapPresetName.setText(mapNames[event.getSelectedIndex()]);
-            loadHighmap(mapNames[event.getSelectedIndex()]);
+            loadHeightMap(mapNames[event.getSelectedIndex()]);
         }
     }
 
-    private void loadHighmap(String mapName) {
+    private void loadHeightMap(String mapName) {
         Terrain terrain = state.getLevel().getTerrain();
         terrain.setName(mapName);
         terrain.reload();     
@@ -221,7 +220,7 @@ public class EditorController extends DefaultController {
         Level newLevel = JsonFactory.load("assets/Levels/" + levelName, Level.class);
         newLevel.create(state.getApp(), state.getBullet());
         updateStateManager(newLevel);
-        loadHighmap(newLevel.getTerrain().getName());
+        loadHeightMap(newLevel.getTerrain().getName());
         setSlidersToValue();
         setSelectsToValue();
     }

@@ -36,10 +36,13 @@ public class Horizon {
     private transient final String matPath = "MatDefs/Horizon/Horizon.j3md";
     
     private transient TerrainQuad horizon;
+    private transient BulletAppState bullet;
 
     public Horizon() {}
         
     public void create(Node node, BulletAppState bullet, AssetManager assetManager) {
+        this.bullet = bullet;
+        
         Texture tex = assetManager.loadTexture("Horizons/" + name + ".png");
         AbstractHeightMap heightmap = new ImageBasedHeightMap(tex.getImage());
         heightmap.load();
@@ -74,7 +77,7 @@ public class Horizon {
         
         node.attachChild(horizon);
         
-        CollisionShape shape =  CollisionShapeFactory.createMeshShape(horizon);
+        CollisionShape shape = CollisionShapeFactory.createMeshShape(horizon);
         RigidBodyControl control = new RigidBodyControl(shape, 0);
         horizon.addControl(control);
         if (bullet != null)
@@ -83,5 +86,11 @@ public class Horizon {
     
     public void setFogColor(ColorRGBA fogColor) {
         horizon.getMaterial().setColor("GlowColor", fogColor);
+    }
+    
+    public void remove() {
+        if (bullet != null)
+            bullet.getPhysicsSpace().remove(horizon);
+        horizon.removeFromParent();
     }
 }

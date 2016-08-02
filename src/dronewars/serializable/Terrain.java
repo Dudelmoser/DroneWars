@@ -50,6 +50,7 @@ public class Terrain {
     private Gradient spawnGradient;
     
     private transient TerrainQuad terrain;
+    private transient RigidBodyControl control;
     private transient BufferedImage spawnImage;
     private transient Node parent;
     private transient ColorRGBA sunColor;
@@ -95,12 +96,13 @@ public class Terrain {
         terrain.move(0, -0.1f, 0);
         parent.attachChild(terrain);
         
-        CollisionShape terrainBox =  CollisionShapeFactory.createMeshShape(terrain);
-        RigidBodyControl terrainControl = new RigidBodyControl(terrainBox, 0);
-        terrain.addControl(terrainControl);
-        if (bullet != null)
+        CollisionShape shape =  CollisionShapeFactory.createMeshShape(terrain);
+        control = new RigidBodyControl(shape, 0);
+        terrain.addControl(control);
+        if (bullet != null) {
             bullet.getPhysicsSpace().add(terrain);
-        
+        }
+            
         String spawnPath = getAbsolutePath("spawn.png");        
         try {
             spawnImage = ImageFactory.load(spawnPath);
@@ -192,6 +194,8 @@ public class Terrain {
     
     public void remove() {
         vegetation.remove();
+        if (bullet != null)
+            bullet.getPhysicsSpace().remove(control);
         terrain.removeFromParent();
     }
     

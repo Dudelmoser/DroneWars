@@ -71,6 +71,13 @@ public class Sky {
         node.addLight(ambient);
     }
     
+    public void remove() {
+        Node parent = sky.getParent();
+        parent.removeLight(sun);
+        parent.removeLight(ambient);
+        parent.detachChild(sky);
+    }
+    
     public DirectionalLight getSunLight() {
         return sun;
     }

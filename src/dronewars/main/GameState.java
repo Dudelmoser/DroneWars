@@ -80,15 +80,16 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
     
     @Override
     public void cleanup() {
+        level.remove();
         app.getRootNode().detachAllChildren();
         
         LightList lights = app.getRootNode().getWorldLightList();
         for (Light light : lights) {
             app.getRootNode().removeLight(light);
         }
+        
         app.getViewPort().removeProcessor(app.getViewPort().getProcessors().get(0));
-                
-        level.getWater().getAudioNode().stop();
+        
         app.getStateManager().detach(bullet);
         udp.close();
         onCleanup();

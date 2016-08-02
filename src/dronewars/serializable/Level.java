@@ -51,6 +51,14 @@ public class Level {
         precipitation.create(app.getRootNode(), terrain.getSize(), app.getAssetManager());
     }
     
+    public void remove() {
+        sky.remove();
+        horizon.remove();
+        terrain.remove();
+        water.remove();
+        precipitation.remove();
+    }
+    
     public Sky getSky() {
         return sky;
     }

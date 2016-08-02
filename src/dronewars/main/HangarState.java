@@ -97,7 +97,8 @@ public class HangarState extends AbstractAppState {
     public void setRenderedObject(String name) {
         plane.setName(name);
         plane.remove();
-        plane.createStatic(node, app.getAssetManager());
+        if (app != null)
+            plane.createStatic(node, app.getAssetManager());
     }
     
     public Warplane getRenderedObject() {

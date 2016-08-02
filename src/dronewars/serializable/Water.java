@@ -56,6 +56,11 @@ public class Water {
         createAudio(cam, audio, assetManager);
     }
     
+    public void remove() {
+        waves.stop();
+        waves.removeFromParent();
+    }
+    
     public void createFilter(Node scene, Vector3f sun, AssetManager assetManager) {
         water = new WaterFilter(scene, sun);
         water.setWaterColor(color); // seabed color

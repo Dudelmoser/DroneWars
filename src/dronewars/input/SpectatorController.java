@@ -37,8 +37,7 @@ public class SpectatorController extends DefaultController {
     @Override
     public void onStartScreen() {
         inputManager.setCursorVisible(false);
-        if (state == null)
-            state = stateManager.getState(SpectatorState.class);
+        state = stateManager.getState(SpectatorState.class);
         state.setEnabled(true);
         app.getFlyByCamera().setDragToRotate(false);
         

@@ -1,15 +1,19 @@
 package dronewars.input;
 
 import com.jme3.input.controls.ActionListener;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.controls.ImageSelect;
 import de.lessvoid.nifty.controls.ImageSelectSelectionChangedEvent;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
+import static dronewars.input.DefaultController.logger;
 import dronewars.main.HangarState;
 import dronewars.io.JsonFactory;
 import dronewars.main.StereoApplication;
 import dronewars.serializable.Warplane;
+import java.lang.reflect.Method;
 
 /**
  *
@@ -51,8 +55,8 @@ public class HangarController extends DefaultController {
         state = new HangarState(plane);
         stateManager.attach(state);
         
-        setColorSlider("color", plane.getColor());
-        setColorSlider("laser", plane.getLaserColor());
+        setColorSlider("Color_", plane.getColor());
+        setColorSlider("LaserColor_", plane.getLaserColor());
         
         planeSelect = nifty.getCurrentScreen().findNiftyControl("planeSelect", ImageSelect.class);
         planeNames = fillImageSelector(planeSelect, 
@@ -66,27 +70,17 @@ public class HangarController extends DefaultController {
         stateManager.detach(state);
     }
     
-    @NiftyEventSubscriber(pattern = ".*")
-    public void onSliderChangedEvent(final String id, final SliderChangedEvent event) {
-        switch(id) {
-            case "colorR":
-                plane.getColor().r = event.getValue() / 255;
-                break;
-            case "colorG":
-                plane.getColor().g = event.getValue() / 255;
-                break;
-            case "colorB":
-                plane.getColor().b = event.getValue() / 255;
-                break;
-            case "laserR":
-                plane.getLaserColor().r = event.getValue() / 255;
-                break;
-            case "laserG":
-                plane.getLaserColor().g = event.getValue() / 255;
-                break;
-            case "laserB":
-                plane.getLaserColor().b = event.getValue() / 255;
-                break;
+    @NiftyEventSubscriber(pattern = ".*_Slider")
+    public void onSliderChanged(String id, SliderChangedEvent event) {
+        String[] parts = id.split("_");
+        try {
+            if(event.getSlider().hasFocus()){
+                Method getter = plane.getClass().getMethod("get" + parts[0]);
+                ColorRGBA color = (ColorRGBA) getter.invoke(plane);
+                color.getClass().getDeclaredField(parts[1].toLowerCase()).setFloat(color, event.getValue() / 255f);
+            }
+        } catch (Exception ex) {
+            logger.log(java.util.logging.Level.SEVERE, "Slider reflection exception!", ex);
         }
     }
     
@@ -96,7 +90,6 @@ public class HangarController extends DefaultController {
     
     @NiftyEventSubscriber(id = "planeSelect")
     public void onChange(final String id, ImageSelectSelectionChangedEvent event) {
-        System.out.println(event.getSelectedIndex());
         String name = planeNames[event.getSelectedIndex()];
         state.setRenderedObject(name);
     }

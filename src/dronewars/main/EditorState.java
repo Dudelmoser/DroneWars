@@ -23,7 +23,7 @@ public class EditorState extends GameState {
     @Override
     protected void onInitialize() {
         level = JsonFactory.load(Level.class);
-        level.create(app, bullet);
+        level.create(app, null);
         
         applySettings();
         initCamera();

@@ -160,8 +160,7 @@ public class PlayerController extends DefaultController {
     @Override
     public void onStartScreen() {
         inputManager.setCursorVisible(false);
-        if (state == null)
-            state = stateManager.getState(PlayerState.class);
+        state = stateManager.getState(PlayerState.class);
         state.setEnabled(true);
         
         inputManager.addListener(analogListener, 
