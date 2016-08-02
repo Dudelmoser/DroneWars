@@ -135,7 +135,6 @@ public class Shot extends Effect {
     
     @Override
     public void remove() {
-        System.out.println("shot removed");
         sound.removeFromParent();
         bulletTrail.removeFromParent();
     }

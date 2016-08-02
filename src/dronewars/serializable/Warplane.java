@@ -95,7 +95,7 @@ public class Warplane {
             control.refresh(tpf);
             updateLaser();
             updateRotors(control.getThrust(), control.getYawRate());
-            sound.setVolume(control.getThrottle() * rotorVolume);
+            sound.setVolume(control.getThrust() * rotorVolume);
         } else {
             spatial.move(velocity.multLocal(tpf));
             updateLaser();

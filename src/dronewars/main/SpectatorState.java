@@ -46,7 +46,6 @@ public class SpectatorState extends GameState {
     @Override
     public void onMessage(String host, int port, String line) {
         if (line.charAt(0) == '{' && levelJson == null) {
-            System.out.println(line);
             level = new GsonBuilder().create().fromJson(line, Level.class);
             levelJson = line;
         }
