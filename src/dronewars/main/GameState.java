@@ -112,7 +112,6 @@ public abstract class GameState extends AbstractAppState implements UdpBroadcast
     
     protected void applySettings() {
         settings = JsonFactory.load(Settings.class);
-        settings.setProfile(2);
         settings.apply(app.getAssetManager(), app.getViewPort(), app.getCamera(),
                        level.getTerrain().getTerrainQuad(), level.getSky().getSunLight(), 
                        level.getWater().getWaterFilter(), app.getAudioRenderer());

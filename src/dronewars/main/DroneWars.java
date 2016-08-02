@@ -24,6 +24,8 @@ import dronewars.input.SettingsController;
 import dronewars.input.SpectatorController;
 import dronewars.input.SpectatorLoadingController;
 import dronewars.input.StartController;
+import dronewars.io.JsonFactory;
+import dronewars.serializable.Settings;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -48,15 +50,16 @@ public class DroneWars extends StereoApplication {
         app.setDisplayStatView(false);
         app.setShowSettings(false);
         AppSettings settings = new AppSettings(true);
+        Settings cfg = JsonFactory.load(Settings.class);
                 
         // automatically detect the right resolution, color depth etc.
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         DisplayMode displayMode = device.getDisplayMode();
-//        settings.setResolution(displayMode.getWidth(), displayMode.getHeight());
-        settings.setResolution(1920, 1080);
+        settings.setResolution(displayMode.getWidth(), displayMode.getHeight());
         settings.setFrameRate(60);
         settings.setBitsPerPixel(displayMode.getBitDepth());
-//        settings.setFullscreen(device.isFullScreenSupported());
+        if (cfg.isFullscreen())
+            settings.setFullscreen(device.isFullScreenSupported());
         
         // anti aliasing - lower to increase performance
         settings.put("Samples", 1);

@@ -24,8 +24,11 @@ import com.jme3.water.WaterFilter;
  */
 public class Settings {
     private float volume = 0.5f;
+    private boolean mute = false;
     
-    private boolean lod = true;
+    public boolean fullscreen = true;
+    
+    public boolean lod = true;
     private int clippingDistance = 8192;
     
     private int reflectionMapSize = 256;
@@ -36,16 +39,16 @@ public class Settings {
     private int shadowQuality = 0;
     private float shadowIntensity = 0.25f;
     
-    private boolean fxaa = false;
+    public boolean fxaa = false;
     
-    private boolean bloom = false;
+    public boolean bloom = false;
     private float bloomIntensity = 1;
     
-    private boolean sunrays = false;
+    public boolean sunrays = false;
     private float sunDistance = 2048;
     private float sunrayIntensity = 0.5f;
     
-    private boolean dof = false;
+    public boolean dof = false;
     private int blurScale = 2;
     private int blurRange = 1024;
     
@@ -157,5 +160,13 @@ public class Settings {
             shadow.setEdgeFilteringMode(EdgeFilteringMode.PCF8);
         }
         return shadow;
+    }
+    
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+    
+    public void setFullscreen(boolean fullscreen) {
+        this.fullscreen = fullscreen;
     }
 }

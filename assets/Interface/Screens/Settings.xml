@@ -12,98 +12,42 @@
  
   <screen id="Settings" controller="dronewars.input.SettingsController">
     <layer id="layer" backgroundColor="#E3DBC9" childLayout="center">
-      <panel childLayout="horizontal">
-        <panel childLayout="center" width="400" height="400" backgroundColor="#303039"
-               marginLeft="100" marginRight="100">
-          <effect>
-            <onStartScreen name="fade" start="#0" end="#F" length="300" startDelay="0"/>
-            <onEndScreen name="fade" start="#F" end="#0" length="300" startDelay="0"/>
-            <onHover name="fade" start="#F" end="#D"/>
-          </effect>
+        <panel childLayout="horizontal">
+          
           <panel childLayout="vertical">
-            <control name="label" text="FIELD SETTINGS" color="#E3DBC9"
-                     marginBottom="20"/>
             
-            <panel childLayout="horizontal" align="center" marginTop="15" >
-              <control name="label" text="field radius" color="#E3DBC9" />
-              <control name="label" text=" (meters)" color="#E3DBC966" />
+            <panel childLayout="horizontal" margin="20,0">
+              <control name="checkbox" id="fullscreen" margin="0,20" />
+              <control name="label" text="Fullscreen" color="#303039" />
             </panel>
-            <panel childLayout="horizontal">
-              <control name="label" text="10" color="#E3DBC9" />
-              <control id="fieldRadius" name="horizontalSlider" width="200px"
-                       min="10" max="100" initial="50" stepSize="10"/>
-              <control name="label" text="100" color="#E3DBC9" />
+
+            <panel childLayout="horizontal" margin="20,0">
+              <control name="checkbox" id="fxaa" margin="0,20" />
+              <control name="label" text="Anti Aliasing" color="#303039" />
             </panel>
-            
-            <panel childLayout="horizontal" align="center" marginTop="15" >
-              <control name="label" text="field height" color="#E3DBC9" />
-              <control name="label" text=" (meters)" color="#E3DBC966" />
+
+            <panel childLayout="horizontal" margin="20,0">
+              <control name="checkbox" id="lod" margin="0,20" />
+              <control name="label" text="Level of Detail" color="#303039" />
             </panel>
-            <panel childLayout="horizontal">
-              <control name="label" text="10" color="#E3DBC9" />
-              <control id="fieldHeight" name="horizontalSlider" width="200px"
-                       min="10" max="100" initial="100" stepSize="10"/>
-              <control name="label" text="100" color="#E3DBC9" />
+
+            <panel childLayout="horizontal" margin="20,0">
+              <control name="checkbox" id="dof" margin="0,20" />
+              <control name="label" text="Depth of Field" color="#303039" />
             </panel>
-            
-            <panel childLayout="horizontal" align="center" marginTop="15" >
-              <control name="label" text="alarm threshold" color="#E3DBC9" />
-              <control name="label" text=" (percent)" color="#E3DBC966" />
+
+            <panel childLayout="horizontal" margin="20,0">
+              <control name="checkbox" id="bloom" margin="0,20" />
+              <control name="label" text="Bloom" color="#303039" />
             </panel>
-            <panel childLayout="horizontal">
-              <control name="label" text="50" color="#E3DBC9" />
-              <control id="alarmThreshold" name="horizontalSlider" width="200px"
-                       min="50" max="90" initial="80" stepSize="10"/>
-              <control name="label" text="100" color="#E3DBC9" />
-            </panel>
-          </panel>  
-        </panel>
-        <panel childLayout="center" width="400" height="400" backgroundColor="#303039"
-               marginLeft="100" marginRight="100">
-          <effect>
-            <onStartScreen name="fade" start="#0" end="#F" length="300" startDelay="400"/>
-            <onEndScreen name="fade" start="#F" end="#0" length="300" startDelay="400"/>
-            <onHover name="fade" start="#F" end="#D"/>
-          </effect>
-          <panel childLayout="vertical">
-            <control name="label" text="GAME SETTINGS" color="#E3DBC9"
-                     marginBottom="20"/>
-            
-            <panel childLayout="horizontal" align="center" marginTop="15" >
-                <control name="label" text="match duration" color="#E3DBC9" />
-                <control name="label" text=" (minutes)" color="#E3DBC966" />
-            </panel>
-            <panel childLayout="horizontal">
-              <control name="label" text="1" color="#E3DBC9" />
-              <control id="matchLength" name="horizontalSlider" width="200px"
-                       min="1" max="10" initial="10"/>
-              <control name="label" text="10" color="#E3DBC9" />
-            </panel>
-            
-            <panel childLayout="horizontal" align="center" marginTop="15" >
-                <control name="label" text="lockon duration" color="#E3DBC9" />
-                <control name="label" text=" (seconds)" color="#E3DBC966" />
-            </panel>
-            <panel childLayout="horizontal">
-              <control name="label" text="0" color="#E3DBC9" />
-              <control id="lockonDuration" name="horizontalSlider" width="200px"
-                       min="0" max="5" initial="3" stepSize="1"/>
-              <control name="label" text="5" color="#E3DBC9" />
-            </panel>
-            
-            <panel childLayout="horizontal" align="center" marginTop="15">
-                <control name="label" text="damage per hit" color="#E3DBC9" />
-                <control name="label" text=" (percent)" color="#E3DBC966" />
-            </panel>
-            <panel childLayout="horizontal">
-              <control name="label" text="1" color="#E3DBC9" />
-              <control id="damagePerShot" name="horizontalSlider" width="200px"
-                       min="1" max="100" initial="30" stepSize="10"/>
-              <control name="label" text="100" color="#E3DBC9" />
+
+            <panel childLayout="horizontal" margin="20,0">
+              <control name="checkbox" id="sunrays" margin="0,20" />
+              <control name="label" text="Sunrays" color="#303039" />
             </panel>
           </panel>
+            
         </panel>
-      </panel>
     </layer>
   </screen>
 </nifty>
