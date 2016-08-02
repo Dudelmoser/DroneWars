@@ -36,12 +36,12 @@ import java.util.List;
  * @author Jan David Kleiß
  */
 
-public class DroneWars extends StereoApplication {
+public class Main extends StereoApplication {
     
     private final ColorRGBA backgroundColor = new ColorRGBA(227 / 255f, 219 / 255f, 201 / 255f, 1);
     
     public static void main(String[] args) {
-        DroneWars app = new DroneWars();
+        Main app = new Main();
         
         System.setProperty("java.util.logging.SimpleFormatter.format", 
             "%1$tF %1$tT %4$s %2$s %5$s%6$s%n");
