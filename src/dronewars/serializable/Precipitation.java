@@ -86,7 +86,8 @@ public class Precipitation {
     }
     
     public void remove() {
-        node.removeFromParent();
+        if (node != null)
+            node.removeFromParent();
     }
 
     public void toggle() {
